@@ -10,6 +10,10 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
+
 import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
@@ -24,6 +28,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
 
+
+
 public class Intake extends SubsystemBase {
 
         private Talon motor1;
@@ -31,12 +37,19 @@ public class Intake extends SubsystemBase {
 
         private Spark motor1Neo;
         private Spark motor2Neo;
+        private DoubleSolenoid rightValve;
+        private DoubleSolenoid leftValve;
 
         public Intake() {
                 motor1 = new Talon(34);
 
                 motor1Neo = new Spark(2);
                 motor2Neo = new Spark(3);
+
+                
+                rightValve = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1, 2); // PAREMETERS: ???, foward channel, reverse channel
+                leftValve = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 3, 4); // PAREMETERS: ???, foward channel, reverse channel
+
         }
 
         @Override
@@ -46,5 +59,20 @@ public class Intake extends SubsystemBase {
 
         public void run(double d) {
                 motor2Neo.set(d);
+        }
+
+        public void deploy(boolean status) {
+                if(status) { // moves the piston out if the status is true
+                        rightValve.set(kForward);
+                        leftValve.set(kForward);
+                        rightValve.toggle();
+                        leftValve.toggle();
+                }
+                else { // moves the piston in if the status is false
+                        rightValve.set(kReverse);
+                        leftValve.set(kReverse);
+                        rightValve.toggle();
+                        leftValve.toggle();
+                }
         }
 }

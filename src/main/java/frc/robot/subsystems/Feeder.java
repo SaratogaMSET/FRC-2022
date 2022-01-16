@@ -8,7 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class Feeder extends SubsystemBase {
-    public static enum State {
+    public static enum FeederState {
         FEED,
         REVERSE,
         IDLE,
@@ -34,11 +34,11 @@ public class Feeder extends SubsystemBase {
         this.manual = manual;
     }
 
-    public State getManual(){
+    public FeederState getManual(){
         if(manual) 
-            return State.MANUAL;
+            return FeederState.MANUAL;
         else 
-            return State.AUTO;
+            return FeederState.AUTO;
     }
 
     public void setTopMotorVelocity(double velocity){
@@ -49,17 +49,18 @@ public class Feeder extends SubsystemBase {
         bottomMotor.set(ControlMode.PercentOutput, velocity);
     }
 
-    public State updateState() {
+    public FeederState updateState() {
         double bottomVelocity = bottomMotor.getMotorOutputPercent();
         double topVelocity = topMotor.getMotorOutputPercent();
-        State state;
-
-        if(bottomVelocity > 0 && topVelocity > 0)
-            return State.FEED;
+        
+        if(bottomVelocity > topVelocity)
+            return FeederState.AUTO;
+        else if(bottomVelocity > 0 && topVelocity > 0)
+            return FeederState.FEED;
         else if(bottomVelocity < 0 && topVelocity < 0)
-            return State.REVERSE;
+            return FeederState.REVERSE;
         else
-            return State.IDLE;
+            return FeederState.IDLE;
     }
 
     @Override

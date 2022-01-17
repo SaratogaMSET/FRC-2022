@@ -13,6 +13,11 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RunIntake;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Intake;
+import frc.robot.commands.FeederCommand;
+import frc.robot.RobotState;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.subsystems.Feeder;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,6 +28,8 @@ import frc.robot.subsystems.Intake;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Intake m_intake = new Intake();
+  private final Feeder m_feeder = new Feeder();
+  private final RobotState m_robotState = new RobotState();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -48,5 +55,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return new RunIntake(m_intake);
+  }
+
+  public Command getTestCommand() {
+    return new SequentialCommandGroup(new InstantCommand(() -> m_intake.deploy(true)), 
+    new ParallelCommandGroup(new RunIntake(m_intake).withTimeout(1), new FeederCommand(m_feeder, 0, 1, m_robotState)).withTimeout(2.0));
   }
 }

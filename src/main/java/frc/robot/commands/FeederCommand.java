@@ -4,12 +4,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.RobotState;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class FeederCommand extends CommandBase {
     private final Feeder m_feeder;
     private double topMotorVelocity, bottomMotorVelocity;
     private RobotState robotState;
-    private DigitalInputs[] IR_GATES;
+    private DigitalInput[] IR_GATES;
     private int IR_GATES_Replace;
 
     public FeederCommand(Feeder feederSub, double topMotorVelocity, double bottomMotorVelocity, RobotState robotState) {
@@ -22,7 +23,7 @@ public class FeederCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if(IR_GATES.getIRGate(IR_GATES_Replace)) {
+        if(m_feeder.getIRGate(IR_GATES_Replace)) {
             m_feeder.setTopMotorVelocity(topMotorVelocity);
             m_feeder.setBottomMotorVelocity(bottomMotorVelocity);
         }

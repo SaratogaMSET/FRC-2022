@@ -57,17 +57,15 @@ public final class Constants {
         public static final int IR_GATES[] = {0, 0};
     }
 
-<<<<<<< Updated upstream
     public static class IntakeConstants{ // Intake Motor Ports
         public static final int LEFT_MOTOR = 0; // NOTE: SET THIS PORT NUMBER LATER
         public static final int RIGHT_MOTOR = 0;
         public static final int MODULE_NUMBER[] = {0, 0}; // The module number of the solenoid module to use.
         public static final int FORWARD_CHANNEL[] = {0, 0}; // The forward channel on the module to control (0..7)
         public static final int REVERSE_CHANNEL[] = {0, 0}; // The reverse channel on the module to control (0..7)
-=======
+    }
     public static class ShooterConstants{
         public static final int SHOOTER_MOTOR = 0;
         public static final int LS_MOTOR = 0;
->>>>>>> Stashed changes
     }
 }

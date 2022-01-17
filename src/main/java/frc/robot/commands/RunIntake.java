@@ -19,11 +19,19 @@ public class RunIntake extends CommandBase {
 
     @Override
     public void execute() {
-        // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
+        // if() {
+        //     m_intake.deploy(true);
+        //     m_intake.run(0.1);
+        // }
+        // else {
+        //     m_intake.deploy(false);
+        //     m_intake.run(0.0);
+        // }
     }
 
     @Override
     public void end(boolean interrupted) {
         m_intake.run(0.0);
+        m_intake.deploy(false);
     }
 }

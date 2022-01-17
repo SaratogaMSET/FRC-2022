@@ -32,6 +32,15 @@ import frc.robot.Constants.*;
 
 public class Intake extends SubsystemBase {
 
+        public static enum IntakeState {
+                INTAKE,
+                OUTTAKE,
+                DOWN,
+                UP, 
+                IDLE
+        }
+
+
         private Talon motor1;
         // private TalonFX motor2;
 
@@ -43,8 +52,9 @@ public class Intake extends SubsystemBase {
         public Intake() {
                 motor1 = new Talon(34);
 
-                motor1Neo = new Spark(2);
-                motor2Neo = new Spark(3);
+                motor1Neo = new Spark(2); // Right motor
+                motor2Neo = new Spark(3); // Left motor
+                motor2Neo.setInverted(true); // The left motor is inverted
 
                 
                 rightValve = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1, 2); // PAREMETERS: ???, foward channel, reverse channel
@@ -57,22 +67,36 @@ public class Intake extends SubsystemBase {
 
         }
 
-        public void run(double d) {
-                motor2Neo.set(d);
+        public void run(double speed) {
+                motor1Neo.set(speed);
+                motor2Neo.set(speed);
         }
 
         public void deploy(boolean status) {
-                if(status) { // moves the piston out if the status is true
+                if(status) { // moves the piston out if the status is true (intake down)
                         rightValve.set(kForward);
                         leftValve.set(kForward);
                         rightValve.toggle();
                         leftValve.toggle();
                 }
-                else { // moves the piston in if the status is false
+                else { // moves the piston in if the status is false (intake up)
                         rightValve.set(kReverse);
                         leftValve.set(kReverse);
                         rightValve.toggle();
                         leftValve.toggle();
                 }
         }
+
+        public IntakeState updateState() {
+                double rightVelocity = motor1Neo.get(); // 0-1
+                double leftVelocity = motor2Neo.get(); // 0-1
+                
+                if((rightVelocity > 0) && (leftVelocity > 0)) return IntakeState.INTAKE;
+                else if((rightVelocity < 0) && (leftVelocity < 0)) return IntakeState.OUTTAKE;
+                else if (rightValve.get() == kForward) return IntakeState.DOWN;
+                else if (rightValve.get() == kReverse) return IntakeState.UP;
+                else return IntakeState.IDLE;
+        }
+
+
 }

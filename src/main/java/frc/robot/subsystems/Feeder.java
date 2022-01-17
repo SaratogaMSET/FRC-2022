@@ -30,6 +30,10 @@ public class Feeder extends SubsystemBase {
         }
     }
 
+    public boolean getIRGate(int index){
+        return irGates[index].get();
+    }
+
     public void setManual(boolean manual){
         this.manual = manual;
     }

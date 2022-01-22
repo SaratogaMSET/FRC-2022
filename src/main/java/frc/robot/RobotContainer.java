@@ -13,11 +13,14 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RunIntake;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.commands.FeederCommand;
 import frc.robot.RobotState;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.Feeder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -55,6 +58,17 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return new RunIntake(m_intake);
+  }
+
+  public void updateRobotState() {
+    m_robotState.intakeState = m_intake.updateState();
+    m_robotState.feederState = m_feeder.updateState();
+    
+    SmartDashboard.putString("Feeder State", m_robotState.feederState.toString());
+    SmartDashboard.putString("Feeder Can Run", Boolean.toString(m_robotState.canRunFeeder()));
+    SmartDashboard.putString("Intake State", m_robotState.intakeState.toString());
+    SmartDashboard.putString("Intake Can Run", Boolean.toString(m_robotState.canDeployIntake()));
+
   }
 
   public Command getTestCommand() {

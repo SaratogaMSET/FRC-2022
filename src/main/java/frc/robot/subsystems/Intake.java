@@ -87,6 +87,13 @@ public class Intake extends SubsystemBase {
                 }
         }
 
+        public void stopAll() {
+                motor1Neo.set(0);
+                motor2Neo.set(0);
+                rightValve.set(kOff);
+                leftValve.set(kOff);
+        }
+
         public IntakeState updateState() {
                 double rightVelocity = motor1Neo.get(); // 0-1
                 double leftVelocity = motor2Neo.get(); // 0-1

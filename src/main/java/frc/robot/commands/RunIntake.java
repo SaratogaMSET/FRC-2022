@@ -22,15 +22,14 @@ public class RunIntake extends CommandBase {
         m_intake.run(0.1);
     }
 
-    @Override
-    public void execute() {
+    public void run() {
         if(state == IntakeState.IDLE) {
             m_intake.deploy(true);
             SmartDashboard.putBoolean("DEPLOY", true);
         }
         else if(state == IntakeState.DOWN) {
             m_intake.deploy(true);
-            m_intake.run(0.1);
+            m_intake.run(0.0);
             SmartDashboard.putBoolean("DOWN", true);
         }
         else if(state == IntakeState.UP) {
@@ -38,16 +37,37 @@ public class RunIntake extends CommandBase {
             m_intake.run(0.0);
             SmartDashboard.putBoolean("UP", true);
         }
-        else {
-            m_intake.run(0.0);
-            SmartDashboard.putBoolean("ALL-STOP", true);
+        else if (state == IntakeState.INTAKE) {
+            m_intake.run(0.1);
+            SmartDashboard.putBoolean("INTAKING", true);
+        }
+        else if (state == IntakeState.OUTTAKE) {
+            m_intake.run(-0.1);
+            SmartDashboard.putBoolean("OUTTAKING", true);
+        }
+        else { // IntakeState must be IDLE
+            m_intake.stopAll();
+            SmartDashboard.putBoolean("STOP", true);
         }
         
+    }
+
+    public void stopAll() {
+        m_intake.stopAll();
+        SmartDashboard.putBoolean("ALL-STOP (E-STOP)", true);
+    }
+
+    @Override
+    public void execute() {
+        /**
+        * The action to take when the command ends. Called when either the command finishes normally, or
+        * when it interrupted/canceled.
+        */
     }
 
     @Override
     public void end(boolean interrupted) {
         m_intake.run(0.0);
-        m_intake.deploy(false);
+        m_intake.stopAll();
     }
 }

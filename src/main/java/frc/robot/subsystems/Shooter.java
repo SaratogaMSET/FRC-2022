@@ -45,9 +45,12 @@ public class Shooter extends SubsystemBase {
 
         }
 
-        public void run(double speed) {
+        public void run(double speed, double speed2) {
+            if(updateState().equals(ShooterState.HIGHER)) speed = 1.0;
+            else if(updateState().equals(ShooterState.LOWER)) speed = 0.5;
+            else speed = 0.0;
             motor1.set(speed);
-            motor2.set(speed);
+            motor2.set(speed2);
         }
 
         public ShooterState updateState() {
@@ -58,7 +61,5 @@ public class Shooter extends SubsystemBase {
             else return ShooterState.IDLE;
         }
 
-        public double speedShooter(){
-            return 0.0;
-        }
+        
 }

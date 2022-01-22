@@ -47,8 +47,8 @@ public class Shooter extends SubsystemBase {
 
         public void run(double speed2) {
             double speed = 0.0;
-            if(updateState().equals(ShooterState.HIGHER)) speed = 1.0;
-            else if(updateState().equals(ShooterState.LOWER)) speed = 0.5;
+            if(updateState().equals(ShooterState.HIGHER)) speed = 0.5; // REVIEW
+            else if(updateState().equals(ShooterState.LOWER)) speed = 0.3; // REVIEW
             else speed = 0.0;
             motor1.set(speed);
             motor2.set(speed2);
@@ -62,9 +62,9 @@ public class Shooter extends SubsystemBase {
         public ShooterState updateState() {
             double velocity = motor2.get(); //0-1
             
-            if(velocity > 0.5) return ShooterState.HIGHER;
-            else if(velocity < 0.5) return ShooterState.LOWER;
-            else return ShooterState.IDLE;
+            if(velocity > 0.5) return ShooterState.HIGHER; // REVIEW
+            else if(velocity < 0.5) return ShooterState.LOWER; // REVIEW
+            else return ShooterState.IDLE; // REVIEW
         }
 
         

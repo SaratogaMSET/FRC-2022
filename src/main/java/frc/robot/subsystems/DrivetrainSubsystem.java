@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
-import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
@@ -20,6 +19,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
+import frc.robot.util.drivers.LazyTalonFX;
 
 public class DrivetrainSubsystem extends SubsystemBase {
   /**
@@ -76,8 +76,28 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
+//   private LazyTalonFX m_frontLeftSteer;
+//   private LazyTalonFX m_frontRightSteer;
+//   private LazyTalonFX m_backLeftSteer;
+//   private LazyTalonFX m_backRightSteer;
+
+//   private LazyTalonFX m_frontLeftDrive;
+//   private LazyTalonFX m_frontRightDrive;
+//   private LazyTalonFX m_backLeftDrive;
+//   private LazyTalonFX m_backRightDrive;
+
   public DrivetrainSubsystem() {
-    ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+    ShuffleboardTab tab = Shuffleboard.getTab("DrivetrainSwerve");
+
+//     m_frontLeftSteer = new LazyTalonFX(Drivetrain.FRONT_LEFT_MODULE_STEER_MOTOR);
+//     m_frontRightSteer = new LazyTalonFX(Drivetrain.FRONT_RIGHT_MODULE_STEER_MOTOR);
+//     m_backLeftSteer = new LazyTalonFX(Drivetrain.BACK_LEFT_MODULE_STEER_MOTOR);
+//     m_backRightSteer = new LazyTalonFX(Drivetrain.BACK_RIGHT_MODULE_STEER_MOTOR);
+
+//     m_frontLeftDrive = new LazyTalonFX(Drivetrain.FRONT_LEFT_MODULE_DRIVE_MOTOR);
+//     m_frontRightDrive = new LazyTalonFX(Drivetrain.FRONT_RIGHT_MODULE_DRIVE_MOTOR);
+//     m_backLeftDrive = new LazyTalonFX(Drivetrain.BACK_LEFT_MODULE_DRIVE_MOTOR);
+//     m_backRightDrive = new LazyTalonFX(Drivetrain.BACK_RIGHT_MODULE_DRIVE_MOTOR);
 
     // There are 4 methods you can call to create your swerve modules.
     // The method you use depends on what motors you are using.
@@ -90,9 +110,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
             // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
             // This can either be STANDARD or FAST depending on your gear configuration
-            tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-                    .withSize(2, 4)
-                    .withPosition(2, 0),
+        //     tab.getLayout("Front Right Module", BuiltInLayouts.kList)
+        //             .withSize(2, 4)
+        //             .withPosition(2, 0),
             Mk4SwerveModuleHelper.GearRatio.L2,
             // This is the ID of the drive motor
             Drivetrain.FRONT_LEFT_MODULE_DRIVE_MOTOR,
@@ -106,9 +126,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     // We will do the same for the other modules
     m_frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
-            tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-                    .withSize(2, 4)
-                    .withPosition(2, 0),
+        //     tab.getLayout("Front Right Module", BuiltInLayouts.kList)
+        //             .withSize(2, 4)
+        //             .withPosition(2, 0),
             Mk4SwerveModuleHelper.GearRatio.L2,
             Drivetrain.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
             Drivetrain.FRONT_RIGHT_MODULE_STEER_MOTOR,
@@ -117,9 +137,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     );
 
     m_backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-            tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-                    .withSize(2, 4)
-                    .withPosition(4, 0),
+        //     tab.getLayout("Back Left Module", BuiltInLayouts.kList)
+        //             .withSize(2, 4)
+        //             .withPosition(4, 0),
             Mk4SwerveModuleHelper.GearRatio.L2,
             Drivetrain.BACK_LEFT_MODULE_DRIVE_MOTOR,
             Drivetrain.BACK_LEFT_MODULE_STEER_MOTOR,
@@ -128,9 +148,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     );
 
     m_backRightModule = Mk4SwerveModuleHelper.createFalcon500(
-            tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-                    .withSize(2, 4)
-                    .withPosition(6, 0),
+        //     tab.getLayout("Back Right Module", BuiltInLayouts.kList)
+        //             .withSize(2, 4)
+        //             .withPosition(6, 0),
             Mk4SwerveModuleHelper.GearRatio.L2,
             Drivetrain.BACK_RIGHT_MODULE_DRIVE_MOTOR,
             Drivetrain.BACK_RIGHT_MODULE_STEER_MOTOR,
@@ -162,6 +182,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void periodic() {
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
+
+//     double rot = m_chassisSpeeds.omegaRadiansPerSecond;
+//     double fwd = m_chassisSpeeds.vyMetersPerSecond;
+//     rot = rot/(-8);
+//     SmartDashboard.putNumber("rotation", rot);
+//     SmartDashboard.putNumber("fwd", fwd);
+    
+//     m_frontLeftSteer.set(ControlMode.PercentOutput, rot);
+//     m_frontRightSteer.set(ControlMode.PercentOutput, rot);
+//     m_backLeftSteer.set(ControlMode.PercentOutput, rot);
+//     m_backRightSteer.set(ControlMode.PercentOutput, rot);
 
     m_frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, 0);
     m_frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, 0);

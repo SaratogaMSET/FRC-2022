@@ -1,0 +1,63 @@
+package frc.robot.commands;
+
+import frc.robot.RobotState;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.IntakeState;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.util.function.DoubleSupplier;
+
+public class ShooterCommand extends CommandBase {
+    private final Shooter m_shooter;
+    private ShooterState state;
+
+    public ShooterCommand(Shooter shooterSub) {
+        m_shooter = shooterSub;
+        addRequirements(shooterSub);
+
+        m_shooter.run(0.3);
+    }
+
+    public void run() {
+        if(state == ShooterState.IDLE) {
+            m_shooter.run(0.3);
+            SmartDashboard.putBoolean("DEPLOY", true);
+        }
+        else if (state == ShooterState.HIGHER) {
+            m_shooter.run(0.3);
+            SmartDashboard.putBoolean("HIGHER", true);
+        }
+        else if (state == IntakeState.LOWER) {
+            m_shooter.run(0.3);
+            SmartDashboard.putBoolean("LOWER", true);
+        }
+        else { // IntakeState must be IDLE
+            m_shooter.stopAll();
+            SmartDashboard.putBoolean("STOP", true);
+        }
+        
+    }
+
+    public void stopAll() {
+        m_shooter.stopAll();
+        SmartDashboard.putBoolean("ALL-STOP (E-STOP)", true);
+    }
+
+    @Override
+    public void execute() {
+        /**
+        * The action to take when the command ends. Called when either the command finishes normally, or
+        * when it interrupted/canceled.
+        */
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        m_shooter.run(0.0);
+        m_shooter.stopAll();
+    }
+}

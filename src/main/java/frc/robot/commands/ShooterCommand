@@ -24,11 +24,11 @@ public class ShooterCommand extends CommandBase {
 
     public void run() { // REVIEW
         if(state == ShooterState.IDLE) {
-            m_shooter.run(0.3);
+            m_shooter.run(0.0);
             SmartDashboard.putBoolean("DEPLOY", true);
         }
         else if (state == ShooterState.HIGHER) {
-            m_shooter.run(0.3);
+            m_shooter.run(0.6);
             SmartDashboard.putBoolean("HIGHER", true);
         }
         else if (state == IntakeState.LOWER) {

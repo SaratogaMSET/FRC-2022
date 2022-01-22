@@ -23,7 +23,7 @@ public class RobotState {
         return false;
     }
 
-    public static boolean canRunIntake() {
+    public static boolean canDeployIntake() {
         if (intakeState == IntakeState.IDLE) return true;
         return false;
     }

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
@@ -17,7 +18,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.*;
 import frc.robot.util.drivers.LazyTalonFX;
 
@@ -39,9 +42,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * <p>
    * This is a measure of how fast the robot should be able to drive in a straight line.
    */
-  public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-          SdsModuleConfigurations.MK3_STANDARD.getDriveReduction() *
-          SdsModuleConfigurations.MK3_STANDARD.getWheelDiameter() * Math.PI;
+  public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0 *
+          SdsModuleConfigurations.MK4_L2.getDriveReduction() *
+          SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI);
   /**
    * The maximum angular velocity of the robot in radians per second.
    * <p>
@@ -50,6 +53,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // Here we calculate the theoretical maximum angular velocity. You can also replace this with a measured amount.
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
           Math.hypot(Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0);
+
 
   private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
           // Front left
@@ -81,14 +85,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 //   private LazyTalonFX m_backLeftSteer;
 //   private LazyTalonFX m_backRightSteer;
 
-//   private LazyTalonFX m_frontLeftDrive;
-//   private LazyTalonFX m_frontRightDrive;
-//   private LazyTalonFX m_backLeftDrive;
+  // private LazyTalonFX m_frontLeftDrive;
+  // private LazyTalonFX m_frontRightDrive;
+  // private LazyTalonFX m_backLeftDrive;
 //   private LazyTalonFX m_backRightDrive;
 
   public DrivetrainSubsystem() {
-    ShuffleboardTab tab = Shuffleboard.getTab("DrivetrainSwerve");
-
 //     m_frontLeftSteer = new LazyTalonFX(Drivetrain.FRONT_LEFT_MODULE_STEER_MOTOR);
 //     m_frontRightSteer = new LazyTalonFX(Drivetrain.FRONT_RIGHT_MODULE_STEER_MOTOR);
 //     m_backLeftSteer = new LazyTalonFX(Drivetrain.BACK_LEFT_MODULE_STEER_MOTOR);
@@ -98,6 +100,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 //     m_frontRightDrive = new LazyTalonFX(Drivetrain.FRONT_RIGHT_MODULE_DRIVE_MOTOR);
 //     m_backLeftDrive = new LazyTalonFX(Drivetrain.BACK_LEFT_MODULE_DRIVE_MOTOR);
 //     m_backRightDrive = new LazyTalonFX(Drivetrain.BACK_RIGHT_MODULE_DRIVE_MOTOR);
+    // m_backRightDrive.setInverted(true);
 
     // There are 4 methods you can call to create your swerve modules.
     // The method you use depends on what motors you are using.
@@ -107,6 +110,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     
     // By default we will use Falcon 500s in standard configuration. But if you use a different configuration or motors
     // you MUST change it. If you do not, your code will crash on startup.
+
+
+
     m_frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
             // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
             // This can either be STANDARD or FAST depending on your gear configuration
@@ -168,10 +174,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public Rotation2d getGyroscopeRotation() {
-        return Rotation2d.fromDegrees(m_navx.getFusedHeading());
 
-//    // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
+        double joyAngle = Math.atan2(m_chassisSpeeds.vyMetersPerSecond, m_chassisSpeeds.vxMetersPerSecond);
+        joyAngle = Math.toDegrees(joyAngle) + 90;
+
+
+        return Rotation2d.fromDegrees(m_navx.getYaw());
+
+   // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
 //    return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());
+  }
+
+  public double getNavHeading(){
+        return Math.toRadians(m_navx.getFusedHeading());
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
@@ -183,20 +198,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
-//     double rot = m_chassisSpeeds.omegaRadiansPerSecond;
-//     double fwd = m_chassisSpeeds.vyMetersPerSecond;
-//     rot = rot/(-8);
-//     SmartDashboard.putNumber("rotation", rot);
-//     SmartDashboard.putNumber("fwd", fwd);
+    m_frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());
+    m_frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
+    m_backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
+    m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());
+  
     
-//     m_frontLeftSteer.set(ControlMode.PercentOutput, rot);
-//     m_frontRightSteer.set(ControlMode.PercentOutput, rot);
-//     m_backLeftSteer.set(ControlMode.PercentOutput, rot);
-//     m_backRightSteer.set(ControlMode.PercentOutput, rot);
-
-    m_frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, 0);
-    m_frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, 0);
-    m_backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, 0);
-    m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, 0);
   }
 }

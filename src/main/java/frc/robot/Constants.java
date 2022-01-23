@@ -48,4 +48,9 @@ public final class Constants {
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 47;
         public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0.0); // FIXME Measure and set back right steer offset
     }
+
+    public static class ShooterConstants {
+        public static final int SHOOTER_MOTOR = 21; 
+        public static final int LS_MOTOR = 20; // Port should be nagative speed
+    }
 }

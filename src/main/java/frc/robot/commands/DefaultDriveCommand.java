@@ -40,7 +40,7 @@ public class DefaultDriveCommand extends CommandBase {
         double magnitude = Math.hypot(m_translationXSupplier.getAsDouble(), m_translationYSupplier.getAsDouble());
         // double roboAngle = (Math.atan2(m_translationYSupplier.getAsDouble(), m_translationXSupplier.getAsDouble()));
         double joyAngle = Math.atan2(m_translationYSupplier.getAsDouble(), m_translationXSupplier.getAsDouble());
-        double roboAngle = (m_drivetrainSubsystem.getNavHeading() + joyAngle);
+        double roboAngle = (m_drivetrainSubsystem.getNavHeading() + joyAngle - m_drivetrainSubsystem.getGyroOffset());
         // roboAngle -= m_drivetrainSubsystem.getNavHeading();
         double resultX = Math.cos(roboAngle) * magnitude;
         double resultY = Math.sin(roboAngle) * magnitude;

@@ -77,8 +77,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final SwerveModule m_frontRightModule;
   private final SwerveModule m_backLeftModule;
   private final SwerveModule m_backRightModule;
+  
+  private SwerveModuleState[] currentState = new SwerveModuleState[4];
+  private SwerveModuleState[] previousState = new SwerveModuleState[4];
 
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+
+  private double internalGyroOffset = 0;
 
 //   private LazyTalonFX m_frontLeftSteer;
 //   private LazyTalonFX m_frontRightSteer;
@@ -173,6 +178,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
         m_navx.zeroYaw();
   }
 
+  public void zeroFromOffset(){
+    internalGyroOffset = m_navx.getFusedHeading();
+  }
+  public double getGyroOffset(){
+    return internalGyroOffset;
+  }
+
   public Rotation2d getGyroscopeRotation() {
 
         // double joyAngle = Math.atan2(m_chassisSpeeds.vyMetersPerSecond, m_chassisSpeeds.vxMetersPerSecond);
@@ -196,14 +208,29 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
-
-    m_frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());
-    m_frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
-    m_backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
-    m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());
-  
+    previousState = currentState;
+    currentState = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(currentState, MAX_VELOCITY_METERS_PER_SECOND);
     
+    if(previousState[0] == null || previousState[1] == null || previousState[2] == null || previousState[3] == null){
+      previousState = currentState;
+    }
+
+    double joystickCenterState = 0;
+    boolean joystickCentered = true;
+    for(int i = 0; i < currentState.length && joystickCentered; i++){
+      if(Math.abs(currentState[i].angle.getRadians() - joystickCenterState) > 0.001) joystickCentered = false;
+    }
+    
+    if(joystickCentered){
+      currentState[0].angle = previousState[0].angle;
+      currentState[1].angle = previousState[1].angle;
+      currentState[2].angle = previousState[2].angle;
+      currentState[3].angle = previousState[3].angle;
+    }
+    m_frontLeftModule.set(currentState[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, currentState[0].angle.getRadians());
+    m_frontRightModule.set(currentState[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, currentState[1].angle.getRadians());
+    m_backLeftModule.set(currentState[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, currentState[2].angle.getRadians());
+    m_backRightModule.set(currentState[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, currentState[3].angle.getRadians());
   }
 }

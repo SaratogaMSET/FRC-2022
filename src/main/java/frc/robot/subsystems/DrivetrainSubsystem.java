@@ -175,11 +175,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public Rotation2d getGyroscopeRotation() {
 
-        double joyAngle = Math.atan2(m_chassisSpeeds.vyMetersPerSecond, m_chassisSpeeds.vxMetersPerSecond);
-        joyAngle = Math.toDegrees(joyAngle) + 90;
+        // double joyAngle = Math.atan2(m_chassisSpeeds.vyMetersPerSecond, m_chassisSpeeds.vxMetersPerSecond);
+        // joyAngle = Math.toDegrees(joyAngle) + 90;
 
+        SmartDashboard.putNumber("heading", m_navx.getFusedHeading());
 
-        return Rotation2d.fromDegrees(m_navx.getYaw());
+        return Rotation2d.fromDegrees(m_navx.getFusedHeading());
 
    // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
 //    return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());

@@ -53,4 +53,14 @@ public final class Constants {
         public static final int SHOOTER_MOTOR = 21; 
         public static final int LS_MOTOR = 20; // Port should be nagative speed
     }
+
+    public static class Hang {
+        public static final int HANG_RIGHT_MOTOR = 34;
+        public static final int HANG_LEFT_MOTOR = 40;
+    }
+    
+    public static class OIConstants {
+        public static final int JOYSTICK_DRIVE_VERTICAL = 0;
+        public static final int JOYSTICK_DRIVE_HORIZONTAL = 1;
+    }
 }

@@ -13,6 +13,12 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+
+import frc.robot.subsystems.HangSubsystem;
+import frc.robot.commands.HangForwardCommand;
+import frc.robot.commands.HangReverseCommand;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -24,6 +30,8 @@ public class RobotContainer {
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final XboxController m_controller = new XboxController(0);
+
+  private final Joystick driverVertical, driverHorizontal;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -46,6 +54,9 @@ public class RobotContainer {
             () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
+    driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
+    driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
+
     //Configure the button bindings
     configureButtonBindings();
   }
@@ -61,6 +72,19 @@ public class RobotContainer {
     new Button(m_controller::getBackButton)
             // No requirements because we don't need to interrupt anything
             .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+
+    new JoystickButton (driverVertical, 2)
+      .whileHeld (new HangForwardCommand(Constants.Hang.HANG_RIGHT_MOTOR, 0.5))
+      .whenReleased(new HangForwardCommand(Constants.Hang.HANG_RIGHT_MOTOR, 0));
+    new JoystickButton (driverHorizontal, 2)
+      .whileHeld (new HangForwardCommand(Constants.Hang.HANG_LEFT_MOTOR, 0.5))
+      .whenReleased(new HangForwardCommand(Constants.Hang.HANG_LEFT_MOTOR, 0));
+    new JoystickButton (driverVertical, 3)
+      .whileHeld (new HangReverseCommand(Constants.Hang.HANG_RIGHT_MOTOR, 0.5))
+      .whenReleased(new HangReverseCommand(Constants.Hang.HANG_RIGHT_MOTOR, 0));
+    new JoystickButton (driverHorizontal, 3)
+      .whileHeld (new HangReverseCommand(Constants.Hang.HANG_LEFT_MOTOR, 0.5))
+      .whenReleased(new HangReverseCommand(Constants.Hang.HANG_LEFT_MOTOR, 0));
     
   }
 

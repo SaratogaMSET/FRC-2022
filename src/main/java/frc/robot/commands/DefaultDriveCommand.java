@@ -76,7 +76,7 @@ public class DefaultDriveCommand extends CommandBase {
 
         // SmartDashboard.putNumber("heading", Math.toDegrees(m_drivetrainSubsystem.getNavHeading()));
         SmartDashboard.putNumber("joystickAngle", (Math.toDegrees(joyAngle)));
-
+        SmartDashboard.putNumber("offset", m_drivetrainSubsystem.offset);
         SmartDashboard.putNumber("XSupplier", m_translationXSupplier.getAsDouble());
         SmartDashboard.putNumber("YSupplier", m_translationYSupplier.getAsDouble());
 

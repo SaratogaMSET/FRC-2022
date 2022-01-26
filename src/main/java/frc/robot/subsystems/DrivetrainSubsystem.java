@@ -71,6 +71,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // cause the angle reading to increase until it wraps back over to zero.
 
  private final AHRS m_navx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
+  public double offset = 0;
 
   // These are our modules. We initialize them in the constructor.
   private final SwerveModule m_frontLeftModule;
@@ -170,24 +171,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * 'forwards' direction.
    */
   public void zeroGyroscope() {
-        m_navx.zeroYaw();
-  }
-
-  public Rotation2d getGyroscopeRotation() {
-
-        // double joyAngle = Math.atan2(m_chassisSpeeds.vyMetersPerSecond, m_chassisSpeeds.vxMetersPerSecond);
-        // joyAngle = Math.toDegrees(joyAngle) + 90;
-
-        SmartDashboard.putNumber("heading", m_navx.getFusedHeading());
-
-        return Rotation2d.fromDegrees(m_navx.getFusedHeading());
-
-   // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
-//    return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());
+        offset = m_navx.getFusedHeading();
   }
 
   public double getNavHeading(){
-        return Math.toRadians(m_navx.getFusedHeading());
+
+    double angle = m_navx.getFusedHeading() - offset;
+    angle = angle % 360;
+    return Math.toRadians(angle + 90);
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {

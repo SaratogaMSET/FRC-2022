@@ -29,7 +29,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
-    m_drivetrainSubsystem.zeroGyroscope();
+    // m_drivetrainSubsystem.zeroGyroscope();
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
     // Left stick Y axis -> forward and backwards movement
@@ -54,7 +54,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
-    new Button(m_controller::getBackButton)
+    new Button(m_controller::getAButtonPressed)
             // No requirements because we don't need to interrupt anything
             .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
   }

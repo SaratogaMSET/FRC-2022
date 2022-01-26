@@ -79,12 +79,6 @@ public class DefaultDriveCommand extends CommandBase {
         SmartDashboard.putNumber("offset", m_drivetrainSubsystem.offset);
         SmartDashboard.putNumber("XSupplier", m_translationXSupplier.getAsDouble());
         SmartDashboard.putNumber("YSupplier", m_translationYSupplier.getAsDouble());
-
-        // SmartDashboard.putNumber("backRightCanCoder", backRightCanCoder.getPosition());
-        // SmartDashboard.putNumber("backLeftCanCoder", backLeftCanCoder.getPosition());
-        // SmartDashboard.putNumber("frontRightCanCoder", frontRightCanCoder.getPosition());
-        // SmartDashboard.putNumber("frontLeftCanCoder", frontLeftCanCoder.getPosition());
-
         
     }
 

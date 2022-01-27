@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -17,6 +16,7 @@ public class DefaultDriveCommand extends CommandBase {
     private final DoubleSupplier m_translationXSupplier;
     private final DoubleSupplier m_translationYSupplier;
     private final DoubleSupplier m_rotationSupplier;
+
 
     public CANCoder backRightCanCoder = new CANCoder(Constants.Drivetrain.BACK_RIGHT_MODULE_STEER_ENCODER);
     public CANCoder backLeftCanCoder = new CANCoder(Constants.Drivetrain.BACK_LEFT_MODULE_STEER_ENCODER);
@@ -38,48 +38,22 @@ public class DefaultDriveCommand extends CommandBase {
     @Override
     public void execute() {
         double magnitude = Math.hypot(m_translationXSupplier.getAsDouble(), m_translationYSupplier.getAsDouble());
-        // double roboAngle = (Math.atan2(m_translationYSupplier.getAsDouble(), m_translationXSupplier.getAsDouble()));
+
         double joyAngle = Math.atan2(m_translationYSupplier.getAsDouble(), m_translationXSupplier.getAsDouble());
         double roboAngle = (m_drivetrainSubsystem.getNavHeading() + joyAngle);
-        // roboAngle -= m_drivetrainSubsystem.getNavHeading();
+
         double resultX = Math.cos(roboAngle) * magnitude;
         double resultY = Math.sin(roboAngle) * magnitude;
 
-        
-
-        // double resultX = m_translationXSupplier.getAsDouble() * Math.cos(roboAngle) + m_translationYSupplier.getAsDouble() * Math.sin(roboAngle);
-        // double resultY = -m_translationXSupplier.getAsDouble() * Math.sin(roboAngle) + m_translationYSupplier.getAsDouble() * Math.cos(roboAngle);
-
-        // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
+        double multiplier = Math.pow(Math.abs(m_rotationSupplier.getAsDouble()/9.1), 1.2);
         
         m_drivetrainSubsystem.drive(
-                new ChassisSpeeds(
-                    resultX,
-                    resultY,
-                    // m_translationXSupplier.getAsDouble(),
-                    // m_translationYSupplier.getAsDouble(),
-                    m_rotationSupplier.getAsDouble()
-                )
+            new ChassisSpeeds(
+                resultX,
+                resultY,
+                m_rotationSupplier.getAsDouble() * multiplier
+            )
         );
-        
-        // m_drivetrainSubsystem.drive(
-        //         ChassisSpeeds.fromFieldRelativeSpeeds(
-        //             // resultX,
-        //             // resultY,
-        //             m_translationXSupplier.getAsDouble(),
-        //             m_translationYSupplier.getAsDouble(),
-        //             m_rotationSupplier.getAsDouble(),
-        //             // Rotation2d.fromDegrees(Math.abs(Math.toDegrees(initialAngle)))
-        //             m_drivetrainSubsystem.getGyroscopeRotation()
-        //         )
-        // );
-
-        // SmartDashboard.putNumber("heading", Math.toDegrees(m_drivetrainSubsystem.getNavHeading()));
-        SmartDashboard.putNumber("joystickAngle", (Math.toDegrees(joyAngle)));
-        SmartDashboard.putNumber("offset", m_drivetrainSubsystem.offset);
-        SmartDashboard.putNumber("XSupplier", m_translationXSupplier.getAsDouble());
-        SmartDashboard.putNumber("YSupplier", m_translationYSupplier.getAsDouble());
-        
     }
 
     @Override

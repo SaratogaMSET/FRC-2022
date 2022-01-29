@@ -10,10 +10,15 @@ import edu.wpi.first.wpilibj.SPI;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
+
+import org.opencv.calib3d.StereoSGBM;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -65,6 +70,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
           // Back right
           new Translation2d(-Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0)
   );
+
+  private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(m_kinematics,
+          new Rotation2d(0));
 
   // By default we use a Pigeon for our gyroscope. But if you use another gyroscope, like a NavX, you can change this.
   // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
@@ -163,11 +171,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         offset = m_navx.getFusedHeading();
   }
 
-  public Rotation2d getGyroscopeRotation() {
-
-        SmartDashboard.putNumber("heading", m_navx.getFusedHeading());
-
-        return Rotation2d.fromDegrees(m_navx.getFusedHeading());
+  public Rotation2d getRotation2d() {
+        return Rotation2d.fromDegrees(Math.toDegrees(getNavHeading()));
   }
 
   public double getNavHeading(){
@@ -177,9 +182,25 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return Math.toRadians(angle + 90);
   }
 
+  public Pose2d getPose() {
+    return odometer.getPoseMeters();
+  }
+
+  public void resetOdometry(Pose2d pose) {
+    odometer.resetPosition(pose, getRotation2d());
+  }
+
   public void drive(ChassisSpeeds chassisSpeeds) {
     m_chassisSpeeds = chassisSpeeds;
   }
+
+  public void setModuleStates(SwerveModuleState[] setState){
+    m_frontLeftModule.set(setState[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, setState[0].angle.getRadians());
+    m_frontRightModule.set(setState[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, setState[1].angle.getRadians());
+    m_backLeftModule.set(setState[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, setState[2].angle.getRadians());
+    m_backRightModule.set(setState[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, setState[3].angle.getRadians());
+  }
+
 
   @Override
   public void periodic() {
@@ -203,9 +224,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
       currentState[2].angle = previousState[2].angle;
       currentState[3].angle = previousState[3].angle;
     }
-    m_frontLeftModule.set(currentState[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, currentState[0].angle.getRadians());
-    m_frontRightModule.set(currentState[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, currentState[1].angle.getRadians());
-    m_backLeftModule.set(currentState[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, currentState[2].angle.getRadians());
-    m_backRightModule.set(currentState[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, currentState[3].angle.getRadians());
+
+    setModuleStates(currentState);
+
+    odometer.update(
+      getRotation2d(),
+      new SwerveModuleState(m_frontLeftModule.getDriveVelocity(), new Rotation2d(m_frontLeftModule.getSteerAngle())),
+      new SwerveModuleState(m_frontRightModule.getDriveVelocity(), new Rotation2d(m_frontRightModule.getSteerAngle())),
+      new SwerveModuleState(m_backLeftModule.getDriveVelocity(), new Rotation2d(m_backLeftModule.getSteerAngle())),
+      new SwerveModuleState(m_backRightModule.getDriveVelocity(), new Rotation2d(m_backRightModule.getSteerAngle()))
+    );
   }
 }

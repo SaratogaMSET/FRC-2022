@@ -13,7 +13,7 @@ public class ShooterCommand extends CommandBase {
     }
     @Override
     public void initialize(){
-        m_shooter.run(0.3);
+        m_shooter.run(0.65);
     }
     @Override
     public void execute() {

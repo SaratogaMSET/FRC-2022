@@ -27,11 +27,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  // private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-  private final XboxController m_controller = new XboxController(0);
+  // private final XboxController m_controller = new XboxController(0);
 
-  private final Joystick driverVertical, driverHorizontal;
+  // private final Joystick driverVertical, driverHorizontal;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -43,22 +43,22 @@ public class RobotContainer {
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
     
-    m_shooterSubsystem.setDefaultCommand(new ShooterCommand(
-            m_shooterSubsystem
-    ));
+    // m_shooterSubsystem.setDefaultCommand(new ShooterCommand(
+    //         m_shooterSubsystem
+    // ));
 
-    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-            m_drivetrainSubsystem,
-            () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    ));
+    // m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+    //         m_drivetrainSubsystem,
+    //         () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+    //         () -> -modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+    //         () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    // ));
 
-    driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
-    driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
+    // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
+    // driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
 
-    //Configure the button bindings
-    configureButtonBindings();
+    // //Configure the button bindings
+    // configureButtonBindings();
   }
 
   /**
@@ -69,22 +69,22 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
-    new Button(m_controller::getBackButton)
-            // No requirements because we don't need to interrupt anything
-            .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+    // new Button(m_controller::getBackButton)
+    //         // No requirements because we don't need to interrupt anything
+    //         .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
 
-    new JoystickButton (driverVertical, 2)
-      .whileHeld (new HangForwardCommand(Constants.Hang.HANG_RIGHT_MOTOR, 0.5))
-      .whenReleased(new HangForwardCommand(Constants.Hang.HANG_RIGHT_MOTOR, 0));
-    new JoystickButton (driverHorizontal, 2)
-      .whileHeld (new HangForwardCommand(Constants.Hang.HANG_LEFT_MOTOR, 0.5))
-      .whenReleased(new HangForwardCommand(Constants.Hang.HANG_LEFT_MOTOR, 0));
-    new JoystickButton (driverVertical, 3)
-      .whileHeld (new HangReverseCommand(Constants.Hang.HANG_RIGHT_MOTOR, 0.5))
-      .whenReleased(new HangReverseCommand(Constants.Hang.HANG_RIGHT_MOTOR, 0));
-    new JoystickButton (driverHorizontal, 3)
-      .whileHeld (new HangReverseCommand(Constants.Hang.HANG_LEFT_MOTOR, 0.5))
-      .whenReleased(new HangReverseCommand(Constants.Hang.HANG_LEFT_MOTOR, 0));
+    // new JoystickButton (driverVertical, 2)
+    //   .whileHeld (new HangForwardCommand(Constants.Hang.HANG_RIGHT_MOTOR, 0.5))
+    //   .whenReleased(new HangForwardCommand(Constants.Hang.HANG_RIGHT_MOTOR, 0));
+    // new JoystickButton (driverHorizontal, 2)
+    //   .whileHeld (new HangForwardCommand(Constants.Hang.HANG_LEFT_MOTOR, 0.5))
+    //   .whenReleased(new HangForwardCommand(Constants.Hang.HANG_LEFT_MOTOR, 0));
+    // new JoystickButton (driverVertical, 3)
+    //   .whileHeld (new HangReverseCommand(Constants.Hang.HANG_RIGHT_MOTOR, 0.5))
+    //   .whenReleased(new HangReverseCommand(Constants.Hang.HANG_RIGHT_MOTOR, 0));
+    // new JoystickButton (driverHorizontal, 3)
+    //   .whileHeld (new HangReverseCommand(Constants.Hang.HANG_LEFT_MOTOR, 0.5))
+    //   .whenReleased(new HangReverseCommand(Constants.Hang.HANG_LEFT_MOTOR, 0));
     
   }
 
@@ -98,25 +98,25 @@ public class RobotContainer {
     return new ShooterCommand(m_shooterSubsystem);
   }
 
-  private static double deadband(double value, double deadband) {
-    if (Math.abs(value) > deadband) {
-      if (value > 0.0) {
-        return (value - deadband) / (1.0 - deadband);
-      } else {
-        return (value + deadband) / (1.0 - deadband);
-      }
-    } else {
-      return 0.0;
-    }
-  }
+  // private static double deadband(double value, double deadband) {
+  //   if (Math.abs(value) > deadband) {
+  //     if (value > 0.0) {
+  //       return (value - deadband) / (1.0 - deadband);
+  //     } else {
+  //       return (value + deadband) / (1.0 - deadband);
+  //     }
+  //   } else {
+  //     return 0.0;
+  //   }
+  // }
 
-  private static double modifyAxis(double value) {
-    // Deadband
-    value = deadband(value, 0.05);
+  // private static double modifyAxis(double value) {
+  //   // Deadband
+  //   value = deadband(value, 0.05);
 
-    // Square the axis
-    value = Math.copySign(value * value, value);
+  //   // Square the axis
+  //   value = Math.copySign(value * value, value);
 
-    return value;
-  }
+  //   return value;
+  // }
 }

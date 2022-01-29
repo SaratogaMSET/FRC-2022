@@ -51,7 +51,7 @@ public final class Constants {
 
     public static class ShooterConstants {
         public static final int SHOOTER_MOTOR = 21; 
-        public static final int LS_MOTOR = 20; // Port should be nagative speed
+        public static final int SHOOTER_MOTOR_2 = 20; // Port should be nagative speed
     }
 
     public static class Hang {

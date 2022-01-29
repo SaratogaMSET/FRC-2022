@@ -23,18 +23,18 @@ import frc.robot.util.drivers.LazyTalonFX;
 public class ShooterSubsystem extends SubsystemBase {
 
         public LazyTalonFX shooterMotor;
-        private LazyTalonFX lsMotor;
+        private LazyTalonFX shooterMotor2;
 
         public ShooterSubsystem() {
                 shooterMotor = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR);
-                lsMotor = new LazyTalonFX(Constants.ShooterConstants.LS_MOTOR);
+                shooterMotor2 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR_2);
         }
         @Override
         public void periodic() {
                 SmartDashboard.putNumber("Sensor Vel:", shooterMotor.getSelectedSensorVelocity());
         }
         public void run(double d) {
-                shooterMotor.set(TalonFXControlMode.PercentOutput,0.85);
-                lsMotor.set(TalonFXControlMode.PercentOutput,-0.85);
+                shooterMotor.set(TalonFXControlMode.PercentOutput,d);
+                shooterMotor2.set(TalonFXControlMode.PercentOutput,-d);
         }
 }

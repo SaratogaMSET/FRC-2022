@@ -132,14 +132,14 @@ public class RobotContainer {
       List.of(
         new Translation2d(1, 0)
       ),
-      new Pose2d(2, 0, new Rotation2d(Math.toRadians(90))),
+      new Pose2d(0, 1, new Rotation2d(0)),
       trajectoryConfig
     );
 
-    PIDController xController = new PIDController(0.01, 0, 0); //FIXME
-    PIDController yController = new PIDController(0.01, 0, 0);//FIXME
+    PIDController xController = new PIDController(0.02, 0, 0.02); //FIXME
+    PIDController yController = new PIDController(0.02, 0, 0.02);//FIXME
     ProfiledPIDController thetaController = new ProfiledPIDController(
-            0.01, 0, 0, new TrapezoidProfile.Constraints(
+            0.05, 0, 0, new TrapezoidProfile.Constraints(
               MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
               MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND/3));
     

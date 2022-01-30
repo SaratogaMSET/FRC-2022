@@ -234,5 +234,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
       new SwerveModuleState(m_backLeftModule.getDriveVelocity(), new Rotation2d(m_backLeftModule.getSteerAngle())),
       new SwerveModuleState(m_backRightModule.getDriveVelocity(), new Rotation2d(m_backRightModule.getSteerAngle()))
     );
+
+    SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+    SmartDashboard.putString("Robot Rotation", getPose().getRotation().toString());
   }
 }

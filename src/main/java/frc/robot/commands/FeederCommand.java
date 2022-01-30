@@ -25,7 +25,7 @@ public class FeederCommand extends CommandBase {
     public void execute() {
         if(m_feeder.getIRGate(IR_GATES_Replace)) {
             m_feeder.setTopMotorVelocity(topMotorVelocity);
-            m_feeder.setBottomMotorVelocity(bottomMotorVelocity);
+            m_feeder.setBottomMotorVelocity(-bottomMotorVelocity);
         }
         else {
             m_feeder.setTopMotorVelocity(0);

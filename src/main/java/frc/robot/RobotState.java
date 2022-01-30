@@ -4,22 +4,22 @@
 
 package frc.robot;
 
-import frc.robot.subsystems.Feeder.FeederState;
+// import frc.robot.subsystems.Feeder.FeederState;
 import frc.robot.subsystems.Intake.IntakeState;
 
 /** Add your docs here. */
 public class RobotState {
 
-    public static FeederState feederState;
+    // public static FeederState feederState;
     public static IntakeState intakeState;
 
     public RobotState() {
-        feederState = FeederState.IDLE;
+        // feederState = FeederState.IDLE;
         intakeState = IntakeState.IDLE;
     }
 
     public static boolean canRunFeeder() {
-        if (feederState == FeederState.IDLE) return true;
+        // if (feederState == FeederState.IDLE) return true;
         return false;
     }
 

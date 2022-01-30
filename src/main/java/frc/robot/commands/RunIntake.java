@@ -32,12 +32,12 @@ public class RunIntake extends CommandBase {
         }
         else if(state == IntakeState.FLIP_DOWN) {
             m_intake.deploy(true);
-            m_intake.run(0.0);
+            m_intake.run(-0.1);
             SmartDashboard.putBoolean("DOWN", true);
         }
         else if(state == IntakeState.FLIP_UP) {
             m_intake.deploy(false);
-            m_intake.run(0.0);
+            m_intake.run(0.1);
             SmartDashboard.putBoolean("UP", true);
         }
         // else if (state == IntakeState.INTAKE) {

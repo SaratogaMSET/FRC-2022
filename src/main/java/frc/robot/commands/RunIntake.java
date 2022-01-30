@@ -1,9 +1,7 @@
 package frc.robot.commands;
 
 import frc.robot.RobotState;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeState;
 
@@ -14,37 +12,42 @@ import java.util.function.DoubleSupplier;
 public class RunIntake extends CommandBase {
     private final Intake m_intake;
     private IntakeState state;
+    private double speed;
 
-    public RunIntake(Intake intakeSub) {
+    public RunIntake(Intake intakeSub, IntakeState state, double speed) {
         m_intake = intakeSub;
-        addRequirements(intakeSub);
+        this.state = state;
+        this.speed = speed;
 
-        m_intake.run(0.1);
+        addRequirements(intakeSub);
     }
 
-    public void run() {
+
+    public void initialize() {
+        m_intake.run(speed);
         if(state == IntakeState.IDLE) {
-            m_intake.deploy(true);
-            SmartDashboard.putBoolean("DEPLOY", true);
+            //m_intake.deploy(true);
+            m_intake.stopAll();
+            SmartDashboard.putBoolean("IDLE", true);
         }
-        else if(state == IntakeState.DOWN) {
+        else if(state == IntakeState.FLIP_DOWN) {
             m_intake.deploy(true);
             m_intake.run(0.0);
             SmartDashboard.putBoolean("DOWN", true);
         }
-        else if(state == IntakeState.UP) {
+        else if(state == IntakeState.FLIP_UP) {
             m_intake.deploy(false);
             m_intake.run(0.0);
             SmartDashboard.putBoolean("UP", true);
         }
-        else if (state == IntakeState.INTAKE) {
-            m_intake.run(0.1);
-            SmartDashboard.putBoolean("INTAKING", true);
-        }
-        else if (state == IntakeState.OUTTAKE) {
-            m_intake.run(-0.1);
-            SmartDashboard.putBoolean("OUTTAKING", true);
-        }
+        // else if (state == IntakeState.INTAKE) {
+        //     m_intake.run(speed);
+        //     SmartDashboard.putBoolean("INTAKING", true);
+        // }
+        // else if (state == IntakeState.OUTTAKE) {
+        //     m_intake.run(speed);
+        //     SmartDashboard.putBoolean("OUTTAKING", true);
+        // }
         else { // IntakeState must be IDLE
             m_intake.stopAll();
             SmartDashboard.putBoolean("STOP", true);
@@ -62,12 +65,21 @@ public class RunIntake extends CommandBase {
         /**
         * The action to take when the command ends. Called when either the command finishes normally, or
         * when it interrupted/canceled.
-        */
+        **/
     }
 
     @Override
-    public void end(boolean interrupted) {
-        m_intake.run(0.0);
+    public void end(boolean interrupted) { // stops the intake and them moves the intake up before stoping everything again
         m_intake.stopAll();
+        m_intake.deploy(false);
+        m_intake.stopAll();
+    }
+
+    // Returns true when the command should end.
+    public boolean isFinished() {
+        if (RobotState.intakeState == IntakeState.FLIP_UP) {
+            return true;
+        }
+        return false;
     }
 }

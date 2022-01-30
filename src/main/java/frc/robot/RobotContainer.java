@@ -13,6 +13,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RunIntake;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Intake;
+import frc.robot.commands.RunIntake;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.commands.FeederCommand;
 import frc.robot.RobotState;
@@ -57,7 +58,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new RunIntake(m_intake);
+    return new RunIntake(m_intake, IntakeState.FLIP_DOWN, 0.1);
   }
 
   public void updateRobotState() {
@@ -71,8 +72,8 @@ public class RobotContainer {
 
   }
 
-  public Command getTestCommand() {
-    return new SequentialCommandGroup(new InstantCommand(() -> m_intake.deploy(true)), 
-    new ParallelCommandGroup(new RunIntake(m_intake).withTimeout(1), new FeederCommand(m_feeder, 0, 1, m_robotState)).withTimeout(2.0));
-  }
+  // public Command getTestCommand() {
+  //   //return new SequentialCommandGroup(new InstantCommand(() -> m_intake.deploy(true)) 
+  //   //new ParallelCommandGroup(new RunIntake(m_intake).withTimeout(1), new FeederCommand(m_feeder, 0, 1, m_robotState)).withTimeout(2.0));
+  // }
 }

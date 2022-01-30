@@ -7,26 +7,20 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
+//import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
-import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-import com.swervedrivespecialties.swervelib.SwerveModule;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
+
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.*;
+import frc.robot.Constants;
 
 
 
@@ -35,30 +29,30 @@ public class Intake extends SubsystemBase {
         public static enum IntakeState {
                 INTAKE,
                 OUTTAKE,
-                DOWN,
-                UP, 
+                FLIP_DOWN,
+                FLIP_UP, 
                 IDLE
         }
 
 
-        private Talon motor1;
+        //private Talon motor1;
         // private TalonFX motor2;
 
-        private Spark motor1Neo;
-        private Spark motor2Neo;
+        private WPI_TalonFX motor1Falcon;
+        private WPI_TalonFX motor2Falcon;
         private DoubleSolenoid rightValve;
         private DoubleSolenoid leftValve;
 
         public Intake() {
-                motor1 = new Talon(34);
+                //motor1 = new Talon(34);
 
-                motor1Neo = new Spark(2); // Right motor
-                motor2Neo = new Spark(3); // Left motor
-                motor2Neo.setInverted(true); // The left motor is inverted
+                motor1Falcon = new WPI_TalonFX(Constants.IntakeConstants.RIGHT_MOTOR); // Right motor
+                motor2Falcon = new WPI_TalonFX(Constants.IntakeConstants.LEFT_MOTOR); // Left motor
+                motor2Falcon.setInverted(true); // The left motor is inverted
 
                 
-                rightValve = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1, 2); // PAREMETERS: ???, foward channel, reverse channel
-                leftValve = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 3, 4); // PAREMETERS: ???, foward channel, reverse channel
+                rightValve = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.IntakeConstants.FORWARD_CHANNEL[0], Constants.IntakeConstants.REVERSE_CHANNEL[0]); // PAREMETERS: ???, foward channel, reverse channel
+                leftValve = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.IntakeConstants.FORWARD_CHANNEL[1], Constants.IntakeConstants.REVERSE_CHANNEL[1]); // PAREMETERS: ???, foward channel, reverse channel
 
         }
 
@@ -68,8 +62,8 @@ public class Intake extends SubsystemBase {
         }
 
         public void run(double speed) {
-                motor1Neo.set(speed);
-                motor2Neo.set(speed);
+                motor1Falcon.set(speed);
+                motor2Falcon.set(speed);
         }
 
         public void deploy(boolean status) {
@@ -88,20 +82,20 @@ public class Intake extends SubsystemBase {
         }
 
         public void stopAll() {
-                motor1Neo.set(0);
-                motor2Neo.set(0);
+                motor1Falcon.set(0);
+                motor2Falcon.set(0);
                 rightValve.set(kOff);
                 leftValve.set(kOff);
         }
 
         public IntakeState updateState() {
-                double rightVelocity = motor1Neo.get(); // 0-1
-                double leftVelocity = motor2Neo.get(); // 0-1
+                double rightVelocity = motor1Falcon.get(); // 0-1
+                double leftVelocity = motor2Falcon.get(); // 0-1
                 
                 if((rightVelocity > 0) && (leftVelocity > 0)) return IntakeState.INTAKE;
                 else if((rightVelocity < 0) && (leftVelocity < 0)) return IntakeState.OUTTAKE;
-                else if (rightValve.get() == kForward) return IntakeState.DOWN;
-                else if (rightValve.get() == kReverse) return IntakeState.UP;
+                else if (rightValve.get() == kForward) return IntakeState.FLIP_DOWN;
+                else if (rightValve.get() == kReverse) return IntakeState.FLIP_UP;
                 else return IntakeState.IDLE;
         }
 

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
@@ -199,33 +200,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_frontRightModule.set(setState[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, setState[1].angle.getRadians());
     m_backLeftModule.set(setState[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, setState[2].angle.getRadians());
     m_backRightModule.set(setState[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, setState[3].angle.getRadians());
-  }
-
-
-  @Override
-  public void periodic() {
-    previousState = currentState;
-    currentState = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(currentState, MAX_VELOCITY_METERS_PER_SECOND);
-    
-    if(previousState[0] == null || previousState[1] == null || previousState[2] == null || previousState[3] == null){
-      previousState = currentState;
-    }
-
-    double joystickCenterState = 0;
-    boolean joystickCentered = true;
-    for(int i = 0; i < currentState.length && joystickCentered; i++){
-      if(Math.abs(currentState[i].angle.getRadians() - joystickCenterState) > 0.001) joystickCentered = false;
-    }
-    
-    if(joystickCentered){
-      currentState[0].angle = previousState[0].angle;
-      currentState[1].angle = previousState[1].angle;
-      currentState[2].angle = previousState[2].angle;
-      currentState[3].angle = previousState[3].angle;
-    }
-
-    setModuleStates(currentState);
 
     odometer.update(
       getRotation2d(),
@@ -234,6 +208,33 @@ public class DrivetrainSubsystem extends SubsystemBase {
       new SwerveModuleState(m_backLeftModule.getDriveVelocity(), new Rotation2d(m_backLeftModule.getSteerAngle())),
       new SwerveModuleState(m_backRightModule.getDriveVelocity(), new Rotation2d(m_backRightModule.getSteerAngle()))
     );
+  }
+
+
+  @Override
+  public void periodic() {
+    // previousState = currentState;
+    currentState = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(currentState, MAX_VELOCITY_METERS_PER_SECOND);
+    
+    // if(previousState[0] == null || previousState[1] == null || previousState[2] == null || previousState[3] == null){
+    //   previousState = currentState;
+    // }
+
+    // double joystickCenterState = 0;
+    // boolean joystickCentered = true;
+    // for(int i = 0; i < currentState.length && joystickCentered; i++){
+    //   if(Math.abs(currentState[i].angle.getRadians() - joystickCenterState) > 0.001) joystickCentered = false;
+    // }
+    
+    // if(joystickCentered){
+    //   currentState[0].angle = previousState[0].angle;
+    //   currentState[1].angle = previousState[1].angle;
+    //   currentState[2].angle = previousState[2].angle;
+    //   currentState[3].angle = previousState[3].angle;
+    // }
+
+    setModuleStates(currentState);
 
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     SmartDashboard.putString("Robot Rotation", getPose().getRotation().toString());

@@ -23,13 +23,17 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.AutonomousCommand;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.RotateDegrees;
+import frc.robot.commands.SwerveControllerStrafe;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -125,27 +129,27 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
 
     // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(MAX_VELOCITY_METERS_PER_SECOND, 0.5).setKinematics(m_kinematics);
-    TrajectoryConfig trajectoryConfig = new TrajectoryConfig(1, 0.5).setKinematics(m_kinematics);
+    TrajectoryConfig trajectoryConfig = new TrajectoryConfig(2, 0.7).setKinematics(m_kinematics);
 
     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
       new Pose2d(0, 0, new Rotation2d(0)),
       List.of(
         new Translation2d(1, 0)
       ),
-      new Pose2d(0, 1, new Rotation2d(0)),
+      new Pose2d(1, 1, new Rotation2d( 30 )),
       trajectoryConfig
     );
 
-    PIDController xController = new PIDController(0.02, 0, 0.02); //FIXME
-    PIDController yController = new PIDController(0.02, 0, 0.02);//FIXME
+    PIDController xController = new PIDController(Constants.Drivetrain.kPXController, Constants.Drivetrain.kIXController, 0); //FIXME
+    PIDController yController = new PIDController(Constants.Drivetrain.kPYController, Constants.Drivetrain.kIYController, 0);//FIXME
     ProfiledPIDController thetaController = new ProfiledPIDController(
-            0.05, 0, 0, new TrapezoidProfile.Constraints(
+          Constants.Drivetrain.kPThetaControllerTrajectory, 0, 0, new TrapezoidProfile.Constraints(  //FIXME
               MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
               MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND/3));
     
-    thetaController.enableContinuousInput(-Math.PI, Math.PI); //FIXME
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    SwerveControllerCommand swerveTrajectoryFollower = new SwerveControllerCommand( //FIXME
+    SwerveControllerStrafe swerveTrajectoryFollower = new SwerveControllerStrafe(
       trajectory,
       m_drivetrainSubsystem::getPose,
       m_kinematics,
@@ -156,9 +160,21 @@ public class RobotContainer {
       m_drivetrainSubsystem
     );
 
+
+    RotateDegrees rotateDegrees = new RotateDegrees(m_drivetrainSubsystem, 90);
+
+
+
+
+
     return new SequentialCommandGroup(
+        new WaitCommand(3),
+        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
         new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose())),
-        swerveTrajectoryFollower,
-        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))));
+        swerveTrajectoryFollower.withTimeout(5)
+        // swerveTrajectoryFollower.withTimeout(5)
+        // rotateDegrees
+      );
+        // );
   }
 }

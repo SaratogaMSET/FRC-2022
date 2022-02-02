@@ -8,15 +8,20 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
-import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.ShooterCommand;
-import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+// import frc.robot.commands.DefaultDriveCommand;
+// import frc.robot.commands.ShooterCommand;
+// import frc.robot.subsystems.DrivetrainSubsystem;
+// import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Feeder.FeederState;
 
-import frc.robot.subsystems.HangSubsystem;
-import frc.robot.commands.HangForwardCommand;
-import frc.robot.commands.HangReverseCommand;
+// import frc.robot.subsystems.HangSubsystem;
+// import frc.robot.commands.HangForwardCommand;
+// import frc.robot.commands.HangReverseCommand;
+import frc.robot.commands.FeederCommand;
+import frc.robot.commands.PrototypeTestCommand;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 /**
@@ -28,10 +33,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   // private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
-  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-  // private final XboxController m_controller = new XboxController(0);
-
-  // private final Joystick driverVertical, driverHorizontal;
+  // private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+  private final XboxController m_controller = new XboxController(0);
+  private final Feeder m_feeder = new Feeder();
+  private final Joystick driverVertical, driverHorizontal;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -54,8 +59,8 @@ public class RobotContainer {
     //         () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     // ));
 
-    // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
-    // driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
+    driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
+    driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
 
     // //Configure the button bindings
     // configureButtonBindings();
@@ -95,7 +100,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new ShooterCommand(m_shooterSubsystem);
+    return new FeederCommand(m_feeder, FeederState.RUN, 0.0, 0.0);
   }
 
   // private static double deadband(double value, double deadband) {
@@ -119,4 +124,9 @@ public class RobotContainer {
 
   //   return value;
   // }
+
+  public Command getTestCommand(){
+    return new PrototypeTestCommand(driverHorizontal, driverVertical);
+    // return new SequentialCommandGroup(new FeederCommand(m_feeder, FeederState.TEST, 0.0, 0.0));
+  }
 }

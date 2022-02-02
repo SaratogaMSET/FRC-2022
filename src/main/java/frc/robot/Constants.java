@@ -60,7 +60,12 @@ public final class Constants {
     }
     
     public static class OIConstants {
-        public static final int JOYSTICK_DRIVE_VERTICAL = 0;
-        public static final int JOYSTICK_DRIVE_HORIZONTAL = 1;
+        public static final int JOYSTICK_DRIVE_VERTICAL = 1;
+        public static final int JOYSTICK_DRIVE_HORIZONTAL = 2;
+    }
+    
+    public static class FeederConstants {
+        public static final int TOP_MOTOR = 22;
+        public static final int BOTTOM_MOTOR = 23;
     }
 }

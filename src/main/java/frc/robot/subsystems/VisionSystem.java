@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-
+import frc.robot.Constants;
 
 public class VisionSystem extends SubsystemBase {
 
@@ -66,23 +66,40 @@ public class VisionSystem extends SubsystemBase {
   //   }
   // }
 
-  // public ShooterState getShooterStateFromDistance() {
-  //   double distance = getDistance();
-  //   if (distance < Constants.Vision.Distance.GREEN) {
-  //     return ShooterState.GREEN;
-  //   } else if (distance < Constants.Vision.Distance.YELLOW) {
-  //     return ShooterState.YELLOW;
-  //   } else if (distance < Constants.Vision.Distance.BLUE) {
-  //     return ShooterState.BLUE;
-  //   } else if (distance < Constants.Vision.Distance.RED) {
-  //     return ShooterState.RED;
+  public boolean getShooterState(){
+    double distance = getDistance();
+    if (distance < Constants.Vision.Distance.STATE1) {
+      return SmartDashboard.putString("state", "state1");
+    } else if (distance < Constants.Vision.Distance.STATE2) {
+      return SmartDashboard.putString("state", "state2");
+    } else if (distance < Constants.Vision.Distance.STATE3) {
+      return SmartDashboard.putString("state", "state3");
+    } else if (distance < Constants.Vision.Distance.STATE4) {
+      return SmartDashboard.putString("state", "state4");
+    }
+    return SmartDashboard.putString("state", "idle");
+  }
+
+  // public boolean getShooterAngle(){
+  //   double temp_x = Math.abs(x);
+  //   if(a >= Constants.Vision.AREA_VISIBLE) {
+  //     if (temp_x <= Constants.Vision.Angle.ON_TARGET_X) {
+  //       solidGreen();
+  //       return SmartDashboard.putString("angle", "on target");
+  //     } else {
+  //       solidYellow();
+  //       return SmartDashboard.putString("angle", "visible");
+  //     }
   //   }
-  //   return ShooterState.IDLE;
-  // }
+  //   else {
+  //     solidRed();
+  //     return SmartDashboard.putString("angle", "off");
+  //   }
+  // } 
   
-  // public double getDistance() { // distance
-  //   return (Constants.Vision.H2 - Constants.Vision.H1) / Math.tan(Math.toRadians(Constants.Vision.A1 + y));
-  // }
+  public double getDistance() { // distance
+    return (Constants.Vision.H2 - Constants.Vision.H1) / Math.tan(Math.toRadians(Constants.Vision.A1 + y));
+  }
 
   public double getTx() {
     return x;

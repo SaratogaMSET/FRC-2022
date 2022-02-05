@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.VisionSystem;
 
 import java.util.function.DoubleSupplier;
 
@@ -14,7 +15,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 
 public class RotateDegrees extends CommandBase {
     private final DrivetrainSubsystem m_drivetrainSubsystem;
-    private final double m_setpoint;
+    private final VisionSystem m_visionSubsystem;
     private final PIDController pid;
 
 
@@ -23,13 +24,14 @@ public class RotateDegrees extends CommandBase {
     public CANCoder frontRightCanCoder = new CANCoder(Constants.Drivetrain.FRONT_RIGHT_MODULE_STEER_ENCODER);
     public CANCoder frontLeftCanCoder = new CANCoder(Constants.Drivetrain.FRONT_LEFT_MODULE_STEER_ENCODER);
 
-    public RotateDegrees(DrivetrainSubsystem drivetrainSubsystem, double setpoint) {
+    public RotateDegrees(DrivetrainSubsystem drivetrainSubsystem, VisionSystem visionSystem) {
         this.m_drivetrainSubsystem = drivetrainSubsystem;
-        this.m_setpoint = setpoint;
+        this.m_visionSubsystem = visionSystem;
 
         pid = new PIDController(Constants.Drivetrain.kPThetaController, Constants.Drivetrain.kIThetaController, 0);
 
-        addRequirements(drivetrainSubsystem);
+        addRequirements(m_drivetrainSubsystem);
+        addRequirements(m_visionSubsystem);
     }
 
     @Override
@@ -37,19 +39,19 @@ public class RotateDegrees extends CommandBase {
         
 
         double pidValue = 0;
-        if (pid.calculate(m_drivetrainSubsystem.getPose().getRotation().getDegrees(), m_setpoint) > 9) {
+        if (pid.calculate(m_visionSubsystem.getTx(), 0) > 9) {
             pidValue = 9;
-        } else if (pid.calculate(m_drivetrainSubsystem.getPose().getRotation().getDegrees(), m_setpoint) < -9) {
+        } else if (pid.calculate(m_visionSubsystem.getTx(), 0) < -9) {
             pidValue = -9;
         } else {
-            pidValue = pid.calculate(m_drivetrainSubsystem.getPose().getRotation().getDegrees(), m_setpoint);
+            pidValue = pid.calculate(m_visionSubsystem.getTx(), 0);
         }
         
         m_drivetrainSubsystem.drive(
             new ChassisSpeeds(
                 0,
                 0,
-                -pidValue
+                pidValue
             )
         );
 
@@ -59,8 +61,8 @@ public class RotateDegrees extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (Math.abs(m_setpoint - m_drivetrainSubsystem.getPose().getRotation().getDegrees()) < 5) {
-            return true;
+        if (Math.abs(0 - m_visionSubsystem.getTx()) < 5) {
+            return false;
         }
         return false;
     }

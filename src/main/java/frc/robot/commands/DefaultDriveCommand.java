@@ -45,7 +45,7 @@ public class DefaultDriveCommand extends CommandBase {
         double resultX = Math.cos(roboAngle) * magnitude;
         double resultY = Math.sin(roboAngle) * magnitude;
 
-        double multiplier = Math.pow(Math.abs(m_rotationSupplier.getAsDouble()/9.1), 1);
+        double multiplier = Math.pow(Math.abs(m_rotationSupplier.getAsDouble()/9.1), 0.8);
         
         // m_drivetrainSubsystem.drive(
         //     new ChassisSpeeds(

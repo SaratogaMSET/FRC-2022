@@ -14,6 +14,10 @@ package frc.robot;
  */
 public final class Constants {
 
+    public static class Vision {
+
+    }
+
     public static class Drivetrain {
         /**
          * The left-to-right distance between the drivetrain wheels
@@ -55,7 +59,7 @@ public final class Constants {
         public static final double kIYController = 0.000;
         public static final double kPThetaControllerTrajectory = 0.15;
 
-        public static final double kPThetaController = 0.07;
+        public static final double kPThetaController = 0.075;
         public static final double kIThetaController = 0.0000;
     }
 }

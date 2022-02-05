@@ -32,6 +32,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RotateDegrees;
 import frc.robot.commands.SwerveControllerStrafe;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.VisionSystem;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
@@ -44,6 +45,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  private final VisionSystem m_visionSubsystem = new VisionSystem();
 
   private final XboxController m_controller = new XboxController(0);
 
@@ -161,7 +163,7 @@ public class RobotContainer {
     );
 
 
-    RotateDegrees rotateDegrees = new RotateDegrees(m_drivetrainSubsystem, 90);
+    RotateDegrees rotateDegrees = new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem);
 
 
 
@@ -170,8 +172,7 @@ public class RobotContainer {
     return new SequentialCommandGroup(
         new WaitCommand(3),
         new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
-        new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose())),
-        swerveTrajectoryFollower.withTimeout(5)
+        new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose()))
         // swerveTrajectoryFollower.withTimeout(5)
         // rotateDegrees
       );

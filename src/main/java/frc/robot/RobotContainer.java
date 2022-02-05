@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.FeederCommand;
 import frc.robot.commands.RunIntake;
@@ -36,10 +38,16 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final Feeder m_feeder = new Feeder();
   private final RobotState m_robotState = new RobotState();
+
+  private final Joystick driverVertical, driverHorizontal, gamepad;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
+    driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL);
+
     configureButtonBindings();
   }
 
@@ -50,6 +58,19 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    //******************** TELEOP ********************/
+
+    new JoystickButton(driverVertical, 1).whileHeld(
+        new RunIntake(m_intake, IntakeState.INTAKE, 0.1)  
+    );
+
+    new JoystickButton(driverHorizontal, 1).whileHeld(
+        new RunIntake(m_intake, IntakeState.OUTTAKE, 0.1)
+    );
+
+    new JoystickButton(driverVertical, 1).or(new JoystickButton(driverHorizontal, 1)).whenInactive(
+      new RunIntake(m_intake, IntakeState.FLIP_UP)
+    );
 
   }
 
@@ -60,8 +81,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    // return new RunIntake(m_intake, IntakeState.FLIP_DOWN, 0.1);
-    return new FeederCommand(m_feeder, 0.1, 0.1, m_robotState);
+    return new RunIntake(m_intake, IntakeState.INTAKE, 0.1);
+    //return new FeederCommand(m_feeder, 0.1, 0.1, m_robotState);
   }
 
   public void updateRobotState() {

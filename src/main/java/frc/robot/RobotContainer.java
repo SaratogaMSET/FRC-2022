@@ -39,14 +39,14 @@ public class RobotContainer {
   private final Feeder m_feeder = new Feeder();
   private final RobotState m_robotState = new RobotState();
 
-  private final Joystick driverVertical, driverHorizontal, gamepad;
+  // private final Joystick driverVertical, driverHorizontal, gamepad;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
-    driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL);
+    // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL);
+    // driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
 
     configureButtonBindings();
   }
@@ -60,17 +60,17 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //******************** TELEOP ********************/
 
-    new JoystickButton(driverVertical, 1).whileHeld(
-        new RunIntake(m_intake, IntakeState.INTAKE, 0.1)  
-    );
+    // new JoystickButton(driverVertical, 1).whileHeld(
+    //     new RunIntake(m_intake, IntakeState.INTAKE, 0.1)  
+    // );
 
-    new JoystickButton(driverHorizontal, 1).whileHeld(
-        new RunIntake(m_intake, IntakeState.OUTTAKE, 0.1)
-    );
+    // new JoystickButton(driverHorizontal, 1).whileHeld(
+    //     new RunIntake(m_intake, IntakeState.OUTTAKE, 0.1)
+    // );
 
-    new JoystickButton(driverVertical, 1).or(new JoystickButton(driverHorizontal, 1)).whenInactive(
-      new RunIntake(m_intake, IntakeState.FLIP_UP)
-    );
+    // new JoystickButton(driverVertical, 1).or(new JoystickButton(driverHorizontal, 1)).whenInactive(
+    //   new RunIntake(m_intake, IntakeState.FLIP_UP)
+    // );
 
   }
 

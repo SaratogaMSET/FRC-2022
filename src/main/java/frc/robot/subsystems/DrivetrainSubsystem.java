@@ -25,7 +25,10 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.*;
 import frc.robot.util.drivers.LazyTalonFX;
@@ -170,6 +173,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public void zeroGyroscope() {
         offset = m_navx.getFusedHeading();
+        resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
+        // new SequentialCommandGroup(
+        //   new WaitCommand(1),
+        //   new InstantCommand(() -> drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+        //   new InstantCommand(() -> resetOdometry(new Pose2d()))
+        // ).schedule();
   }
 
   public Rotation2d getRotation2d() {

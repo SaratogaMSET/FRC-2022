@@ -8,6 +8,8 @@ import java.util.List;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
+import org.ejml.data.ZMatrix;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -72,8 +74,14 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
-    m_drivetrainSubsystem.zeroGyroscope();
-    m_drivetrainSubsystem.resetOdometry(new Pose2d());
+    new SequentialCommandGroup(
+        new WaitCommand(1),
+        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+        new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(new Pose2d()))
+    ).schedule();
+
+    // m_drivetrainSubsystem.zeroGyroscope();
+    // m_drivetrainSubsystem.resetOdometry(new Pose2d());
     
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
@@ -138,7 +146,7 @@ public class RobotContainer {
       List.of(
         new Translation2d(1, 0)
       ),
-      new Pose2d(1, 1, new Rotation2d( 30 )),
+      new Pose2d(1, 1, new Rotation2d( 0 )),
       trajectoryConfig
     );
 
@@ -170,11 +178,13 @@ public class RobotContainer {
 
 
     return new SequentialCommandGroup(
-        new WaitCommand(3),
-        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
-        new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose()))
-        // swerveTrajectoryFollower.withTimeout(5)
-        // rotateDegrees
+        new WaitCommand(1),
+        new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
+        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(-0.5, 0.0, 0.0))),
+        // new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose())),
+        // new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem),
+        swerveTrajectoryFollower.withTimeout(5)
+        // new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem)
       );
         // );
   }

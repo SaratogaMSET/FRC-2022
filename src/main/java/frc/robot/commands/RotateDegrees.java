@@ -62,7 +62,7 @@ public class RotateDegrees extends CommandBase {
     @Override
     public boolean isFinished() {
         if (Math.abs(0 - m_visionSubsystem.getTx()) < 5) {
-            return false;
+            return true;
         }
         return false;
     }

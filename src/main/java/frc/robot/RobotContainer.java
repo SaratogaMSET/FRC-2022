@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.io.IOException;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,16 +39,20 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Intake m_intake = new Intake();
   private final Feeder m_feeder = new Feeder();
+  
   private final RobotState m_robotState = new RobotState();
 
-  // private final Joystick driverVertical, driverHorizontal, gamepad;
+  private final Joystick driverVertical, driverHorizontal, gamepad;
+  public final JoystickButton test;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL);
-    // driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
+    driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
+    driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL);
+    gamepad = new Joystick(Constants.OIConstants.GAMEPAD);
+    test = new JoystickButton(driverVertical, 8);
 
     configureButtonBindings();
   }
@@ -60,17 +66,17 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //******************** TELEOP ********************/
 
-    // new JoystickButton(driverVertical, 1).whileHeld(
-    //     new RunIntake(m_intake, IntakeState.INTAKE, 0.1)  
-    // );
+    new JoystickButton(driverVertical, 1).whileHeld(
+        new RunIntake(m_intake, IntakeState.INTAKE, 0.1)  
+    );
 
-    // new JoystickButton(driverHorizontal, 1).whileHeld(
-    //     new RunIntake(m_intake, IntakeState.OUTTAKE, 0.1)
-    // );
+    new JoystickButton(driverHorizontal, 1).whileHeld(
+        new RunIntake(m_intake, IntakeState.OUTTAKE, 0.1)
+    );
 
-    // new JoystickButton(driverVertical, 1).or(new JoystickButton(driverHorizontal, 1)).whenInactive(
-    //   new RunIntake(m_intake, IntakeState.FLIP_UP)
-    // );
+    new JoystickButton(driverVertical, 1).or(new JoystickButton(driverHorizontal, 1)).whenInactive(
+      new RunIntake(m_intake, IntakeState.FLIP_UP)
+    );
 
   }
 

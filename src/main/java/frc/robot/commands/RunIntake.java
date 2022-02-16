@@ -1,3 +1,5 @@
+package frc.robot.commands;
+
 import frc.robot.RobotState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
@@ -11,12 +13,13 @@ public class RunIntake extends CommandBase {
     private final Intake m_intake;
     private IntakeState state;
     private double speed;
+    private boolean enableCompressor;
 
-    public RunIntake(Intake intakeSub, IntakeState state, double speed) {
+    public RunIntake(Intake intakeSub, IntakeState state, double speed, boolean enableCompressor) {
         m_intake = intakeSub;
         this.state = state;
         this.speed = speed;
-
+        this.enableCompressor = enableCompressor;
         addRequirements(intakeSub);
     }
 
@@ -51,14 +54,19 @@ public class RunIntake extends CommandBase {
             SmartDashboard.putBoolean("UP (NO SPIN)", true);
         }
         else if(state == IntakeState.FLIP_DOWN) {
+            m_intake.enableCompressor(true);
             m_intake.deploy(true);
             m_intake.run(0);
             SmartDashboard.putBoolean("DOWN (NO SPIN)", true);
+        }
+        else if(enableCompressor){
+            m_intake.enableCompressor(true);
         }
         // else if (state == IntakeState.INTAKE) {
         //     m_intake.run(speed);
         //     SmartDashboard.putBoolean("INTAKING", true);
         // }
+
         // else if (state == IntakeState.OUTTAKE) {
         //     m_intake.run(speed);
         //     SmartDashboard.putBoolean("OUTTAKING", true);

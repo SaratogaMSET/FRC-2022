@@ -67,11 +67,11 @@ public class RobotContainer {
     //******************** TELEOP ********************/
 
     new JoystickButton(driverVertical, 1).whileHeld(
-        new RunIntake(m_intake, IntakeState.INTAKE, 0.1)  
+        new RunIntake(m_intake, IntakeState.INTAKE, 0.1, false)  
     );
 
     new JoystickButton(driverHorizontal, 1).whileHeld(
-        new RunIntake(m_intake, IntakeState.OUTTAKE, 0.1)
+        new RunIntake(m_intake, IntakeState.OUTTAKE, 0.1, false)
     );
 
     new JoystickButton(driverVertical, 1).or(new JoystickButton(driverHorizontal, 1)).whenInactive(
@@ -87,7 +87,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new RunIntake(m_intake, IntakeState.INTAKE, 0.1);
+    return new RunIntake(m_intake, IntakeState.INTAKE, 0.1, false);
     //return new FeederCommand(m_feeder, 0.1, 0.1, m_robotState);
   }
 

@@ -60,12 +60,20 @@ public final class Constants {
     public static class IntakeConstants{ // Intake Motor Ports
         public static final int LEFT_MOTOR = 10; // NOTE: SET THIS PORT NUMBER LATER
         public static final int RIGHT_MOTOR = 11;
-        public static final int MODULE_NUMBER[] = {0, 0}; // The module number of the solenoid module to use.
-        public static final int SOLENOID_PORTS[] = {6, 7}; // The forward channel on the module to control (0..7)
+        public static final int FORWARD_CHANNEL[] = {6, 0}; // The forward channel on the module to control (0..7)
+        public static final int REVERSE_CHANNEL[] = {7, 0}; // The reverse channel on the module to control (0..7)
+        //public static final int MODULE_NUMBER[] = {0, 0}; // The module number of the solenoid module to use.
     }
     
     public static class ShooterConstants{
         // public static final int SHOOTER_MOTOR = 0;
         // public static final int LS_MOTOR = 0;
+    }
+
+    public static class OIConstants {
+        public static final int JOYSTICK_DRIVE_VERTICAL = 0;
+        public static final int JOYSTICK_DRIVE_HORIZONTAL = 1;
+        public static final int OPERATOR_JOYSTICK = 3;
+        public static final int GAMEPAD = 2;
     }
 }

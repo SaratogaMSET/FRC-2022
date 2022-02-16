@@ -38,8 +38,6 @@ public class Intake extends SubsystemBase {
         }
 
 
-        //private Talon motor1;
-        // private TalonFX motor2;
 
         // private TalonSRX motor1Falcon;
         // private TalonSRX motor2Falcon;

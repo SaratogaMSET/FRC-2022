@@ -73,7 +73,7 @@ public class RunIntake extends CommandBase {
         // }
         else { // Should never occur
             m_intake.stopAll();
-            SmartDashboard.putBoolean("STOP", true);
+            SmartDashboard.putBoolean("STOP (STATE NOT FOUND)", true);
         }
         
     }

@@ -70,9 +70,26 @@ public final class Constants {
     }
 
     public static class OIConstants {
-        public static final int JOYSTICK_DRIVE_VERTICAL = 0;
+        public static final int JOYSTICK_DRIVE_VERTICAL = 2;
         public static final int JOYSTICK_DRIVE_HORIZONTAL = 1;
         public static final int OPERATOR_JOYSTICK = 3;
         public static final int GAMEPAD = 2;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 }

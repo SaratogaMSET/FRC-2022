@@ -34,7 +34,7 @@ public class Intake extends SubsystemBase {
                 OUTTAKE,
                 FLIP_DOWN,
                 FLIP_UP, 
-                IDLE //hi
+                IDLE
         }
 
 
@@ -72,9 +72,9 @@ public class Intake extends SubsystemBase {
 
         public void enableCompressor(boolean enable){
                 if(enable)
-                        compressor.enableDigital();
-                else
-                        compressor.disable();
+                        // compressor.enableDigital();
+                // else
+                        // compressor.disable();
                 enabled = compressor.enabled();
                 pressureSwitch = compressor.getPressureSwitchValue();
                 current = compressor.getCurrent();
@@ -83,11 +83,11 @@ public class Intake extends SubsystemBase {
         public void deploy(boolean status) {
                 if(status) { // moves the piston out if the status is true (intake down)
                         rightValve.set(true);
-                        // // leftValve.set(kForward);
+                        // leftValve.set(true);
                 }
-                else { // moves the piston in if the status is false (intake up)
+                else {       // moves the piston in if the status is false (intake up)
                         rightValve.set(false);
-                        // // leftValve.set(kReverse);
+                        // leftValve.set(false);
                 }
         }
 
@@ -95,8 +95,8 @@ public class Intake extends SubsystemBase {
                 // motor1Falcon.set(ControlMode.PercentOutput, 0);
                 // motor2Falcon.set(ControlMode.PercentOutput, 0);
                 rightValve.set(false);
+                // leftValve.set(false);
                 compressor.disable();
-                // leftValve.set(kOff);
         }
 
         public IntakeState updateState() {
@@ -105,8 +105,8 @@ public class Intake extends SubsystemBase {
                 
                 // if((rightVelocity > 0) && (leftVelocity > 0)) return IntakeState.INTAKE;
                 // // else if((rightVelocity < 0) && (leftVelocity < 0)) return IntakeState.OUTTAKE;
-                // if (rightValve.get() == kForward) return IntakeState.FLIP_DOWN;
-                // else if (rightValve.get() == kOff) return IntakeState.FLIP_UP;
+                // if (rightValve.get() == true) return IntakeState.FLIP_DOWN;
+                // else if (rightValve.get() == false) return IntakeState.FLIP_UP;
                  return IntakeState.IDLE;
         }
 

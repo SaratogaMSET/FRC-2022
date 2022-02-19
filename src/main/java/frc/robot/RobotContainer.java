@@ -66,15 +66,18 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //******************** TELEOP ********************/
 
-    new JoystickButton(driverVertical, 1).whileHeld(
-        new RunIntake(m_intake, IntakeState.INTAKE, 0.1, false)  
+    //driverVert is left side
+    //driverHorz is right side
+
+    new JoystickButton(driverVertical, 2).whileHeld(
+        new RunIntake(m_intake, IntakeState.INTAKE, 0.0, false)  
     );
 
-    new JoystickButton(driverHorizontal, 1).whileHeld(
-        new RunIntake(m_intake, IntakeState.OUTTAKE, 0.1, false)
+    new JoystickButton(driverHorizontal, 2).whileHeld(
+        new RunIntake(m_intake, IntakeState.OUTTAKE, 0.0, false)
     );
 
-    new JoystickButton(driverVertical, 1).or(new JoystickButton(driverHorizontal, 1)).whenInactive(
+    new JoystickButton(driverVertical, 2).and(new JoystickButton(driverHorizontal, 2)).whenInactive(
       new RunIntake(m_intake, IntakeState.FLIP_UP)
     );
 

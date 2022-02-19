@@ -63,10 +63,10 @@ public final class Constants {
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 47;
         public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(170.0);
 
-        public static final double kPXController = 0.05;
+        public static final double kPXController = 0.0685269;;
         public static final double kIXController = 0.000;
 
-        public static final double kPYController = 0.05;
+        public static final double kPYController = 0.0685;
         public static final double kIYController = 0.000;
         public static final double kPThetaControllerTrajectory = 0.15;
 

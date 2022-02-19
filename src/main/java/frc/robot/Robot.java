@@ -92,12 +92,12 @@ public class Robot extends TimedRobot {
     LiveWindow.setEnabled(false);
     // Re-enables the scheduler.
     CommandScheduler.getInstance().enable();
+    m_testCommand = m_robotContainer.getTestCommand();
+    m_testCommand.schedule();
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    m_testCommand = m_robotContainer.getTestCommand();
-    m_testCommand.schedule();
   }
 }

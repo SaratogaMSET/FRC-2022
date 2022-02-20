@@ -55,6 +55,8 @@ public final class Constants {
         public static final int TOP_MOTOR = 20;
         public static final int BOTTOM_MOTOR = 21;
         public static final int IR_GATES[] = {0, 1};
+        public static final int BOTTOM_GATE = 0; // REPLACE
+        public static final int TOP_GATE = 0; // REPLACE
     }
 
     public static class IntakeConstants{ // Intake Motor Ports

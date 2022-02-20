@@ -44,7 +44,7 @@ public class Intake extends SubsystemBase {
         // motor2Falcon.setInverted(true); // The left motor is inverted
 
         rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, 7); // PAREMETERS: ???, foward channel, reverse channel
-        leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, 5); // PAREMETERS: ???, foward channel, reverse channel
+        leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, 6); // PAREMETERS: ???, foward channel, reverse channel
     }
 
     @Override
@@ -54,10 +54,10 @@ public class Intake extends SubsystemBase {
     public void deploy(boolean status) {
         if (status) { // moves the piston out if the status is true (intake down)
             rightValve.set(true);
-            // // leftValve.set(true);
+            leftValve.set(true);
         } else { // moves the piston in if the status is false (intake up)
             rightValve.set(false);
-            // // leftValve.set(false);
+            leftValve.set(false);
         }
     }
 
@@ -65,7 +65,7 @@ public class Intake extends SubsystemBase {
         // motor1Falcon.set(ControlMode.PercentOutput, 0);
         // motor2Falcon.set(ControlMode.PercentOutput, 0);
         rightValve.set(false);
-        // leftValve.set(false);
+        leftValve.set(false);
     }
 
     public void diagnostics() {
@@ -84,14 +84,14 @@ public class Intake extends SubsystemBase {
             SmartDashboard.putString(compressorStatus, "Failed");
         }
 
-        // try {
-        // deploy(true);
-        // if (leftValve.get()) {
-        // SmartDashboard.putString(leftPistonStatus, "Success");
-        // } else
-        // SmartDashboard.putString(leftPistonStatus, "Failed");
-        // } catch (Exception e) {
-        // SmartDashboard.putString(leftPistonStatus, "Failed");
-        // }
+        try {
+        deploy(true);
+        if (leftValve.get()) {
+        SmartDashboard.putString(leftPistonStatus, "Success");
+        } else
+        SmartDashboard.putString(leftPistonStatus, "Failed");
+        } catch (Exception e) {
+        SmartDashboard.putString(leftPistonStatus, "Failed");
+        }
     }
 }

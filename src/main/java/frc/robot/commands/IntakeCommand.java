@@ -38,6 +38,7 @@ public class IntakeCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) { // stops the intake and them moves the intake up before stoping everything again
+        m_intake.stopAll();
         m_intake.deploy(false);
         m_intake.stopAll();
     }

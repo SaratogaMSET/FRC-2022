@@ -44,6 +44,8 @@ public class RobotContainer {
   private final Compressor m_compressor;
   private final Joystick driverVertical, driverHorizontal;
 
+  
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -71,7 +73,7 @@ public class RobotContainer {
     m_intake = new Intake();
     m_compressor = new Compressor(2, PneumaticsModuleType.REVPH);
     // //Configure the button bindings
-    // configureButtonBindings();
+    configureButtonBindings();
   }
 
   /**
@@ -81,6 +83,20 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
+    new JoystickButton(driverVertical, 2).whileHeld(
+      new IntakeCommand(m_intake, IntakeState.TEST, 0.0)  
+    );
+
+    new JoystickButton(driverHorizontal, 2).whileHeld(
+      new IntakeCommand(m_intake, IntakeState.TEST, 0.0)
+    );
+
+    new JoystickButton(driverVertical, 2).and(new JoystickButton(driverHorizontal, 2)).whenInactive(
+      new IntakeCommand(m_intake, IntakeState.TEST, 0.0)
+    );
+
+
     // Back button zeros the gyroscope
     // new Button(m_controller::getBackButton)
     //         // No requirements because we don't need to interrupt anything

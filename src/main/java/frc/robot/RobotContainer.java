@@ -85,15 +85,15 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     new JoystickButton(driverVertical, 2).whileHeld(
-      new IntakeCommand(m_intake, IntakeState.TEST, 0.0)  
+      new IntakeCommand(m_intake, IntakeState.RUN, 0.0)  
     );
 
     new JoystickButton(driverHorizontal, 2).whileHeld(
-      new IntakeCommand(m_intake, IntakeState.TEST, 0.0)
+      new IntakeCommand(m_intake, IntakeState.RUN, 0.0)
     );
 
     new JoystickButton(driverVertical, 2).and(new JoystickButton(driverHorizontal, 2)).whenInactive(
-      new IntakeCommand(m_intake, IntakeState.TEST, 0.0)
+      new IntakeCommand(m_intake, IntakeState.RUN, 0.0)
     );
 
 

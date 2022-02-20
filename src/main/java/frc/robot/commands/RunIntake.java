@@ -14,6 +14,7 @@ public class RunIntake extends CommandBase {
     private IntakeState state;
     private double speed;
     private boolean enableCompressor;
+    private String smart;
 
     public RunIntake(Intake intakeSub, IntakeState state, double speed, boolean enableCompressor) {
         m_intake = intakeSub;
@@ -35,30 +36,31 @@ public class RunIntake extends CommandBase {
     public void initialize() {
         m_intake.run(speed);
         m_intake.getPSI();
+        SmartDashboard.putString("Intake Status:", smart);
         if(state == IntakeState.IDLE) {
             m_intake.stopAll();
-            SmartDashboard.putBoolean("IDLE", true);
+            smart = "IDLE";
         }
         else if(state == IntakeState.INTAKE) {
             m_intake.deploy(true);
             m_intake.run(speed);
-            SmartDashboard.putBoolean("DOWN, INTAKING", true);
+            smart = "DOWN, INTAKING";
         }
         else if(state == IntakeState.OUTTAKE) {
             m_intake.deploy(true);
             m_intake.run(-speed);
-            SmartDashboard.putBoolean("DOWN, OUTTAKING", true);
+            smart = "DOWN, OUTTAKING";
         }
         else if(state == IntakeState.FLIP_UP) {
             m_intake.deploy(false);
             m_intake.run(0);
-            SmartDashboard.putBoolean("UP (NO SPIN)", true);
+            smart = "UP (NO SPIN)";
         }
         else if(state == IntakeState.FLIP_DOWN) {
             m_intake.enableCompressor(true);
             m_intake.deploy(true);
             m_intake.run(0);
-            SmartDashboard.putBoolean("DOWN (NO SPIN)", true);
+            smart = "DOWN (NO SPIN)";
         }
         else if(enableCompressor){
             m_intake.enableCompressor(true);
@@ -74,14 +76,14 @@ public class RunIntake extends CommandBase {
         // }
         else { // Should never occur
             m_intake.stopAll();
-            SmartDashboard.putBoolean("STOP (STATE NOT FOUND)", true);
+            smart = "STOP (STATE NOT FOUND)";
         }
         
     }
 
     public void stopAll() {
         m_intake.stopAll();
-        SmartDashboard.putBoolean("ALL-STOP (E-STOP)", true);
+        smart = "ALL-STOP (E-STOP)";
     }
 
     @Override

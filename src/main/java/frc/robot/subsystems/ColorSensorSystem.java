@@ -14,6 +14,8 @@ import com.revrobotics.ColorSensorV3;
 
 import java.lang.Math;
 
+import javax.swing.border.LineBorder;
+
 public class ColorSensorSystem extends SubsystemBase {
   private final ColorSensorV3 colorSensor;
 
@@ -35,7 +37,7 @@ public class ColorSensorSystem extends SubsystemBase {
   private void compareColor(){
     // Read current color
     currentColor = colorSensor.getColor();
-    confidence = 0.95; // Default confidence: 0.95
+    confidence = 0.50; // Default confidence: 0.95
 
     // TODO: do something with this isApproxBlack
     isApproxBlack(currentColor, confidence);
@@ -46,12 +48,13 @@ public class ColorSensorSystem extends SubsystemBase {
     double drsq = 0, dgsq = 0, dbsq = 0;
     double RGBDiff = 0;
 
-    drsq = Math.pow(LINE_R - rc, 2);
-    dgsq = Math.pow(LINE_G - gc, 2);
-    dbsq = Math.pow(LINE_B - bc, 2);
+    //drsq = Math.pow(LINE_R - rc, 2);
+    drsq = (LINE_R - rc) * (LINE_R - rc);
+    dgsq = (LINE_G - gc) * (LINE_G - gc);
+    dbsq = (LINE_B - bc) * (LINE_B - bc);
     RGBDiff = Math.sqrt(drsq + dgsq + dbsq);
     
-    return (RGBDiff <= conf);
+    return (RGBDiff <= conf && RGBDiff != 0);
   }
 
   @Override

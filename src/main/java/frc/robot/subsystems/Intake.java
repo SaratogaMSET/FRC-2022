@@ -22,6 +22,7 @@ import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -41,28 +42,34 @@ public class Intake extends SubsystemBase {
 
         // private TalonSRX motor1Falcon;
         // private TalonSRX motor2Falcon;
+
         private Solenoid rightValve;
         private Solenoid leftValve;
         private Compressor compressor;
+
         private boolean enabled;
         private boolean pressureSwitch;
         private double current;
 
+
+
         public Intake() {
-                //motor1 = new Talon(34);
 
                 // motor1Falcon = new TalonSRX(Constants.IntakeConstants.RIGHT_MOTOR); // Right motor
                 // motor2Falcon = new TalonSRX(Constants.IntakeConstants.LEFT_MOTOR); // Left motor
                 // motor2Falcon.setInverted(true); // The left motor is inverted
+
                 compressor = new Compressor(2, PneumaticsModuleType.REVPH);
-                rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, 7); // PAREMETERS: ???, foward channel, reverse channel
-                leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, 5); // PAREMETERS: ???, foward channel, reverse channel
+                rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.PISTON_PORTS[0]); // PAREMETERS: ???, foward channel, reverse channel
+                leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.PISTON_PORTS[1]); // PAREMETERS: ???, foward channel, reverse channel
         }
 
         @Override
         public void periodic() {
 
         }
+
+        // ACTIONS-----------------------------------------------------------------------------------------------------------------
 
         public void run(double speed) {
                 // compressor.enableDigital();
@@ -83,11 +90,11 @@ public class Intake extends SubsystemBase {
         public void deploy(boolean status) {
                 if(status) { // moves the piston out if the status is true (intake down)
                         rightValve.set(true);
-                        // leftValve.set(true);
+                        leftValve.set(true);
                 }
                 else {       // moves the piston in if the status is false (intake up)
                         rightValve.set(false);
-                        // leftValve.set(false);
+                        leftValve.set(false);
                 }
         }
 
@@ -95,9 +102,16 @@ public class Intake extends SubsystemBase {
                 // motor1Falcon.set(ControlMode.PercentOutput, 0);
                 // motor2Falcon.set(ControlMode.PercentOutput, 0);
                 rightValve.set(false);
-                // leftValve.set(false);
+                leftValve.set(false);
                 compressor.disable();
         }
+
+        // GET STUFF----------------------------------------------------------------------------------------------------------------
+
+        public void getPSI() {
+                SmartDashboard.putNumber("PSI REMAINING:", compressor.getPressure());
+        }
+
 
         public IntakeState updateState() {
                 // double rightVelocity = motor1Falcon.getMotorOutputPercent(); // 0-1

@@ -34,6 +34,7 @@ public class RunIntake extends CommandBase {
 
     public void initialize() {
         m_intake.run(speed);
+        m_intake.getPSI();
         if(state == IntakeState.IDLE) {
             m_intake.stopAll();
             SmartDashboard.putBoolean("IDLE", true);

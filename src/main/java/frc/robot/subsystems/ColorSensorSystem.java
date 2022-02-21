@@ -24,30 +24,24 @@ public class ColorSensorSystem extends SubsystemBase {
   private Color currentColor;
   private double confidence;
 
-  // TODO: change/tune RGB values from 0 0 0
+  // TODO: tune RGB values
   private final double LINE_R = 200.0, LINE_G = 200.0, LINE_B = 200.0;
-  private final Color BLACK_LINE = new Color(LINE_R, LINE_G, LINE_B);
-  // Maybe remove BLACK_LINE entirely? Since we only use its raw RGB values
 
   public ColorSensorSystem() { //init
     colorSensor = new ColorSensorV3(i2cPort);
   }
 
   private void compareColor(){
-    // Read current color
-    // currentColor = colorSensor.getColor();
     confidence = 500;
 
     // TODO: do something with this isApproxBlack
-    /* SmartDashboard.putNumber("Color sensor r: ", currentColor.red);
-    SmartDashboard.putNumber("Color sensor g: ", currentColor.green);
-    SmartDashboard.putNumber("Color sensor b: ", currentColor.blue); */
     if(isApproxBlack(confidence)) {
       SmartDashboard.putString("Color", "Black");
     } else {
       SmartDashboard.putString("Color", "Not black");
     }
 
+    // Output raw RGB values from color sensor onto SmartDashboard
     int currColorR = colorSensor.getRed(), currColorG = colorSensor.getGreen(), currColorB = colorSensor.getBlue();
     SmartDashboard.putNumber("Raw r: ", currColorR);
     SmartDashboard.putNumber("Raw g: ", currColorG);

@@ -35,13 +35,13 @@ public class ColorSensorSystem extends SubsystemBase {
 
   private void compareColor(){
     // Read current color
-    currentColor = colorSensor.getColor();
-    confidence = 500; // Default confidence: 0.95
+    // currentColor = colorSensor.getColor();
+    confidence = 500;
 
     // TODO: do something with this isApproxBlack
-    SmartDashboard.putNumber("Color sensor r: ", currentColor.red);
+    /* SmartDashboard.putNumber("Color sensor r: ", currentColor.red);
     SmartDashboard.putNumber("Color sensor g: ", currentColor.green);
-    SmartDashboard.putNumber("Color sensor b: ", currentColor.blue);
+    SmartDashboard.putNumber("Color sensor b: ", currentColor.blue); */
     if(isApproxBlack(confidence)) {
       SmartDashboard.putString("Color", "Black");
     } else {

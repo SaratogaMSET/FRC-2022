@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.ColorSensorSystem;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -21,7 +20,6 @@ public class ColorSensorSystem extends SubsystemBase {
   private final I2C.Port i2cPort = I2C.Port.kOnboard; //Constants.Colorwheel.COLOR_SENSOR; 
 
   //color sensor constants
-  private Color currentColor;
   private double confidence;
 
   // TODO: tune RGB values

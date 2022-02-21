@@ -41,9 +41,9 @@ public class VisionSystem extends SubsystemBase {
     y = ty.getDouble(0.0);
     v = tv.getDouble(0.0);
 
-    SmartDashboard.putNumber("LimelightX", x);
+    /* SmartDashboard.putNumber("LimelightX", x);
     SmartDashboard.putNumber("LimelightY", y);
-    SmartDashboard.putNumber("LimelightTargets", v);
+    SmartDashboard.putNumber("LimelightTargets", v); */
   }
 
   public VisionState updateVisionState() {

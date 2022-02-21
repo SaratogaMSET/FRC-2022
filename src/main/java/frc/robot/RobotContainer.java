@@ -31,6 +31,7 @@ import frc.robot.commands.AutonomousCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RotateDegrees;
 import frc.robot.commands.SwerveControllerStrafe;
+import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.VisionSystem;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -44,8 +45,9 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  //private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final VisionSystem m_visionSubsystem = new VisionSystem();
+  private final ColorSensorSystem m_ColorSensorSystem = new ColorSensorSystem();
 
   private final XboxController m_controller = new XboxController(0);
 
@@ -71,8 +73,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
-    m_drivetrainSubsystem.zeroGyroscope();
+   /*  m_drivetrainSubsystem.zeroGyroscope();
     m_drivetrainSubsystem.resetOdometry(new Pose2d());
     
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
@@ -80,7 +81,7 @@ public class RobotContainer {
             () -> modifyAxis(-m_controller.getLeftX())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> -modifyAxis(-m_controller.getLeftY())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    ));
+    )); */
 
     // Configure the button bindings
     configureButtonBindings();
@@ -94,9 +95,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
-    new Button(m_controller::getYButtonPressed)
+    //new Button(m_controller::getYButtonPressed)
             // No requirements because we don't need to interrupt anything
-            .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+            //.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
   }
 
   private static double deadband(double value, double deadband) {
@@ -151,28 +152,28 @@ public class RobotContainer {
     
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    SwerveControllerStrafe swerveTrajectoryFollower = new SwerveControllerStrafe(
+    /* SwerveControllerStrafe swerveTrajectoryFollower = new SwerveControllerStrafe(
       trajectory,
-      m_drivetrainSubsystem::getPose,
+      //m_drivetrainSubsystem::getPose,
       m_kinematics,
       xController,
       yController,
-      thetaController,
-      m_drivetrainSubsystem::setModuleStates,
-      m_drivetrainSubsystem
-    );
+      thetaController
+      //m_drivetrainSubsystem::setModuleStates,
+      //m_drivetrainSubsystem
+    ); */
 
 
-    RotateDegrees rotateDegrees = new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem);
+    //RotateDegrees rotateDegrees = new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem);
 
 
 
 
 
     return new SequentialCommandGroup(
-        new WaitCommand(3),
-        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
-        new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose()))
+        new WaitCommand(3)
+        /* new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+        new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose())) */
         // swerveTrajectoryFollower.withTimeout(5)
         // rotateDegrees
       );

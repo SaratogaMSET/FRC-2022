@@ -247,5 +247,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     SmartDashboard.putString("Robot Rotation", getPose().getRotation().toString());
+    SmartDashboard.putString("Wheel Velocity Real fL", ""+m_frontLeftSteer.getSelectedSensorVelocity());
   }
 }

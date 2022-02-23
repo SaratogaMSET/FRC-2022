@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
+import com.pathplanner.lib.PathPlanner;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import org.ejml.data.ZMatrix;
@@ -20,7 +23,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -175,53 +181,55 @@ public class RobotContainer {
     Trajectory trajectory;
     if(autoSelect.equals("1 Ball")){
 
-      trajectory = TrajectoryGenerator.generateTrajectory(
-        new Pose2d(0,0, new Rotation2d(0)),
-        List.of(
-          new Translation2d(-1,0)
-        ),
-        new Pose2d(-1,0, new Rotation2d(0)),
-        trajectoryConfig
-      );
+      // trajectory = TrajectoryGenerator.generateTrajectory(
+      //   new Pose2d(0,0, new Rotation2d(0)),
+      //   List.of(
+      //     new Translation2d(-1,0)
+      //   ),
+      //   new Pose2d(-1,0, new Rotation2d(0)),
+      //   trajectoryConfig
+      // );
+      trajectory = PathPlanner.loadPath("New Path", 2, 0.7); //change paths
     }
     else if(autoSelect.equals("2 Ball")){
-       trajectory = TrajectoryGenerator.generateTrajectory(
-        new Pose2d(0,0, new Rotation2d(0)),
-        List.of(
-        
-          new Translation2d(0,0),
-          new Translation2d(0,-0.25),
-          new Translation2d(0,-0.5),
-          new Translation2d(0,-0.75)
-        ),
-        new Pose2d(0, -1, new Rotation2d(0)),
-        trajectoryConfig
-      );
+      //  trajectory = TrajectoryGenerator.generateTrajectory(
+      //   new Pose2d(0,0, new Rotation2d(0)),
+      //   List.of(
+      //     new Translation2d(0,-0.5),
+      //     new Translation2d(0.5,-0.5),
+      //     new Translation2d(0,-0.5),
+      //     new Translation2d(-0.5,-0.5)
+
+      //   ),
+      //   new Pose2d(-0.75, -0.75, new Rotation2d(0)),
+      //   trajectoryConfig
+      // );
+      trajectory = PathPlanner.loadPath("New Path", 2, 0.7); //change paths
     }
     else if(autoSelect.equals("Back Path")){
-       trajectory = TrajectoryGenerator.generateTrajectory(
-        new Pose2d(0,0, new Rotation2d(0)),
-        List.of(
-            new Translation2d(0,-0.5)
-          //  new Translation2d(0.5,new Rotation2d(0)),
-          //  new Translation2d(1,1)
-          // new Translation2d(0,0),
-          //new Translation2d(0,0.5)
-        ),
-        new Pose2d(0,-1, new Rotation2d(0)),
-        trajectoryConfig
-      );
+      //  trajectory = TrajectoryGenerator.generateTrajectory(
+      //   new Pose2d(0,0, Rotation2d.fromDegrees(0)),
+      //   List.of(
+      //     // new Translation2d(0,-0.1),
+      //      new Translation2d(0,-0.75)
+      //     // new Translation2d(0,-1.4)
+      //   ),
+      //   new Pose2d(0, -1.5, Rotation2d.fromDegrees(0)),
+      //   trajectoryConfig
+      // );
+      trajectory = PathPlanner.loadPath("New Path", 2, 0.7); //change paths
     }
     else
     {
-       trajectory = TrajectoryGenerator.generateTrajectory(
-        new Pose2d(0, 0, new Rotation2d(0)),
-        List.of(
-          new Translation2d(-1, 0)
-        ),
-        new Pose2d(-1.5, 0, new Rotation2d(0)),
-        trajectoryConfig
-      );
+      //  trajectory = TrajectoryGenerator.generateTrajectory(
+      //   new Pose2d(0, 0, new Rotation2d(0)),
+      //   List.of(
+      //     new Translation2d(-1, 0)
+      //   ),
+      //   new Pose2d(-1.5, 0, new Rotation2d(0)),
+      //   trajectoryConfig
+      //);
+       trajectory = PathPlanner.loadPath("New Path", 2, 0.7); //change paths
     }
    
 
@@ -233,9 +241,13 @@ public class RobotContainer {
               MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND/3));
     
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+ 
 
-    SwerveControllerStrafe swerveTrajectoryFollower = new SwerveControllerStrafe(
-      trajectory,
+   
+
+    //SwerveControllerStrafe
+    SwerveControllerCommand swerveTrajectoryFollower = new SwerveControllerCommand(
+      trajectory, //change to just trajectory
       m_drivetrainSubsystem::getPose,
       m_kinematics,
       xController,
@@ -245,20 +257,20 @@ public class RobotContainer {
       m_drivetrainSubsystem
     );
 
-
-    RotateDegrees rotateDegrees = new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem);
+    
+    //RotateDegrees rotateDegrees = new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem);
 
 
 
 
 
     return new SequentialCommandGroup(
-      new WaitCommand(2),
+      new WaitCommand(1.5),
        new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
-        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(-0.5, 0.0, 0.0))),
+       // new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(-0.5, 0.0, 0.0))),
          new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose())),
         // new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem),
-        swerveTrajectoryFollower.withTimeout(5)
+        swerveTrajectoryFollower.withTimeout(10)
         // new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem)
       );
         // );

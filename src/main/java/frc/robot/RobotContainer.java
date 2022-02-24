@@ -85,9 +85,11 @@ public class RobotContainer {
     
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> modifyAxis(-m_controller.getLeftX())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(-m_controller.getLeftY())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            m_visionSubsystem,
+            () -> modifyAxis(-m_controller.getLeftX()) / 2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(-m_controller.getLeftY()) / 2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_controller.getRightX()) / 1.5 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+            () -> m_controller.getLeftBumper()
     ));
 
     // Configure the button bindings
@@ -137,6 +139,30 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
+<<<<<<< Updated upstream
+=======
+    m_autoSelected = m_autoSwitcher.getSelected();
+    if(m_autoSelected == null) m_autoSelected = "";
+ String autoSelect = "";
+    switch (m_autoSelected){ //1 ball path
+      case kAutoR1:
+        // Put custom auto code here
+          autoSelect = kAutoR1;
+        // System.out.println("Unamed_0 works");
+        break;
+      case kAutoR2:
+        autoSelect = kAutoR2;
+        // System.out.println("Unamed works");
+        break;
+      case kAutoR3:
+       autoSelect  = kAutoR3;
+        // System.out.println("Unamed_1 works");
+        break;
+
+      default:
+        break;
+    }
+>>>>>>> Stashed changes
 
     // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(MAX_VELOCITY_METERS_PER_SECOND, 0.5).setKinematics(m_kinematics);
     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(2, 0.7).setKinematics(m_kinematics);

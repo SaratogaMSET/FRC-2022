@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
@@ -106,6 +107,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private LazyTalonFX m_backLeftDrive;
   private LazyTalonFX m_backRightDrive;
 
+  private boolean m_limitCurrent = true;
+
   public DrivetrainSubsystem() {
     m_frontLeftSteer = new LazyTalonFX(Drivetrain.FRONT_LEFT_MODULE_STEER_MOTOR);
     m_frontRightSteer = new LazyTalonFX(Drivetrain.FRONT_RIGHT_MODULE_STEER_MOTOR);
@@ -116,6 +119,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_frontRightDrive = new LazyTalonFX(Drivetrain.FRONT_RIGHT_MODULE_DRIVE_MOTOR);
     m_backLeftDrive = new LazyTalonFX(Drivetrain.BACK_LEFT_MODULE_DRIVE_MOTOR);
     m_backRightDrive = new LazyTalonFX(Drivetrain.BACK_RIGHT_MODULE_DRIVE_MOTOR);
+
+    if(m_limitCurrent){
+      SupplyCurrentLimitConfiguration limit = new SupplyCurrentLimitConfiguration(true, 30, 35, 2);
+      m_frontLeftSteer.configSupplyCurrentLimit(limit);
+      m_frontRightSteer.configSupplyCurrentLimit(limit);
+      m_backLeftSteer.configSupplyCurrentLimit(limit);
+      m_backRightSteer.configSupplyCurrentLimit(limit);
+      m_frontLeftDrive.configSupplyCurrentLimit(limit);
+      m_frontRightDrive.configSupplyCurrentLimit(limit);
+      m_backLeftDrive.configSupplyCurrentLimit(limit);
+      m_backRightDrive.configSupplyCurrentLimit(limit);
+    }
 
     m_frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
         //     tab.getLayout("Front Right Module", BuiltInLayouts.kList)

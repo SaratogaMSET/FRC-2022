@@ -14,10 +14,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -42,7 +45,6 @@ public class SwerveControllerStrafe extends CommandBase {
   private final HolonomicDriveController m_controller;
   private final Consumer<SwerveModuleState[]> m_outputModuleStates;
   private final Supplier<Rotation2d> m_desiredRotation;
-
   /**
    * Constructs a new SwerveControllerCommand that when executed will follow the provided
    * trajectory. This command will not return output voltages but rather raw module states from the
@@ -155,7 +157,10 @@ public class SwerveControllerStrafe extends CommandBase {
     // var targetChassisSpeeds = m_controller.calculate(m_pose.get(), desiredState, new Rotation2d(Math.toRadians(m_pose.get().getRotation().getDegrees()+20)));
     SmartDashboard.putString("Current Rotation vs Setpoint Rotation", m_pose.get().getRotation().getDegrees() + " " + (m_desiredRotation.get().getDegrees()) );
     var targetModuleStates = m_kinematics.toSwerveModuleStates(targetChassisSpeeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(targetModuleStates, DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND);
 
+  //for(SwerveModuleState s : targetModuleStates) s.optimize(desiredState, DrivetrainSubsystem)
+    
     m_outputModuleStates.accept(targetModuleStates);
   }
 

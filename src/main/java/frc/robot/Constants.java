@@ -63,14 +63,14 @@ public final class Constants {
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 47;
         public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(170.0);
 
-        public static final double kPXController = 0.0685269;;
+        public static final double kPXController = 0.00; //0.033 1/30
         public static final double kIXController = 0.000;
 
-        public static final double kPYController = 0.0685;
+        public static final double kPYController = 0.00; //0.033
         public static final double kIYController = 0.000;
-        public static final double kPThetaControllerTrajectory = 0.15;
+        public static final double kPThetaControllerTrajectory = 0;
 
-        public static final double kPThetaController = 0.075;
+        public static final double kPThetaController = 0.075; //.07655
         public static final double kIThetaController = 0.0000;
     }
 }

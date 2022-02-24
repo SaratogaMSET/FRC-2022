@@ -204,7 +204,7 @@ public class RobotContainer {
       //   new Pose2d(-0.75, -0.75, new Rotation2d(0)),
       //   trajectoryConfig
       // );
-      trajectory = PathPlanner.loadPath("New Path", 2, 0.7); //change paths
+      trajectory = PathPlanner.loadPath("New New Path", 2, 0.7); //change paths
     }
     else if(autoSelect.equals("Back Path")){
       //  trajectory = TrajectoryGenerator.generateTrajectory(
@@ -217,7 +217,18 @@ public class RobotContainer {
       //   new Pose2d(0, -1.5, Rotation2d.fromDegrees(0)),
       //   trajectoryConfig
       // );
-      trajectory = PathPlanner.loadPath("New Path", 2, 0.7); //change paths
+      Trajectory examplePath = TrajectoryGenerator.generateTrajectory(
+          new Pose2d(0,0, Rotation2d.fromDegrees(0)),
+          List.of(
+            
+           
+            
+          ),
+          new Pose2d(0, -1, Rotation2d.fromDegrees(0)),
+          trajectoryConfig
+        );
+       Trajectory exampleTrajectory = PathPlanner.loadPath("New Path", 2, 0.7); //change paths
+      trajectory = examplePath.concatenate(exampleTrajectory);
     }
     else
     {
@@ -229,7 +240,7 @@ public class RobotContainer {
       //   new Pose2d(-1.5, 0, new Rotation2d(0)),
       //   trajectoryConfig
       //);
-       trajectory = PathPlanner.loadPath("New Path", 2, 0.7); //change paths
+       trajectory = PathPlanner.loadPath("New Path", 3, 1.5); //change paths
     }
    
 
@@ -246,7 +257,7 @@ public class RobotContainer {
    
 
     //SwerveControllerStrafe
-    SwerveControllerCommand swerveTrajectoryFollower = new SwerveControllerCommand(
+    SwerveControllerStrafe swerveTrajectoryFollower = new SwerveControllerStrafe(
       trajectory, //change to just trajectory
       m_drivetrainSubsystem::getPose,
       m_kinematics,

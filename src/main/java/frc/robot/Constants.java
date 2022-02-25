@@ -14,21 +14,6 @@ package frc.robot;
  */
 public final class Constants {
 
-    public static class Vision {
-        public static final int LED = 3;
-        public static final double H1 = 5; // distance between limelight and ground (height of limelight mount)
-        public static final double H2 = 107; // height of target
-        public static final double A1 = 35; // angle from horizontal axis
-        public static final double AREA_VISIBLE = 1; //if area is large enough to be visible (ta)
-        
-        public static class Distance {
-            public static final int STATE1 = 110; 
-            public static final int STATE2 = 150;
-            public static final int STATE3 = 190;
-            public static final int STATE4 = 270;
-        }
-    }
-
     public static class Drivetrain {
         /**
          * The left-to-right distance between the drivetrain wheels
@@ -72,5 +57,39 @@ public final class Constants {
 
         public static final double kPThetaController = 0.075;
         public static final double kIThetaController = 0.0000;
+    }
+
+    public static class Vision{
+        public static final int LED = 3;
+        public static final double H1 = 19; // distance between limelight and ground (height of limelight mount)
+        public static final double H2 = 90.75; // height of target
+        public static final double A1 = 35; // angle from horizontal axis
+        public static final double AREA_VISIBLE = 1; //if area is large enough to be visible (ta)
+        
+        public static class Distance {
+            public static final int GREEN = 90; 
+            public static final int YELLOW = 150;
+            public static final int BLUE = 190;
+            public static final int RED = 270;
+        }
+
+        public static class Angle{
+            // diff zones
+            // limelight 2
+            // x (all in plus minus)
+            public static final double ON_TARGET_X = 1;
+            /*
+            public static final double CLOSE_X = 6;
+            public static final double MEDIUM_X = 12;
+            public static final double OFF_X = 29.8; 
+            */
+            // y (all in plus minus)
+            /*
+            public static final double ON_TARGET_Y = 3;
+            public static final double CLOSE_Y = 6; 
+            public static final double MEDIUM_Y = 12;
+            public static final double OFF_Y = 24.85; 
+            */
+        }
     }
 }

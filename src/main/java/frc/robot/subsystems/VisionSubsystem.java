@@ -21,14 +21,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  private final ColorSensorV3 colorSensor;
   private final I2C.Port i2cPort = I2C.Port.kOnboard; //Constants.Colorwheel.COLOR_SENSOR; 
   private NetworkTable table;
   private NetworkTableEntry ta, tx, ty, tv;
   private static double a, x, y, v;
 
   public VisionSubsystem() {
-    colorSensor = new ColorSensorV3(i2cPort);
     table = NetworkTableInstance.getDefault().getTable("limelight");
 
     //SmartDashboard.putString("Test", "Test");

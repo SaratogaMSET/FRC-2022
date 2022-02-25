@@ -24,20 +24,20 @@ public class FeederCommand extends CommandBase {
     @Override
     public void execute() {
         if (m_feeder.getIRGate(Constants.FeederConstants.BOTTOM_GATE)) {
-            m_feeder.setBottomMotorVelocity(bottomMotorVelocity);
+            m_feeder.setBottomMotor(bottomMotorVelocity);
         } else {
-            m_feeder.setBottomMotorVelocity(0);
+            m_feeder.setBottomMotor(0);
         }
         if (m_feeder.getIRGate(Constants.FeederConstants.TOP_GATE)) {
-            m_feeder.setTopMotorVelocity(topMotorVelocity);
+            m_feeder.setTopMotor(topMotorVelocity);
         } else {
-            m_feeder.setTopMotorVelocity(0);
+            m_feeder.setTopMotor(0);
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_feeder.setTopMotorVelocity(0);
-        m_feeder.setBottomMotorVelocity(0);
+        m_feeder.setTopMotor(0);
+        m_feeder.setBottomMotor(0);
     }
 }

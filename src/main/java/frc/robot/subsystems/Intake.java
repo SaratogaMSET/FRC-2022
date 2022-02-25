@@ -123,6 +123,4 @@ public class Intake extends SubsystemBase {
                 // else if (rightValve.get() == false) return IntakeState.FLIP_UP;
                  return IntakeState.IDLE;
         }
-
-
-}
+    }

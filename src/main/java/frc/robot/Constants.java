@@ -66,6 +66,7 @@ public final class Constants {
     
     public static class FeederConstants {
         public static final int TOP_MOTOR = 22;
-        public static final int BOTTOM_MOTOR = 23;
+        public static final int BOTTOM_MOTOR = 20;
+        public static final int IR_GATES[] = {1, 2};
     }
 }

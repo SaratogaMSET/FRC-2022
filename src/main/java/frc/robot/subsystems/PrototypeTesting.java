@@ -22,19 +22,19 @@ public class PrototypeTesting extends SubsystemBase {
     private double limit34;
 
     public PrototypeTesting() {
-        m_40 = new TalonSRX(Constants.Hang.HANG_LEFT_MOTOR);
-        m_34 = new TalonSRX(Constants.Hang.HANG_RIGHT_MOTOR);
+        m_40 = new TalonSRX(22);
+        m_34 = new TalonSRX(20);
     }
 
     public void run34(double velocityPercent) {
         limit34 = -limit34 / 2 + 0.5;
-        m_34.set(ControlMode.PercentOutput, limit34 * velocityPercent);
+        // m_34.set(ControlMode.PercentOutput, 0.6 * velocityPercent);
         SmartDashboard.putNumber("Motor 34 Velocity", -limit34 * velocityPercent);
     }
 
     public void run40(double velocityPercent) {
         limit40 = limit40 / 2 + 0.5;
-        m_40.set(ControlMode.PercentOutput, limit40 * velocityPercent);
+        m_40.set(ControlMode.PercentOutput, -0.6 * velocityPercent);
         SmartDashboard.putNumber("Motor 40 Velocity", -limit40 * velocityPercent);
     }
 

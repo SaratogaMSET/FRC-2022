@@ -28,6 +28,12 @@ public class Intake extends SubsystemBase {
     // private TalonSRX motor2Falcon;
     private Solenoid rightValve;
     private Solenoid leftValve;
+    private Solenoid valve1;
+    private Solenoid valve2;
+    private Solenoid valve3;
+    private Solenoid valve4;
+    private Solenoid valve5;
+    private Solenoid valve6;
 
     public static enum IntakeState {
         TEST,
@@ -45,6 +51,12 @@ public class Intake extends SubsystemBase {
 
         rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, 7); // PAREMETERS: ???, foward channel, reverse channel
         leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, 6); // PAREMETERS: ???, foward channel, reverse channel
+        valve1 = new Solenoid(2, PneumaticsModuleType.REVPH, 0); // PAREMETERS: ???, foward channel, reverse channel
+        valve2 = new Solenoid(2, PneumaticsModuleType.REVPH, 1);
+        valve3 = new Solenoid(2, PneumaticsModuleType.REVPH, 2); // PAREMETERS: ???, foward channel, reverse channel
+        valve4 = new Solenoid(2, PneumaticsModuleType.REVPH, 3);
+        valve5 = new Solenoid(2, PneumaticsModuleType.REVPH, 4); // PAREMETERS: ???, foward channel, reverse channel
+        // valve6 = new Solenoid(2, PneumaticsModuleType.REVPH, 5);
     }
 
     @Override
@@ -55,9 +67,21 @@ public class Intake extends SubsystemBase {
         if (status) { // moves the piston out if the status is true (intake down)
             rightValve.set(true);
             leftValve.set(true);
+            valve1.set(true);
+            valve2.set(true);
+            valve3.set(true);
+            valve4.set(true);
+            valve5.set(true);
+            // valve6.set(true);
         } else { // moves the piston in if the status is false (intake up)
             rightValve.set(false);
             leftValve.set(false);
+            valve1.set(false);
+            valve2.set(false);
+            valve3.set(false);
+            valve4.set(false);
+            valve5.set(false);
+            // valve6.set(false);
         }
     }
 
@@ -66,12 +90,17 @@ public class Intake extends SubsystemBase {
         // motor2Falcon.set(ControlMode.PercentOutput, 0);
         rightValve.set(false);
         leftValve.set(false);
+        valve1.set(false);
+            valve2.set(false);
+            valve3.set(false);
+            valve4.set(false);
+            valve5.set(false);
+            // valve6.set(false);
     }
 
     public void diagnostics() {
         String leftPistonStatus = "Left Piston Status";
         String rightPistonStatus = "Right Piston Status";
-        String compressorStatus = "Compressor Status";
 
         try {
             deploy(true);
@@ -81,7 +110,6 @@ public class Intake extends SubsystemBase {
                 SmartDashboard.putString(rightPistonStatus, "Failed");
         } catch (Exception e) {
             SmartDashboard.putString(rightPistonStatus, "Failed");
-            SmartDashboard.putString(compressorStatus, "Failed");
         }
 
         try {

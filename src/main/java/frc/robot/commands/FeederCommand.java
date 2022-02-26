@@ -9,8 +9,7 @@ public class FeederCommand extends CommandBase {
     private final Feeder feeder;
     private Feeder.FeederState feederState;
     private Feeder.FeederState test;
-    private double bottomVelocity;
-    private double topVelocity;
+    private double bottomVelocity, topVelocity;
 
     public FeederCommand(Feeder feeder, Feeder.FeederState test, double topVelocity, double bottomVelocity){
         this.feeder = feeder;
@@ -27,8 +26,9 @@ public class FeederCommand extends CommandBase {
             feeder.diagnostics();
        }
        else {
-           feeder.setBottomMotor(bottomVelocity);
-           feeder.setTopMotor(topVelocity);
+        feeder.setBottomMotor(-0.85);
+        feeder.setTopMotor(0.85);
+        feeder.updateGates();
     }
 }
 

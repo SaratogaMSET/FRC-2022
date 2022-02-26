@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,8 +15,14 @@ import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class Feeder extends SubsystemBase {
-  TalonSRX topMotor;
-  TalonSRX bottomMotor;
+  private TalonSRX topMotor;
+  private TalonSRX bottomMotor;
+  private DigitalInput shooterGate;
+  private DigitalInput intakeGate;
+  public boolean inIntakeFeeder;
+  public boolean inShooterFeeder;
+  private boolean runIntakeFeeder;
+  private boolean runShooterFeeder;
 
   public static enum FeederState {
     TEST,
@@ -23,16 +30,48 @@ public class Feeder extends SubsystemBase {
   }
 
   public Feeder() {
-    topMotor = new TalonSRX(Constants.FeederConstants.TOP_MOTOR);
-    bottomMotor = new TalonSRX(Constants.FeederConstants.BOTTOM_MOTOR);
+    topMotor = new TalonSRX(20);
+    bottomMotor = new TalonSRX(22);
+    shooterGate = new DigitalInput(0);
+    intakeGate = new DigitalInput(1);
+    inIntakeFeeder = false;
+    inShooterFeeder = false;
+    runIntakeFeeder = false;
+    runShooterFeeder = false;
+  }
+
+  public void updateGates() {
+    inIntakeFeeder = !intakeGate.get();
+    inShooterFeeder = !shooterGate.get();
+    SmartDashboard.putBoolean("Ball in Intake", inIntakeFeeder);
+    SmartDashboard.putBoolean("Ball in Shooter", inShooterFeeder);
+    if (inIntakeFeeder && inShooterFeeder) {
+      runIntakeFeeder = false;
+      runShooterFeeder = false;
+    } else if (inIntakeFeeder) {
+      runIntakeFeeder = true;
+      runShooterFeeder = true;
+    } else if (inShooterFeeder) {
+      runIntakeFeeder = true;
+      runShooterFeeder = false;
+    } else {
+      runIntakeFeeder = true;
+      runShooterFeeder = true;
+    }
   }
 
   public void setTopMotor(double velocity) {
-    topMotor.set(ControlMode.PercentOutput, velocity);
+    if (runShooterFeeder)
+      topMotor.set(ControlMode.PercentOutput, velocity);
+    else
+      topMotor.set(ControlMode.PercentOutput, 0.0);
   }
 
   public void setBottomMotor(double velocity) {
-    bottomMotor.set(ControlMode.PercentOutput, velocity);
+    if (runIntakeFeeder)
+      bottomMotor.set(ControlMode.PercentOutput, velocity);
+    else
+      bottomMotor.set(ControlMode.PercentOutput, 0.0);
   }
 
   public void diagnostics() {

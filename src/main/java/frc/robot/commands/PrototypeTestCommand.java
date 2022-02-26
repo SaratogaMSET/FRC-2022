@@ -18,16 +18,16 @@ public class PrototypeTestCommand extends CommandBase {
 
     @Override
     public void execute() {
-        prototype.set34Limit(joystick34.getZ());
-        prototype.set40Limit(joystick40.getZ());
-        prototype.run34(joystick34.getY());
-        prototype.run40(joystick40.getY());
+        //prototype.set34Limit(joystick34.getZ());
+        //prototype.set40Limit(joystick40.getZ());
+        // prototype.run34(0);
+        // prototype.run40(1);
     }
 
     @Override
     public void end(boolean interrupted) {
-        prototype.run34(0.0);
-        prototype.run34(0.0);
-        prototype.reset();
+        // prototype.run34(0.0);
+        // prototype.run34(0.0);
+        // prototype.reset();
     }
 }

@@ -40,8 +40,8 @@ public class Intake extends SubsystemBase {
 
 
 
-        // private TalonSRX motor1Falcon;
-        // private TalonSRX motor2Falcon;
+        private TalonSRX motor1Falcon;
+        private TalonSRX motor2Falcon;
 
         private Solenoid rightValve;
         private Solenoid leftValve;
@@ -55,11 +55,9 @@ public class Intake extends SubsystemBase {
 
         public Intake() {
 
-                // motor1Falcon = new TalonSRX(Constants.IntakeConstants.RIGHT_MOTOR); // Right motor
-                // motor2Falcon = new TalonSRX(Constants.IntakeConstants.LEFT_MOTOR); // Left motor
-                // motor2Falcon.setInverted(true); // The left motor is inverted
-
-                compressor = new Compressor(2, PneumaticsModuleType.REVPH);
+                motor1Falcon = new TalonSRX(Constants.IntakeConstants.RIGHT_MOTOR); // Right motor
+                motor2Falcon = new TalonSRX(Constants.IntakeConstants.LEFT_MOTOR); // Left motor
+                motor2Falcon.setInverted(true); // The left motor is inverted
                 rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.PISTON_PORTS[0]); // PAREMETERS: ???, foward channel, reverse channel
                 leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.PISTON_PORTS[1]); // PAREMETERS: ???, foward channel, reverse channel
         }
@@ -77,16 +75,6 @@ public class Intake extends SubsystemBase {
                 // motor2Falcon.set(ControlMode.PercentOutput, speed);
         }
 
-        public void enableCompressor(boolean enable){
-                if(enable)
-                        // compressor.enableDigital();
-                // else
-                        // compressor.disable();
-                enabled = compressor.enabled();
-                pressureSwitch = compressor.getPressureSwitchValue();
-                current = compressor.getCurrent();
-        }
-
         public void deploy(boolean status) {
                 if(status) { // moves the piston out if the status is true (intake down)
                         rightValve.set(true);
@@ -99,8 +87,8 @@ public class Intake extends SubsystemBase {
         }
 
         public void stopAll() {
-                // motor1Falcon.set(ControlMode.PercentOutput, 0);
-                // motor2Falcon.set(ControlMode.PercentOutput, 0);
+                motor1Falcon.set(ControlMode.PercentOutput, 0);
+                motor2Falcon.set(ControlMode.PercentOutput, 0);
                 rightValve.set(false);
                 leftValve.set(false);
                 compressor.disable();
@@ -114,13 +102,13 @@ public class Intake extends SubsystemBase {
 
 
         public IntakeState updateState() {
-                // double rightVelocity = motor1Falcon.getMotorOutputPercent(); // 0-1
-                // double leftVelocity = motor2Falcon.getMotorOutputPercent(); // 0-1
+                double rightVelocity = motor1Falcon.getMotorOutputPercent(); // 0-1
+                double leftVelocity = motor2Falcon.getMotorOutputPercent(); // 0-1
                 
-                // if((rightVelocity > 0) && (leftVelocity > 0)) return IntakeState.INTAKE;
-                // // else if((rightVelocity < 0) && (leftVelocity < 0)) return IntakeState.OUTTAKE;
-                // if (rightValve.get() == true) return IntakeState.FLIP_DOWN;
-                // else if (rightValve.get() == false) return IntakeState.FLIP_UP;
+                if((rightVelocity > 0) && (leftVelocity > 0)) return IntakeState.INTAKE;
+                else  if((rightVelocity < 0) && (leftVelocity < 0)) return IntakeState.OUTTAKE;
+                if (rightValve.get() == true) return IntakeState.FLIP_DOWN;
+                else if (rightValve.get() == false) return IntakeState.FLIP_UP;
                  return IntakeState.IDLE;
         }
     }

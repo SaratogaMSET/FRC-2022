@@ -19,20 +19,54 @@ public class Feeder extends SubsystemBase {
 
     private boolean manual;
     private final TalonFX bottomMotor, topMotor;
-    private final DigitalInput[] irGates;
+    private final DigitalInput shooterGate, intakeGate;
+    private boolean inIntakeFeeder, inShooterFeeder, runIntakeFeeder, runShooterFeeder;
+    
     
     public Feeder () {
         bottomMotor = new TalonFX(Constants.FeederConstants.BOTTOM_MOTOR);
         topMotor = new TalonFX(Constants.FeederConstants.TOP_MOTOR);
-
-        irGates = new DigitalInput[Constants.FeederConstants.IR_GATES.length];
-        for(int i : Constants.FeederConstants.IR_GATES){
-            irGates[i] = new DigitalInput(Constants.FeederConstants.IR_GATES[i]);
-        }
+        shooterGate = new DigitalInput(0);
+        intakeGate = new DigitalInput(1);
+        inIntakeFeeder = false;
+        inShooterFeeder = false;
+        runIntakeFeeder = false;
+        runShooterFeeder = false;
     }
 
-    public boolean getIRGate(int index){
-        return irGates[index].get();
+  
+    public void updateGates() {
+      inIntakeFeeder = !intakeGate.get();
+      inShooterFeeder = !shooterGate.get();
+      SmartDashboard.putBoolean("Ball in Intake", inIntakeFeeder);
+      SmartDashboard.putBoolean("Ball in Shooter", inShooterFeeder);
+      if (inIntakeFeeder && inShooterFeeder) {
+        runIntakeFeeder = false;
+        runShooterFeeder = false;
+      } else if (inIntakeFeeder) {
+        runIntakeFeeder = true;
+        runShooterFeeder = true;
+      } else if (inShooterFeeder) {
+        runIntakeFeeder = true;
+        runShooterFeeder = false;
+      } else {
+        runIntakeFeeder = true;
+        runShooterFeeder = true;
+      }
+    }
+  
+    public void setTopMotor(double velocity) {
+      if (runShooterFeeder)
+        topMotor.set(ControlMode.PercentOutput, velocity);
+      else
+        topMotor.set(ControlMode.PercentOutput, 0.0);
+    }
+  
+    public void setBottomMotor(double velocity) {
+      if (runIntakeFeeder)
+        bottomMotor.set(ControlMode.PercentOutput, velocity);
+      else
+        bottomMotor.set(ControlMode.PercentOutput, 0.0);
     }
 
     public void setManual(boolean manual){
@@ -44,14 +78,6 @@ public class Feeder extends SubsystemBase {
             return FeederState.MANUAL;
         else 
             return FeederState.AUTO;
-    }
-
-    public void setTopMotor(double velocity){
-        topMotor.set(ControlMode.PercentOutput, velocity);
-    }
-
-    public void setBottomMotor(double velocity){
-        bottomMotor.set(ControlMode.PercentOutput, velocity);
     }
 
     public FeederState updateState() {

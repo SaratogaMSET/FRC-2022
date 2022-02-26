@@ -13,14 +13,12 @@ public class RunIntake extends CommandBase {
     private final Intake m_intake;
     private IntakeState state;
     private double speed;
-    private boolean enableCompressor;
     private String smart;
 
-    public RunIntake(Intake intakeSub, IntakeState state, double speed, boolean enableCompressor) {
+    public RunIntake(Intake intakeSub, IntakeState state, double speed) {
         m_intake = intakeSub;
         this.state = state;
         this.speed = speed;
-        this.enableCompressor = enableCompressor;
         addRequirements(intakeSub);
     }
 
@@ -28,7 +26,6 @@ public class RunIntake extends CommandBase {
         m_intake = intakeSub;
         this.state = state;
         this.speed = 0;
-
         addRequirements(intakeSub);
     }
 
@@ -57,23 +54,20 @@ public class RunIntake extends CommandBase {
             smart = "UP (NO SPIN)";
         }
         else if(state == IntakeState.FLIP_DOWN) {
-            m_intake.enableCompressor(true);
             m_intake.deploy(true);
             m_intake.run(0);
             smart = "DOWN (NO SPIN)";
         }
-        else if(enableCompressor){
-            m_intake.enableCompressor(true);
-        }
-        // else if (state == IntakeState.INTAKE) {
-        //     m_intake.run(speed);
-        //     SmartDashboard.putBoolean("INTAKING", true);
-        // }
 
-        // else if (state == IntakeState.OUTTAKE) {
-        //     m_intake.run(speed);
-        //     SmartDashboard.putBoolean("OUTTAKING", true);
-        // }
+        else if (state == IntakeState.INTAKE) {
+            m_intake.run(speed);
+            SmartDashboard.putBoolean("INTAKING", true);
+        }
+
+        else if (state == IntakeState.OUTTAKE) {
+            m_intake.run(speed);
+            SmartDashboard.putBoolean("OUTTAKING", true);
+        }
         else { // Should never occur
             m_intake.stopAll();
             smart = "STOP (STATE NOT FOUND)";

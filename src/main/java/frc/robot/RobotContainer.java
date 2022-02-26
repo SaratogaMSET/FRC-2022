@@ -70,11 +70,11 @@ public class RobotContainer {
     //driverHorz is right side
 
     new JoystickButton(driverVertical, 2).whileHeld(
-        new RunIntake(m_intake, IntakeState.INTAKE, 0.0, false)  
+        new RunIntake(m_intake, IntakeState.INTAKE, 0.0)  
     );
 
     new JoystickButton(driverHorizontal, 2).whileHeld(
-        new RunIntake(m_intake, IntakeState.OUTTAKE, 0.0, false)
+        new RunIntake(m_intake, IntakeState.OUTTAKE, 0.0)
     );
 
     new JoystickButton(driverVertical, 2).and(new JoystickButton(driverHorizontal, 2)).whenInactive(
@@ -90,7 +90,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new RunIntake(m_intake, IntakeState.INTAKE, 0.1, false);
+    return new RunIntake(m_intake, IntakeState.INTAKE, 0.1);
     //return new FeederCommand(m_feeder, 0.1, 0.1, m_robotState);
   }
 

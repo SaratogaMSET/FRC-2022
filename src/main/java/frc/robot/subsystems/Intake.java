@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
-
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -32,7 +31,7 @@ public class Intake extends SubsystemBase {
                 INTAKE,
                 OUTTAKE,
                 FLIP_DOWN,
-                FLIP_UP, 
+                FLIP_UP,
                 IDLE
         }
 
@@ -47,8 +46,18 @@ public class Intake extends SubsystemBase {
                 motor1Falcon = new TalonSRX(Constants.IntakeConstants.RIGHT_MOTOR); // Right motor
                 motor2Falcon = new TalonSRX(Constants.IntakeConstants.LEFT_MOTOR); // Left motor
                 motor2Falcon.setInverted(true); // The left motor is inverted
-                rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.PISTON_PORTS[0]); // PAREMETERS: ???, foward channel, reverse channel
-                leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.PISTON_PORTS[1]); // PAREMETERS: ???, foward channel, reverse channel
+                rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.PISTON_PORTS[0]); // PAREMETERS:
+                                                                                                                     // ???,
+                                                                                                                     // foward
+                                                                                                                     // channel,
+                                                                                                                     // reverse
+                                                                                                                     // channel
+                leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.PISTON_PORTS[1]); // PAREMETERS:
+                                                                                                                    // ???,
+                                                                                                                    // foward
+                                                                                                                    // channel,
+                                                                                                                    // reverse
+                                                                                                                    // channel
         }
 
         @Override
@@ -64,11 +73,10 @@ public class Intake extends SubsystemBase {
         }
 
         public void deploy(boolean status) {
-                if(status) { // moves the piston out if the status is true (intake down)
+                if (status) { // moves the piston out if the status is true (intake down)
                         rightValve.set(true);
                         leftValve.set(true);
-                }
-                else {       // moves the piston in if the status is false (intake up)
+                } else { // moves the piston in if the status is false (intake up)
                         rightValve.set(false);
                         leftValve.set(false);
                 }
@@ -81,16 +89,21 @@ public class Intake extends SubsystemBase {
                 leftValve.set(false);
         }
 
-        // GET STUFF----------------------------------------------------------------------------------------------------------------
+        // GET
+        // STUFF----------------------------------------------------------------------------------------------------------------
 
         public IntakeState updateState() {
                 double rightVelocity = motor1Falcon.getMotorOutputPercent(); // 0-1
                 double leftVelocity = motor2Falcon.getMotorOutputPercent(); // 0-1
-                
-                if((rightVelocity > 0) && (leftVelocity > 0)) return IntakeState.INTAKE;
-                else  if((rightVelocity < 0) && (leftVelocity < 0)) return IntakeState.OUTTAKE;
-                if (rightValve.get() == true) return IntakeState.FLIP_DOWN;
-                else if (rightValve.get() == false) return IntakeState.FLIP_UP;
-                 return IntakeState.IDLE;
+
+                if ((rightVelocity > 0) && (leftVelocity > 0))
+                        return IntakeState.INTAKE;
+                else if ((rightVelocity < 0) && (leftVelocity < 0))
+                        return IntakeState.OUTTAKE;
+                if (rightValve.get() == true)
+                        return IntakeState.FLIP_DOWN;
+                else if (rightValve.get() == false)
+                        return IntakeState.FLIP_UP;
+                return IntakeState.IDLE;
         }
-    }
+}

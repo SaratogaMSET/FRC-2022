@@ -32,7 +32,6 @@ public class RunIntake extends CommandBase {
 
     public void initialize() {
         m_intake.run(speed);
-        m_intake.getPSI();
         SmartDashboard.putString("Intake Status:", smart);
         if(state == IntakeState.IDLE) {
             m_intake.stopAll();
@@ -72,7 +71,6 @@ public class RunIntake extends CommandBase {
             m_intake.stopAll();
             smart = "STOP (STATE NOT FOUND)";
         }
-        
     }
 
     public void stopAll() {

@@ -26,8 +26,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-
-
 public class Intake extends SubsystemBase {
 
         public static enum IntakeState {
@@ -38,20 +36,11 @@ public class Intake extends SubsystemBase {
                 IDLE
         }
 
-
-
         private TalonSRX motor1Falcon;
         private TalonSRX motor2Falcon;
 
         private Solenoid rightValve;
         private Solenoid leftValve;
-        private Compressor compressor;
-
-        private boolean enabled;
-        private boolean pressureSwitch;
-        private double current;
-
-
 
         public Intake() {
 
@@ -70,9 +59,8 @@ public class Intake extends SubsystemBase {
         // ACTIONS-----------------------------------------------------------------------------------------------------------------
 
         public void run(double speed) {
-                // compressor.enableDigital();
-                // motor1Falcon.set(ControlMode.PercentOutput, speed);
-                // motor2Falcon.set(ControlMode.PercentOutput, speed);
+                motor1Falcon.set(ControlMode.PercentOutput, speed);
+                motor2Falcon.set(ControlMode.PercentOutput, speed);
         }
 
         public void deploy(boolean status) {
@@ -91,15 +79,9 @@ public class Intake extends SubsystemBase {
                 motor2Falcon.set(ControlMode.PercentOutput, 0);
                 rightValve.set(false);
                 leftValve.set(false);
-                compressor.disable();
         }
 
         // GET STUFF----------------------------------------------------------------------------------------------------------------
-
-        public void getPSI() {
-                SmartDashboard.putNumber("PSI REMAINING:", compressor.getPressure());
-        }
-
 
         public IntakeState updateState() {
                 double rightVelocity = motor1Falcon.getMotorOutputPercent(); // 0-1

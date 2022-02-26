@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
+import com.pathplanner.lib.PathPlanner;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import org.ejml.data.ZMatrix;
@@ -20,9 +23,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -47,10 +55,16 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  public final SendableChooser<String> m_autoSwitcher = new SendableChooser<String>();
+  public static final String kAutoR1 = "1 Ball";
+  public static final String kAutoR2 = "2 Ball";
+  public static final String kAutoR3 = "Back Path";
+  public String m_autoSelected;
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
   private final ColorSensorSystem m_ColorSensorSystem = new ColorSensorSystem();
 
+  public static final double pi = Math.PI;
   private final XboxController m_controller = new XboxController(0);
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0 *
@@ -81,7 +95,12 @@ public class RobotContainer {
         new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
         new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(new Pose2d()))
     ).schedule();
+    m_autoSwitcher.addOption(kAutoR1, kAutoR1);
+    m_autoSwitcher.addOption(kAutoR2, kAutoR2);
+    m_autoSwitcher.addOption(kAutoR3, kAutoR3);
 
+
+  SmartDashboard.putData(m_autoSwitcher);
     // m_drivetrainSubsystem.zeroGyroscope();
     // m_drivetrainSubsystem.resetOdometry(new Pose2d());
 
@@ -132,18 +151,94 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
+    m_autoSelected = m_autoSwitcher.getSelected();
+ String autoSelect = "";
+    switch (m_autoSelected){ //1 ball path
+      case kAutoR1:
+        // Put custom auto code here
+          autoSelect = kAutoR1;
+        // System.out.println("Unamed_0 works");
+        break;
+      case kAutoR2:
+        autoSelect = kAutoR2;
+        // System.out.println("Unamed works");
+        break;
+      case kAutoR3:
+       autoSelect  = kAutoR3;
+        // System.out.println("Unamed_1 works");
+        break;
+
+      default:
+        break;
+    }
 
     // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(MAX_VELOCITY_METERS_PER_SECOND, 0.5).setKinematics(m_kinematics);
     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(2, 0.7).setKinematics(m_kinematics);
+    Trajectory trajectory;
+    if(autoSelect.equals("1 Ball")){
 
-    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(0, 0, new Rotation2d(0)),
-      List.of(
-        new Translation2d(1, 0)
-      ),
-      new Pose2d(1, 1, new Rotation2d( 0 )),
-      trajectoryConfig
-    );
+      // trajectory = TrajectoryGenerator.generateTrajectory(
+      //   new Pose2d(0,0, new Rotation2d(0)),
+      //   List.of(
+      //     new Translation2d(-1,0)
+      //   ),
+      //   new Pose2d(-1,0, new Rotation2d(0)),
+      //   trajectoryConfig
+      // );
+      trajectory = PathPlanner.loadPath("New Path", 2, 0.7); //change paths
+    }
+    else if(autoSelect.equals("2 Ball")){
+      //  trajectory = TrajectoryGenerator.generateTrajectory(
+      //   new Pose2d(0,0, new Rotation2d(0)),
+      //   List.of(
+      //     new Translation2d(0,-0.5),
+      //     new Translation2d(0.5,-0.5),
+      //     new Translation2d(0,-0.5),
+      //     new Translation2d(-0.5,-0.5)
+
+      //   ),
+      //   new Pose2d(-0.75, -0.75, new Rotation2d(0)),
+      //   trajectoryConfig
+      // );
+      trajectory = PathPlanner.loadPath("New New Path", 2, 0.7); //change paths
+    }
+    else if(autoSelect.equals("Back Path")){
+      //  trajectory = TrajectoryGenerator.generateTrajectory(
+      //   new Pose2d(0,0, Rotation2d.fromDegrees(0)),
+      //   List.of(
+      //     // new Translation2d(0,-0.1),
+      //      new Translation2d(0,-0.75)
+      //     // new Translation2d(0,-1.4)
+      //   ),
+      //   new Pose2d(0, -1.5, Rotation2d.fromDegrees(0)),
+      //   trajectoryConfig
+      // );
+      Trajectory examplePath = TrajectoryGenerator.generateTrajectory(
+          new Pose2d(0,0, Rotation2d.fromDegrees(0)),
+          List.of(
+            
+           
+            
+          ),
+          new Pose2d(0, -1, Rotation2d.fromDegrees(0)),
+          trajectoryConfig
+        );
+       Trajectory exampleTrajectory = PathPlanner.loadPath("New Path", 2, 0.7); //change paths
+      trajectory = examplePath.concatenate(exampleTrajectory);
+    }
+    else
+    {
+      //  trajectory = TrajectoryGenerator.generateTrajectory(
+      //   new Pose2d(0, 0, new Rotation2d(0)),
+      //   List.of(
+      //     new Translation2d(-1, 0)
+      //   ),
+      //   new Pose2d(-1.5, 0, new Rotation2d(0)),
+      //   trajectoryConfig
+      //);
+       trajectory = PathPlanner.loadPath("New Path", 3, 1.5); //change paths
+    }
+   
 
     PIDController xController = new PIDController(Constants.Drivetrain.kPXController, Constants.Drivetrain.kIXController, 0); //FIXME
     PIDController yController = new PIDController(Constants.Drivetrain.kPYController, Constants.Drivetrain.kIYController, 0);//FIXME
@@ -153,9 +248,13 @@ public class RobotContainer {
               MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND/3));
     
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+ 
 
+   
+
+    //SwerveControllerStrafe
     SwerveControllerStrafe swerveTrajectoryFollower = new SwerveControllerStrafe(
-      trajectory,
+      trajectory, //change to just trajectory
       m_drivetrainSubsystem::getPose,
       m_kinematics,
       xController,
@@ -164,8 +263,7 @@ public class RobotContainer {
       m_drivetrainSubsystem::setModuleStates,
       m_drivetrainSubsystem
     );
-
-
+    
     //RotateDegrees rotateDegrees = new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem);
 
 
@@ -173,12 +271,13 @@ public class RobotContainer {
 
 
     return new SequentialCommandGroup(
-        new WaitCommand(1),
-        new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
-        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(-0.5, 0.0, 0.0))),
-        // new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose())),
+      new WaitCommand(1.5),
+       new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
+       // new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(-0.5, 0.0, 0.0))),
+         new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose())),
         // new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem),
         swerveTrajectoryFollower.withTimeout(5)
+        // new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem)
       );
         // );
   }

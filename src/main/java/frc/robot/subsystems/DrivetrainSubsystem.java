@@ -219,6 +219,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
     );
   }
 
+  public double getModuleState(int module){
+    if(module == 0){
+      return m_frontLeftModule.getSteerAngle();
+    }else if(module == 1){
+      return m_frontRightModule.getSteerAngle();
+    }else if(module == 2){
+      return m_backLeftModule.getSteerAngle();
+    }else{
+      return m_backRightModule.getSteerAngle();
+    }
+  }
+
 
   @Override
   public void periodic() {
@@ -247,5 +259,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     SmartDashboard.putString("Robot Rotation", getPose().getRotation().toString());
+    SmartDashboard.putString("Wheel Velocity Real fL", ""+m_frontLeftSteer.getSelectedSensorVelocity());
   }
 }

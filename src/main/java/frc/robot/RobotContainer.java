@@ -27,6 +27,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 // import frc.robot.subsystems.Feeder;
 
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -45,6 +48,7 @@ public class RobotContainer {
   private final Joystick driverVertical, driverHorizontal, gamepad;
   public final JoystickButton test;
 
+  public static Compressor compressor;
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -53,6 +57,8 @@ public class RobotContainer {
     driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL);
     gamepad = new Joystick(Constants.OIConstants.GAMEPAD);
     test = new JoystickButton(driverVertical, 8);
+
+    compressor = new Compressor(2, PneumaticsModuleType.REVPH);
 
     configureButtonBindings();
   }
@@ -68,6 +74,7 @@ public class RobotContainer {
 
     //driverVert is left side
     //driverHorz is right side
+    SmartDashboard.putNumber("PSI REMAINING:", compressor.getPressure()); // GET THE CURRENT PSI
 
     new JoystickButton(driverVertical, 2).whileHeld(
         new RunIntake(m_intake, IntakeState.INTAKE, 0.0)  

@@ -31,7 +31,7 @@ public class RunIntake extends CommandBase {
 
 
     public void initialize() {
-        m_intake.run(speed);
+        //m_intake.run(speed);
         SmartDashboard.putString("Intake Status:", smart);
         if(state == IntakeState.IDLE) {
             m_intake.stopAll();
@@ -39,32 +39,26 @@ public class RunIntake extends CommandBase {
         }
         else if(state == IntakeState.INTAKE) {
             m_intake.deploy(true);
-            m_intake.run(speed);
             smart = "DOWN, INTAKING";
         }
         else if(state == IntakeState.OUTTAKE) {
             m_intake.deploy(true);
-            m_intake.run(-speed);
             smart = "DOWN, OUTTAKING";
         }
         else if(state == IntakeState.FLIP_UP) {
             m_intake.deploy(false);
-            m_intake.run(0);
             smart = "UP (NO SPIN)";
         }
         else if(state == IntakeState.FLIP_DOWN) {
             m_intake.deploy(true);
-            m_intake.run(0);
             smart = "DOWN (NO SPIN)";
         }
 
         else if (state == IntakeState.INTAKE) {
-            m_intake.run(speed);
             SmartDashboard.putBoolean("INTAKING", true);
         }
 
         else if (state == IntakeState.OUTTAKE) {
-            m_intake.run(speed);
             SmartDashboard.putBoolean("OUTTAKING", true);
         }
         else { // Should never occur

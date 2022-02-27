@@ -60,9 +60,9 @@ public class Intake extends SubsystemBase {
 
         public void enableCompressor(boolean enable){
                 if(enable)
-                        // compressor.enableDigital();
+                        // c.enableDigital();
                 // else
-                        // compressor.disable();
+                        // c.disable();
                 enabled = c.enabled();
                 pressureSwitch = c.getPressureSwitchValue();
                 current = c.getCurrent();

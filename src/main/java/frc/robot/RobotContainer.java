@@ -21,7 +21,7 @@ import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.commands.RunIntake;
 import frc.robot.subsystems.Intake.IntakeState;
-// import frc.robot.commands.FeederCommand;
+import frc.robot.subsystems.Feeder.FeederState;
 import frc.robot.RobotState;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -77,17 +77,28 @@ public class RobotContainer {
 
     SmartDashboard.putNumber("PSI REMAINING:", m_compressor.getPressure()); // GET THE CURRENT PSI
 
-    new JoystickButton(driverVertical, 2).whileHeld(
-        new RunIntake(m_intake, IntakeState.FLIP_DOWN, 0.0)  
+    new JoystickButton(driverVertical, 2).whileHeld( // INTAKE
+        new ParallelCommandGroup(
+            new RunIntake(m_intake, IntakeState.FLIP_DOWN),
+            new FeederCommand(m_feeder, FeederState.INTAKE, 0.1, 0.1)
+        )
     );
 
-    new JoystickButton(driverHorizontal, 2).whileHeld(
-        new RunIntake(m_intake, IntakeState.FLIP_DOWN, 0.0)
+    new JoystickButton(driverHorizontal, 2).whileHeld( // OUTTAKE
+        new ParallelCommandGroup(
+            new RunIntake(m_intake, IntakeState.FLIP_DOWN),
+            new FeederCommand(m_feeder, FeederState.OUTTAKE, 0.1, 0.1)
+        )
     );
 
     new JoystickButton(driverVertical, 2).and(new JoystickButton(driverHorizontal, 2)).whenInactive(
-      new RunIntake(m_intake, IntakeState.FLIP_UP)
+        new ParallelCommandGroup(    
+            new RunIntake(m_intake, IntakeState.FLIP_UP),
+            new FeederCommand(m_feeder, FeederState.INTAKE, 0.0, 0.1)
+        )
     );
+
+    
 
   }
 

@@ -12,20 +12,11 @@ import java.util.function.DoubleSupplier;
 public class RunIntake extends CommandBase {
     private final Intake m_intake;
     private IntakeState state;
-    private double speed;
     private String smart;
-
-    public RunIntake(Intake intakeSub, IntakeState state, double speed) {
-        m_intake = intakeSub;
-        this.state = state;
-        this.speed = speed;
-        addRequirements(intakeSub);
-    }
 
     public RunIntake(Intake intakeSub, IntakeState state) {
         m_intake = intakeSub;
         this.state = state;
-        this.speed = 0;
         addRequirements(intakeSub);
     }
 

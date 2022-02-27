@@ -34,7 +34,7 @@ public class Intake extends SubsystemBase {
 
         private Solenoid rightValve;
         private Solenoid leftValve;
-        
+
 
         public Intake() {
                 rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.PISTON_PORTS[0]); // PAREMETERS: ???, foward channel, reverse channel

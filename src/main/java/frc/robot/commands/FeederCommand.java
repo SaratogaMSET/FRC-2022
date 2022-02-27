@@ -4,14 +4,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.Constants;
-import frc.robot.RobotState;
+import frc.robot.subsystems.Feeder.FeederState;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class FeederCommand extends CommandBase {
     private final Feeder m_feeder;
     private double topMotorVelocity, bottomMotorVelocity;
 
-    public FeederCommand(Feeder feederSub, double topMotorVelocity, double bottomMotorVelocity, RobotState robotState) {
+    public FeederCommand(Feeder feederSub, FeederState feederState, double topMotorVelocity, double bottomMotorVelocity) {
         m_feeder = feederSub;
         addRequirements(feederSub);
         this.topMotorVelocity = topMotorVelocity;

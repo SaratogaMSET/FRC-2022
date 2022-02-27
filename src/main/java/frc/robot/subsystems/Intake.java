@@ -13,10 +13,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -24,8 +21,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
-import frc.robot.RobotContainer;
 
 public class Intake extends SubsystemBase {
 
@@ -39,16 +34,11 @@ public class Intake extends SubsystemBase {
 
         private Solenoid rightValve;
         private Solenoid leftValve;
-        private Compressor c;
-
-        private boolean enabled;
-        private boolean pressureSwitch;
-        private double current;
+        
 
         public Intake() {
                 rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.PISTON_PORTS[0]); // PAREMETERS: ???, foward channel, reverse channel
                 leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.PISTON_PORTS[1]); // PAREMETERS: ???, foward channel, reverse channel
-                c = RobotContainer.compressor;
         }
 
         @Override
@@ -57,17 +47,6 @@ public class Intake extends SubsystemBase {
         }
 
         // ACTIONS-----------------------------------------------------------------------------------------------------------------
-
-        public void enableCompressor(boolean enable){
-                if(enable)
-                        // c.enableDigital();
-                // else
-                        // c.disable();
-                enabled = c.enabled();
-                pressureSwitch = c.getPressureSwitchValue();
-                current = c.getCurrent();
-        }
-        
         
         public void deploy(boolean status) {
                 if (status) { // moves the piston out if the status is true (intake down)

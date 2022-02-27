@@ -37,14 +37,6 @@ public class RunIntake extends CommandBase {
             m_intake.stopAll();
             smart = "IDLE";
         }
-        else if(state == IntakeState.INTAKE) {
-            m_intake.deploy(true);
-            smart = "DOWN, INTAKING";
-        }
-        else if(state == IntakeState.OUTTAKE) {
-            m_intake.deploy(true);
-            smart = "DOWN, OUTTAKING";
-        }
         else if(state == IntakeState.FLIP_UP) {
             m_intake.deploy(false);
             smart = "UP (NO SPIN)";
@@ -52,14 +44,6 @@ public class RunIntake extends CommandBase {
         else if(state == IntakeState.FLIP_DOWN) {
             m_intake.deploy(true);
             smart = "DOWN (NO SPIN)";
-        }
-
-        else if (state == IntakeState.INTAKE) {
-            SmartDashboard.putBoolean("INTAKING", true);
-        }
-
-        else if (state == IntakeState.OUTTAKE) {
-            SmartDashboard.putBoolean("OUTTAKING", true);
         }
         else { // Should never occur
             m_intake.stopAll();

@@ -42,13 +42,13 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Intake m_intake = new Intake();
   private final Feeder m_feeder = new Feeder();
+  public static Compressor m_compressor;
   
   private final RobotState m_robotState = new RobotState();
 
   private final Joystick driverVertical, driverHorizontal, gamepad;
   public final JoystickButton test;
 
-  public static Compressor compressor;
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -58,7 +58,7 @@ public class RobotContainer {
     gamepad = new Joystick(Constants.OIConstants.GAMEPAD);
     test = new JoystickButton(driverVertical, 8);
 
-    compressor = new Compressor(2, PneumaticsModuleType.REVPH);
+    m_compressor = new Compressor(2, PneumaticsModuleType.REVPH);
 
     configureButtonBindings();
   }
@@ -74,14 +74,15 @@ public class RobotContainer {
 
     //driverVert is left side
     //driverHorz is right side
-    SmartDashboard.putNumber("PSI REMAINING:", compressor.getPressure()); // GET THE CURRENT PSI
+
+    SmartDashboard.putNumber("PSI REMAINING:", m_compressor.getPressure()); // GET THE CURRENT PSI
 
     new JoystickButton(driverVertical, 2).whileHeld(
-        new RunIntake(m_intake, IntakeState.INTAKE, 0.0)  
+        new RunIntake(m_intake, IntakeState.FLIP_DOWN, 0.0)  
     );
 
     new JoystickButton(driverHorizontal, 2).whileHeld(
-        new RunIntake(m_intake, IntakeState.OUTTAKE, 0.0)
+        new RunIntake(m_intake, IntakeState.FLIP_DOWN, 0.0)
     );
 
     new JoystickButton(driverVertical, 2).and(new JoystickButton(driverHorizontal, 2)).whenInactive(

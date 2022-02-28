@@ -6,41 +6,33 @@ import frc.robot.subsystems.Intake.IntakeState;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import java.util.function.DoubleSupplier;
-
 public class IntakeCommand extends CommandBase {
     private final Intake m_intake;
     private IntakeState state;
-    private double speed;
 
-    public IntakeCommand(Intake intakeSub, IntakeState state, double speed) {
+    public IntakeCommand(Intake intakeSub, IntakeState state) {
         m_intake = intakeSub;
         this.state = state;
-        this.speed = speed;
         addRequirements(intakeSub);
     }
 
-    public void initialize() {}
-
-    public void stopAll() {
-        m_intake.stopAll();
+    public void initialize() {
     }
 
     @Override
     public void execute() {
-        if(state == IntakeState.TEST){
+        if (state == IntakeState.TEST)
             m_intake.diagnostics();
-       }
-        else {
-           m_intake.deploy(true);
-        }
+        else if (state == IntakeState.DOWN)
+            m_intake.deploy(true);
+        else
+            m_intake.deploy(false);
     }
 
     @Override
-    public void end(boolean interrupted) { // stops the intake and them moves the intake up before stoping everything again
-        m_intake.stopAll();
+    public void end(boolean interrupted) { // stops the intake and them moves the intake up before stoping everything
+                                           // again
         m_intake.deploy(false);
-        m_intake.stopAll();
     }
 
     // Returns true when the command should end.

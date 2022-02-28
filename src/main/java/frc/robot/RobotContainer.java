@@ -40,9 +40,8 @@ public class RobotContainer {
   // private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final XboxController m_controller = new XboxController(0);
-  // private final Feeder m_feeder;
   private final Intake m_intake;
-  // private final Compressor m_compressor;
+  private final Compressor m_compressor;
   private final Joystick driverVertical, driverHorizontal;
   private final Feeder m_feeder;
   
@@ -72,8 +71,8 @@ public class RobotContainer {
     driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
     m_feeder = new Feeder();
     m_intake = new Intake();
-    // m_compressor = new Compressor(2, PneumaticsModuleType.REVPH);
-    // m_compressor.enableDigital();
+    m_compressor = new Compressor(2, PneumaticsModuleType.REVPH);
+    m_compressor.disable();
     // //Configure the button bindings
     configureButtonBindings();
   }
@@ -87,15 +86,11 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     new JoystickButton(driverVertical, 2).whileHeld(
-      new IntakeCommand(m_intake, IntakeState.RUN, 0.0)  
+      new IntakeCommand(m_intake, IntakeState.DOWN)  
     );
 
-    new JoystickButton(driverHorizontal, 2).whileHeld(
-      new IntakeCommand(m_intake, IntakeState.RUN, 0.0)
-    );
-
-    new JoystickButton(driverVertical, 2).and(new JoystickButton(driverHorizontal, 2)).whenInactive(
-      new IntakeCommand(m_intake, IntakeState.RUN, 0.0)
+    new JoystickButton(driverVertical, 2).whenInactive(
+      new IntakeCommand(m_intake, IntakeState.UP)
     );
 
     new JoystickButton(driverVertical, 3).whileHeld(
@@ -135,7 +130,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     // return new FeederCommand(m_feeder, FeederState.RUN, 0.0, 0.0);
-    return new IntakeCommand(m_intake, IntakeState.RUN, 0.0);
+    return new IntakeCommand(m_intake, IntakeState.DOWN);
   }
 
   // private static double deadband(double value, double deadband) {
@@ -162,7 +157,7 @@ public class RobotContainer {
 
   public Command getTestCommand(){
     // return new PrototypeTestCommand(driverHorizontal, driverVertical);
-    return new SequentialCommandGroup(new FeederCommand(m_feeder, FeederState.RUN, 0.0, 0.0));
+    return new SequentialCommandGroup(new FeederCommand(m_feeder, FeederState.INTAKE, 0.0, 0.0));
     // return new SequentialCommandGroup(new IntakeCommand(m_intake, IntakeState.TEST, 0.0));
   }
 }

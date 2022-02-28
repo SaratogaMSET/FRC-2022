@@ -4,40 +4,43 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class Feeder extends SubsystemBase {
-  private TalonSRX topMotor;
-  private TalonSRX bottomMotor;
+  private TalonFX shooterFeederMotor;
+  private TalonFX intakeFeederMotor;
   private DigitalInput shooterGate;
   private DigitalInput intakeGate;
   public boolean inIntakeFeeder;
   public boolean inShooterFeeder;
   private boolean runIntakeFeeder;
   private boolean runShooterFeeder;
+  private double shooterFeederVelocity;
+  private double intakeFeederVelocity;
 
   public static enum FeederState {
     TEST,
-    RUN
+    INTAKE,
+    OUTTAKE,
+    IDLE
   }
 
   public Feeder() {
-    topMotor = new TalonSRX(20);
-    bottomMotor = new TalonSRX(22);
-    shooterGate = new DigitalInput(0);
-    intakeGate = new DigitalInput(1);
+    shooterFeederMotor = new TalonFX(Constants.FeederConstants.SHOOTER_FEEDER_MOTOR);
+    intakeFeederMotor = new TalonFX(Constants.FeederConstants.INTAKE_FEEDER_MOTOR);
+    shooterGate = new DigitalInput(Constants.FeederConstants.IR_GATES[0]);
+    intakeGate = new DigitalInput(Constants.FeederConstants.IR_GATES[1]);
     inIntakeFeeder = false;
     inShooterFeeder = false;
     runIntakeFeeder = false;
     runShooterFeeder = false;
+    intakeFeederMotor.setInverted(true);
   }
 
   public void updateGates() {
@@ -45,7 +48,10 @@ public class Feeder extends SubsystemBase {
     inShooterFeeder = !shooterGate.get();
     SmartDashboard.putBoolean("Ball in Intake", inIntakeFeeder);
     SmartDashboard.putBoolean("Ball in Shooter", inShooterFeeder);
-    if (inIntakeFeeder && inShooterFeeder) {
+    if (shooterFeederVelocity < 0.0 || intakeFeederVelocity < 0.0) {
+      runIntakeFeeder = true;
+      runShooterFeeder = true;
+    } else if (inIntakeFeeder && inShooterFeeder) {
       runIntakeFeeder = false;
       runShooterFeeder = false;
     } else if (inIntakeFeeder) {
@@ -60,18 +66,33 @@ public class Feeder extends SubsystemBase {
     }
   }
 
-  public void setTopMotor(double velocity) {
-    if (runShooterFeeder)
-      topMotor.set(ControlMode.PercentOutput, velocity);
+  public FeederState getState() {
+    double measuredShooterFeeder = shooterFeederMotor.getMotorOutputPercent();
+    double measuredIntakeFeeder = intakeFeederMotor.getMotorOutputPercent();
+    if (measuredShooterFeeder > 0.0 || measuredIntakeFeeder > 0.0)
+      return FeederState.INTAKE;
+    else if (measuredShooterFeeder < 0.0 || measuredIntakeFeeder < 0.0)
+      return FeederState.OUTTAKE;
     else
-      topMotor.set(ControlMode.PercentOutput, 0.0);
+      return FeederState.IDLE;
   }
 
-  public void setBottomMotor(double velocity) {
-    if (runIntakeFeeder)
-      bottomMotor.set(ControlMode.PercentOutput, velocity);
+  public void setShooterFeeder(double velocity) {
+    shooterFeederVelocity = velocity;
+    updateGates();
+    if (runShooterFeeder)
+      shooterFeederMotor.set(ControlMode.PercentOutput, velocity);
     else
-      bottomMotor.set(ControlMode.PercentOutput, 0.0);
+      shooterFeederMotor.set(ControlMode.PercentOutput, 0.0);
+  }
+
+  public void setIntakeFeeder(double velocity) {
+    intakeFeederVelocity = velocity;
+    updateGates();
+    if (runIntakeFeeder)
+      intakeFeederMotor.set(ControlMode.PercentOutput, velocity);
+    else
+      intakeFeederMotor.set(ControlMode.PercentOutput, 0.0);
   }
 
   public void diagnostics() {
@@ -79,8 +100,8 @@ public class Feeder extends SubsystemBase {
     String bottomStatus = "Feeder Bottom Status";
 
     try {
-      setTopMotor(-0.1);
-      if (topMotor.getMotorOutputPercent() > -0.08 || topMotor.getMotorOutputPercent() < -0.12) {
+      setShooterFeeder(0.1);
+      if (shooterFeederMotor.getMotorOutputPercent() > -0.08 || shooterFeederMotor.getMotorOutputPercent() < -0.12) {
         SmartDashboard.putString(topStatus, "Failed");
       } else
         SmartDashboard.putString(topStatus, "Success");
@@ -89,8 +110,8 @@ public class Feeder extends SubsystemBase {
     }
 
     try {
-      setBottomMotor(0.1);
-      if (bottomMotor.getMotorOutputPercent() < 0.08 || bottomMotor.getMotorOutputPercent() > 0.12) {
+      setIntakeFeeder(0.1);
+      if (intakeFeederMotor.getMotorOutputPercent() < 0.08 || intakeFeederMotor.getMotorOutputPercent() > 0.12) {
         SmartDashboard.putString(bottomStatus, "Failed");
       } else
         SmartDashboard.putString(bottomStatus, "Success");

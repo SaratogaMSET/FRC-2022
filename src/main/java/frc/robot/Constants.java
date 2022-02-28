@@ -65,8 +65,13 @@ public final class Constants {
     }
     
     public static class FeederConstants {
-        public static final int TOP_MOTOR = 22;
-        public static final int BOTTOM_MOTOR = 20;
-        public static final int IR_GATES[] = {1, 2};
+        public static final int SHOOTER_FEEDER_MOTOR = 22;
+        public static final int INTAKE_FEEDER_MOTOR = 20;
+        public static final int IR_GATES[] = {0, 2};
+    }
+
+    public static class IntakeConstants {
+        public static final int LEFT_PISTON = 0;
+        public static final int RIGHT_PISTON = 1;
     }
 }

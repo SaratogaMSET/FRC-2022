@@ -101,8 +101,13 @@ public class RobotContainer {
 
 
   SmartDashboard.putData(m_autoSwitcher);
-    // m_drivetrainSubsystem.zeroGyroscope();
-    // m_drivetrainSubsystem.resetOdometry(new Pose2d());
+
+  m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+          m_drivetrainSubsystem,
+          () -> modifyAxis(-m_controller.getLeftX())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+          () -> -modifyAxis(-m_controller.getLeftY())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+          () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+  ));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -116,9 +121,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
-    //new Button(m_controller::getYButtonPressed)
+    new Button(m_controller::getYButtonPressed)
             // No requirements because we don't need to interrupt anything
-            //.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+            .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
   }
 
   private static double deadband(double value, double deadband) {
@@ -272,13 +277,12 @@ public class RobotContainer {
 
     return new SequentialCommandGroup(
       new WaitCommand(1.5),
-       new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
-       // new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(-0.5, 0.0, 0.0))),
-         new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose())),
-        // new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem),
-        swerveTrajectoryFollower.withTimeout(5)
-        // new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem)
-      );
-        // );
+      new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
+      // new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(-0.5, 0.0, 0.0))),
+       new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose())),
+      // new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem),z
+      swerveTrajectoryFollower.withTimeout(5)
+      // new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem)
+    );
   }
 }

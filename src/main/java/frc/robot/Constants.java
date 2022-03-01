@@ -50,8 +50,8 @@ public final class Constants {
     }
 
     public static class ShooterConstants {
-        public static final int SHOOTER_MOTOR = 21; 
-        public static final int SHOOTER_MOTOR_2 = 20; // Port should be nagative speed
+        public static final int SHOOTER_MOTOR = 23; 
+        public static final int SHOOTER_MOTOR_2 = 22; // Port should be nagative speed
     }
 
     public static class Hang {
@@ -65,7 +65,7 @@ public final class Constants {
     }
     
     public static class FeederConstants {
-        public static final int SHOOTER_FEEDER_MOTOR = 22;
+        public static final int SHOOTER_FEEDER_MOTOR = 21;
         public static final int INTAKE_FEEDER_MOTOR = 20;
         public static final int IR_GATES[] = {0, 2};
     }

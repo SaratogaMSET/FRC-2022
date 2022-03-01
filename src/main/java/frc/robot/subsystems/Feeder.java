@@ -96,27 +96,49 @@ public class Feeder extends SubsystemBase {
   }
 
   public void diagnostics() {
-    String topStatus = "Feeder Top Status";
-    String bottomStatus = "Feeder Bottom Status";
+    String shooterStatus = "Feeder Shooter Status";
+    String feederStatus = "Feeder Feeder Status";
+    String feederGate = "Feeder Gate Status";
+    String shooterGate = "Shooter Gate Status";
 
     try {
       setShooterFeeder(0.1);
       if (shooterFeederMotor.getMotorOutputPercent() > -0.08 || shooterFeederMotor.getMotorOutputPercent() < -0.12) {
-        SmartDashboard.putString(topStatus, "Failed");
+        SmartDashboard.putString(shooterStatus, "Failed");
       } else
-        SmartDashboard.putString(topStatus, "Success");
+        SmartDashboard.putString(shooterStatus, "Success");
     } catch (Exception e) {
-      SmartDashboard.putString(topStatus, "Failed");
+      SmartDashboard.putString(shooterStatus, "Failed");
     }
 
     try {
       setIntakeFeeder(0.1);
       if (intakeFeederMotor.getMotorOutputPercent() < 0.08 || intakeFeederMotor.getMotorOutputPercent() > 0.12) {
-        SmartDashboard.putString(bottomStatus, "Failed");
+        SmartDashboard.putString(feederStatus, "Failed");
       } else
-        SmartDashboard.putString(bottomStatus, "Success");
+        SmartDashboard.putString(feederStatus, "Success");
     } catch (Exception e) {
-      SmartDashboard.putString(bottomStatus, "Failed");
+      SmartDashboard.putString(feederStatus, "Failed");
+    }
+
+    try {
+      updateGates();
+      if(!inIntakeFeeder)
+        SmartDashboard.putString(feederGate, "Success");
+      else
+        SmartDashboard.putString(feederGate, "Failed");
+    } catch (Exception e){
+      SmartDashboard.putString(feederStatus, "Failed");
+    }
+
+    try {
+      updateGates();
+      if(!inShooterFeeder)
+        SmartDashboard.putString(shooterGate, "Success");
+      else
+        SmartDashboard.putString(shooterGate, "Failed");
+    } catch (Exception e){
+      SmartDashboard.putString(shooterGate, "Failed");
     }
   }
 

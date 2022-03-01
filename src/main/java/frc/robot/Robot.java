@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
     // Re-enables the scheduler.
     CommandScheduler.getInstance().enable();
     m_testCommand = m_robotContainer.getTestCommand();
-    // m_testCommand.schedule();
+    m_testCommand.schedule();
     // m_compressor = new Compressor(2, PneumaticsModuleType.REVPH);
     // m_compressor.enableDigital();
   }
@@ -104,6 +104,6 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     // m_compressor.enableDigital();
-    m_testCommand.schedule();
+    // m_testCommand.schedule();
   }
 }

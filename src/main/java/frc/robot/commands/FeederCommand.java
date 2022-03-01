@@ -21,18 +21,18 @@ public class FeederCommand extends CommandBase {
     @Override
     public void execute() {
         feeder.updateGates();
-        // if (feederState == FeederState.TEST) {
-        //     feeder.diagnostics();
-        // } else if (feederState == FeederState.INTAKE) {
-        //     feeder.setShooterFeeder(shooterFeederSpeed);
-        //     feeder.setIntakeFeeder(intakeFeederSpeed);
-        // } else if (feederState == FeederState.OUTTAKE) {
-        //     feeder.setShooterFeeder(-shooterFeederSpeed);
-        //     feeder.setIntakeFeeder(-intakeFeederSpeed);
-        // } else {
-        //     feeder.setShooterFeeder(0.0);
-        //     feeder.setIntakeFeeder(0.0);
-        // }
+        if (feederState == FeederState.TEST) {
+            feeder.diagnostics();
+        } else if (feederState == FeederState.INTAKE) {
+            feeder.setShooterFeeder(shooterFeederSpeed);
+            feeder.setIntakeFeeder(intakeFeederSpeed);
+        } else if (feederState == FeederState.OUTTAKE) {
+            feeder.setShooterFeeder(-shooterFeederSpeed);
+            feeder.setIntakeFeeder(-intakeFeederSpeed);
+        } else {
+            feeder.setShooterFeeder(0.0);
+            feeder.setIntakeFeeder(0.0);
+        }
     }
 
     @Override

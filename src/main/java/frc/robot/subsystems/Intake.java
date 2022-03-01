@@ -27,13 +27,13 @@ public class Intake extends SubsystemBase {
     }
 
     @Override
-    public void periodic() {}
-
+    public void periodic() {
+    }
 
     public void deploy(boolean status) {
         if (status) { // moves the piston out if the status is true (intake down)
             rightValve.set(true);
-            // leftValve.set(true);
+            leftValve.set(true);
         } else { // moves the piston in if the status is false (intake up)
             rightValve.set(false);
             leftValve.set(false);
@@ -55,13 +55,13 @@ public class Intake extends SubsystemBase {
         }
 
         try {
-        deploy(true);
-        if (leftValve.get()) {
-        SmartDashboard.putString(leftPistonStatus, "Success");
-        } else
-        SmartDashboard.putString(leftPistonStatus, "Failed");
+            deploy(true);
+            if (leftValve.get()) {
+                SmartDashboard.putString(leftPistonStatus, "Success");
+            } else
+                SmartDashboard.putString(leftPistonStatus, "Failed");
         } catch (Exception e) {
-        SmartDashboard.putString(leftPistonStatus, "Failed");
+            SmartDashboard.putString(leftPistonStatus, "Failed");
         }
     }
 }

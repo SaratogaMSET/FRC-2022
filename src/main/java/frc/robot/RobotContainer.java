@@ -16,10 +16,12 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.commands.ShooterCommand;
 // import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Feeder.FeederState;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeState;
+import frc.robot.commands.DefaultDriveCommand;
 // import frc.robot.subsystems.HangSubsystem;
 // import frc.robot.commands.HangForwardCommand;
 // import frc.robot.commands.HangReverseCommand;
@@ -37,7 +39,7 @@ import frc.robot.commands.PrototypeTestCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  // private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final XboxController m_controller = new XboxController(0);
   private final Intake m_intake;
@@ -56,16 +58,16 @@ public class RobotContainer {
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
     
-    m_shooterSubsystem.setDefaultCommand(new ShooterCommand(
-            m_shooterSubsystem
-    ));
-
-    // m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-    //         m_drivetrainSubsystem,
-    //         () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    //         () -> -modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    //         () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    // m_shooterSubsystem.setDefaultCommand(new ShooterCommand(
+    //         m_shooterSubsystem
     // ));
+
+    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+            m_drivetrainSubsystem,
+            () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    ));
 
     driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
     driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
@@ -133,31 +135,31 @@ public class RobotContainer {
     return new IntakeCommand(m_intake, IntakeState.DOWN);
   }
 
-  // private static double deadband(double value, double deadband) {
-  //   if (Math.abs(value) > deadband) {
-  //     if (value > 0.0) {
-  //       return (value - deadband) / (1.0 - deadband);
-  //     } else {
-  //       return (value + deadband) / (1.0 - deadband);
-  //     }
-  //   } else {
-  //     return 0.0;
-  //   }
-  // }
+  private static double deadband(double value, double deadband) {
+    if (Math.abs(value) > deadband) {
+      if (value > 0.0) {
+        return (value - deadband) / (1.0 - deadband);
+      } else {
+        return (value + deadband) / (1.0 - deadband);
+      }
+    } else {
+      return 0.0;
+    }
+  }
 
-  // private static double modifyAxis(double value) {
-  //   // Deadband
-  //   value = deadband(value, 0.05);
+  private static double modifyAxis(double value) {
+    // Deadband
+    value = deadband(value, 0.05);
 
-  //   // Square the axis
-  //   value = Math.copySign(value * value, value);
+    // Square the axis
+    value = Math.copySign(value * value, value);
 
-  //   return value;
-  // }
+    return value;
+  }
 
   public Command getTestCommand(){
     // return new PrototypeTestCommand(driverHorizontal, driverVertical);
-    return new SequentialCommandGroup(new FeederCommand(m_feeder, FeederState.INTAKE, 0.0, 0.0));
-    // return new SequentialCommandGroup(new IntakeCommand(m_intake, IntakeState.TEST, 0.0));
+    return new SequentialCommandGroup(new FeederCommand(m_feeder, FeederState.TEST, 0.0, 0.0));
+    // return new SequentialCommandGroup(new IntakeCommand(m_intake, IntakeState.TEST));
   }
 }

@@ -60,6 +60,8 @@ public class RobotContainer {
   public static final String kAutoR2 = "2 Ball";
   public static final String kAutoR3 = "Back Path";
   public String m_autoSelected;
+
+
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
   private final ColorSensorSystem m_ColorSensorSystem = new ColorSensorSystem();
@@ -160,7 +162,6 @@ public class RobotContainer {
  String autoSelect = "";
     switch (m_autoSelected){ //1 ball path
       case kAutoR1:
-        // Put custom auto code here
           autoSelect = kAutoR1;
         // System.out.println("Unamed_0 works");
         break;

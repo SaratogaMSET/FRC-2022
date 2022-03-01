@@ -47,10 +47,10 @@ import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.SwerveControllerStrafe;
 import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.Feeder.FeederState;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Intake.IntakeState;
+import frc.robot.subsystems.FeederSubsystem;
+import frc.robot.subsystems.FeederSubsystem.FeederState;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakeSubsystem.IntakeState;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 /**
@@ -72,8 +72,8 @@ public class RobotContainer {
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
   private final ColorSensorSystem m_ColorSensorSystem = new ColorSensorSystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-  private final Feeder m_feeder = new Feeder();
-  private final Intake m_intake = new Intake();
+  private final FeederSubsystem m_feeder = new FeederSubsystem();
+  private final IntakeSubsystem m_intake = new IntakeSubsystem();
 
 
 

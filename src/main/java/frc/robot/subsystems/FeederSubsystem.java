@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
-public class Feeder extends SubsystemBase {
+public class FeederSubsystem extends SubsystemBase {
   private TalonFX shooterFeederMotor;
   private TalonFX intakeFeederMotor;
   private DigitalInput shooterGate;
@@ -31,7 +31,7 @@ public class Feeder extends SubsystemBase {
     IDLE
   }
 
-  public Feeder() {
+  public FeederSubsystem() {
     shooterFeederMotor = new TalonFX(Constants.FeederConstants.SHOOTER_FEEDER_MOTOR);
     intakeFeederMotor = new TalonFX(Constants.FeederConstants.INTAKE_FEEDER_MOTOR);
     shooterGate = new DigitalInput(Constants.FeederConstants.IR_GATES[0]);

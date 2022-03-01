@@ -93,24 +93,29 @@ public final class Constants {
         }
     }
 
-    public static class FeederConstants{
-        public static final int TOP_MOTOR = 20;
-        public static final int BOTTOM_MOTOR = 21;
-        public static final int IR_GATES[] = {0, 1};
-        public static final int BOTTOM_GATE = 0; // REPLACE
-        public static final int TOP_GATE = 0; // REPLACE
+    public static class ShooterConstants {
+        public static final int SHOOTER_MOTOR = 23; 
+        public static final int SHOOTER_MOTOR_2 = 22; // Port should be nagative speed
     }
 
-    public static class IntakeConstants { // Intake Motor Ports
-        public static final int LEFT_MOTOR = 10; // NOTE: SET THIS PORT NUMBER LATER
-        public static final int RIGHT_MOTOR = 11;
-        public static final int PISTON_PORTS[] = {6, 7}; // The forward channel on the module to control (0..7)
-        //public static final int MODULE_NUMBER[] = {0, 0}; // The module number of the solenoid module to use.
+    public static class Hang {
+        public static final int HANG_RIGHT_MOTOR = 34;
+        public static final int HANG_LEFT_MOTOR = 40;
     }
     
-    public static class ShooterConstants{
-        // public static final int SHOOTER_MOTOR = 0;
-        // public static final int LS_MOTOR = 0;
+    public static class OIConstants {
+        public static final int JOYSTICK_DRIVE_VERTICAL = 2;
+        public static final int JOYSTICK_DRIVE_HORIZONTAL = 3;
+    }
+    
+    public static class FeederConstants {
+        public static final int SHOOTER_FEEDER_MOTOR = 21;
+        public static final int INTAKE_FEEDER_MOTOR = 20;
+        public static final int IR_GATES[] = {0, 2};
     }
 
+    public static class IntakeConstants {
+        public static final int LEFT_PISTON = 0;
+        public static final int RIGHT_PISTON = 1;
+    }
 }

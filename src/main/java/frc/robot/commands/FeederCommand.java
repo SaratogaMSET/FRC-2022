@@ -2,42 +2,42 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.Intake;
-import frc.robot.Constants;
-import frc.robot.RobotState;
-import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.subsystems.Feeder.FeederState;
 
 public class FeederCommand extends CommandBase {
-    private final Feeder m_feeder;
-    private double topMotorVelocity, bottomMotorVelocity;
-    private RobotState robotState;
-    private DigitalInput[] IR_GATES;
+    private final Feeder feeder;
+    private FeederState feederState;
+    private double shooterFeederSpeed, intakeFeederSpeed;
 
-    public FeederCommand(Feeder feederSub, double topMotorVelocity, double bottomMotorVelocity, RobotState robotState) {
-        m_feeder = feederSub;
-        addRequirements(feederSub);
-        this.robotState = robotState;
-        this.topMotorVelocity = topMotorVelocity;
-        this.bottomMotorVelocity = bottomMotorVelocity;
+    public FeederCommand(Feeder feeder, FeederState feederState, double shooterFeederSpeed,
+            double intakeFeederSpeed) {
+        this.feeder = feeder;
+        this.shooterFeederSpeed = shooterFeederSpeed;
+        this.intakeFeederSpeed = intakeFeederSpeed;
+        this.feederState = feederState;
+        addRequirements(feeder);
     }
 
     @Override
     public void execute() {
-        if (m_feeder.getIRGate(Constants.FeederConstants.BOTTOM_GATE)) {
-            m_feeder.setBottomMotor(bottomMotorVelocity);
+        feeder.updateGates();
+        if (feederState == FeederState.TEST) {
+            feeder.diagnostics();
+        } else if (feederState == FeederState.INTAKE) {
+            feeder.setShooterFeeder(shooterFeederSpeed);
+            feeder.setIntakeFeeder(intakeFeederSpeed);
+        } else if (feederState == FeederState.OUTTAKE) {
+            feeder.setShooterFeeder(-shooterFeederSpeed);
+            feeder.setIntakeFeeder(-intakeFeederSpeed);
         } else {
-            m_feeder.setBottomMotor(0);
-        }
-        if (m_feeder.getIRGate(Constants.FeederConstants.TOP_GATE)) {
-            m_feeder.setTopMotor(topMotorVelocity);
-        } else {
-            m_feeder.setTopMotor(0);
+            feeder.setShooterFeeder(0.0);
+            feeder.setIntakeFeeder(0.0);
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_feeder.setTopMotor(0);
-        m_feeder.setBottomMotor(0);
+        feeder.setIntakeFeeder(0.0);
+        feeder.setShooterFeeder(0.0);
     }
 }

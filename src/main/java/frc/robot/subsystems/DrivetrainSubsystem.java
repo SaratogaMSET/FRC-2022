@@ -4,16 +4,10 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SPI;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
-
-import org.opencv.calib3d.StereoSGBM;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -21,17 +15,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants;
-import frc.robot.Constants.*;
-import frc.robot.util.drivers.LazyTalonFX;
+import frc.robot.Constants.Drivetrain;
+// import frc.robot.util.drivers.LazyTalonFX;
 
 public class DrivetrainSubsystem extends SubsystemBase {
   /**
@@ -40,17 +28,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * This can be reduced to cap the robot's maximum speed. Typically, this is useful during initial testing of the robot.
    */
   public static final double MAX_VOLTAGE = 12.0;
-  // FIXME Measure the drivetrain's maximum velocity or calculate the theoretical.
-  //  The formula for calculating the theoretical maximum velocity is:
-  //   <Motor free speed RPM> / 60 * <Drive reduction> * <Wheel diameter meters> * pi
-  //  By default this value is setup for a Mk3 standard module using Falcon500s to drive.
-  //  An example of this constant for a Mk4 L2 module with NEOs to drive is:
-  //   5880.0 / 60.0 / SdsModuleConfigurations.MK4_L2.getDriveReduction() * SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI
-  /**
-   * The maximum velocity of the robot in meters per second.
-   * <p>
-   * This is a measure of how fast the robot should be able to drive in a straight line.
-   */
+  
   public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0 *
           SdsModuleConfigurations.MK4_L2.getDriveReduction() *
           SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI);
@@ -96,47 +74,37 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
-  private LazyTalonFX m_frontLeftSteer;
-  private LazyTalonFX m_frontRightSteer;
-  private LazyTalonFX m_backLeftSteer;
-  private LazyTalonFX m_backRightSteer;
+  // private LazyTalonFX m_frontLeftSteer;
+  // private LazyTalonFX m_frontRightSteer;
+  // private LazyTalonFX m_backLeftSteer;
+  // private LazyTalonFX m_backRightSteer;
 
-  private LazyTalonFX m_frontLeftDrive;
-  private LazyTalonFX m_frontRightDrive;
-  private LazyTalonFX m_backLeftDrive;
-  private LazyTalonFX m_backRightDrive;
+  // private LazyTalonFX m_frontLeftDrive;
+  // private LazyTalonFX m_frontRightDrive;
+  // private LazyTalonFX m_backLeftDrive;
+  // private LazyTalonFX m_backRightDrive;
 
   public DrivetrainSubsystem() {
-    m_frontLeftSteer = new LazyTalonFX(Drivetrain.FRONT_LEFT_MODULE_STEER_MOTOR);
-    m_frontRightSteer = new LazyTalonFX(Drivetrain.FRONT_RIGHT_MODULE_STEER_MOTOR);
-    m_backLeftSteer = new LazyTalonFX(Drivetrain.BACK_LEFT_MODULE_STEER_MOTOR);
-    m_backRightSteer = new LazyTalonFX(Drivetrain.BACK_RIGHT_MODULE_STEER_MOTOR);
+    // m_frontLeftSteer = new LazyTalonFX(Drivetrain.FRONT_LEFT_MODULE_STEER_MOTOR);
+    // m_frontRightSteer = new LazyTalonFX(Drivetrain.FRONT_RIGHT_MODULE_STEER_MOTOR);
+    // m_backLeftSteer = new LazyTalonFX(Drivetrain.BACK_LEFT_MODULE_STEER_MOTOR);
+    // m_backRightSteer = new LazyTalonFX(Drivetrain.BACK_RIGHT_MODULE_STEER_MOTOR);
 
-    m_frontLeftDrive = new LazyTalonFX(Drivetrain.FRONT_LEFT_MODULE_DRIVE_MOTOR);
-    m_frontRightDrive = new LazyTalonFX(Drivetrain.FRONT_RIGHT_MODULE_DRIVE_MOTOR);
-    m_backLeftDrive = new LazyTalonFX(Drivetrain.BACK_LEFT_MODULE_DRIVE_MOTOR);
-    m_backRightDrive = new LazyTalonFX(Drivetrain.BACK_RIGHT_MODULE_DRIVE_MOTOR);
+    // m_frontLeftDrive = new LazyTalonFX(Drivetrain.FRONT_LEFT_MODULE_DRIVE_MOTOR);
+    // m_frontRightDrive = new LazyTalonFX(Drivetrain.FRONT_RIGHT_MODULE_DRIVE_MOTOR);
+    // m_backLeftDrive = new LazyTalonFX(Drivetrain.BACK_LEFT_MODULE_DRIVE_MOTOR);
+    // m_backRightDrive = new LazyTalonFX(Drivetrain.BACK_RIGHT_MODULE_DRIVE_MOTOR);
 
     m_frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-        //     tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-        //             .withSize(2, 4)
-        //             .withPosition(2, 0),
             Mk4SwerveModuleHelper.GearRatio.L2,
-            // This is the ID of the drive motor
             Drivetrain.FRONT_LEFT_MODULE_DRIVE_MOTOR,
-            // This is the ID of the steer motor
             Drivetrain.FRONT_LEFT_MODULE_STEER_MOTOR,
-            // This is the ID of the steer encoder
             Drivetrain.FRONT_LEFT_MODULE_STEER_ENCODER,
-            // This is how much the steer encoder is offset from true zero (In our case, zero is facing straight forward)
             Drivetrain.FRONT_LEFT_MODULE_STEER_OFFSET
     );
 
     // We will do the same for the other modules
     m_frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
-        //     tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-        //             .withSize(2, 4)
-        //             .withPosition(2, 0),
             Mk4SwerveModuleHelper.GearRatio.L2,
             Drivetrain.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
             Drivetrain.FRONT_RIGHT_MODULE_STEER_MOTOR,
@@ -145,9 +113,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     );
 
     m_backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-        //     tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-        //             .withSize(2, 4)
-        //             .withPosition(4, 0),
             Mk4SwerveModuleHelper.GearRatio.L2,
             Drivetrain.BACK_LEFT_MODULE_DRIVE_MOTOR,
             Drivetrain.BACK_LEFT_MODULE_STEER_MOTOR,
@@ -156,9 +121,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     );
 
     m_backRightModule = Mk4SwerveModuleHelper.createFalcon500(
-        //     tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-        //             .withSize(2, 4)
-        //             .withPosition(6, 0),
             Mk4SwerveModuleHelper.GearRatio.L2,
             Drivetrain.BACK_RIGHT_MODULE_DRIVE_MOTOR,
             Drivetrain.BACK_RIGHT_MODULE_STEER_MOTOR,
@@ -259,6 +221,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     SmartDashboard.putString("Robot Rotation", getPose().getRotation().toString());
-    SmartDashboard.putString("Wheel Velocity Real fL", ""+m_frontLeftSteer.getSelectedSensorVelocity());
+    // SmartDashboard.putString("Wheel Velocity Real fL", ""+m_frontLeftSteer.getSelectedSensorVelocity());
   }
 }

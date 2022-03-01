@@ -4,24 +4,17 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.util.Color;
-import com.revrobotics.ColorSensorV3;
-import com.revrobotics.ColorMatch;
-import com.revrobotics.ColorMatchResult;
-import edu.wpi.first.wpilibj.I2C;
+// import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  private final I2C.Port i2cPort = I2C.Port.kOnboard; //Constants.Colorwheel.COLOR_SENSOR; 
+  // private final I2C.Port i2cPort = I2C.Port.kOnboard; //Constants.Colorwheel.COLOR_SENSOR; 
   private NetworkTable table;
   private NetworkTableEntry ta, tx, ty, tv;
   private static double a, x, y, v;

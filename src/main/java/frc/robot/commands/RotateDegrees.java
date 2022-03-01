@@ -1,18 +1,14 @@
 package frc.robot.commands;
 
+import com.ctre.phoenix.sensors.CANCoder;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
-
-import java.util.function.DoubleSupplier;
-
-import com.ctre.phoenix.sensors.CANCoder;
 
 public class RotateDegrees extends CommandBase {
     private final DrivetrainSubsystem m_drivetrainSubsystem;

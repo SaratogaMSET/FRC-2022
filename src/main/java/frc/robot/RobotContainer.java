@@ -40,7 +40,7 @@ import frc.robot.commands.DefaultDriveCommand;
 // import frc.robot.commands.HangForwardCommand;
 // import frc.robot.commands.HangReverseCommand;
 import frc.robot.commands.FeederCommand;
-import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.DeployIntakeCommand;
 import frc.robot.commands.RotateDegrees;
 // import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.ShooterCommand;
@@ -51,7 +51,6 @@ import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Feeder.FeederState;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeState;
-// import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 /**
@@ -147,19 +146,21 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     new JoystickButton(driverVertical, 2).whileHeld(
-      new IntakeCommand(m_intake, IntakeState.DOWN)  
+      new DeployIntakeCommand(m_intake, IntakeState.DOWN)  
+    );
+    new JoystickButton(driverHorizontal, 2).whileHeld(
+      new DeployIntakeCommand(m_intake, IntakeState.DOWN)  
     );
 
     new JoystickButton(driverVertical, 2).whenInactive(
-      new IntakeCommand(m_intake, IntakeState.UP)
+      new DeployIntakeCommand(m_intake, IntakeState.UP)
+    );
+    new JoystickButton(driverHorizontal, 2).whenInactive(
+      new DeployIntakeCommand(m_intake, IntakeState.UP)
     );
 
-    new JoystickButton(driverVertical, 3).whileHeld(
-      new ShooterCommand(m_shooterSubsystem)  
-    );
-
-    // new JoystickButton(driverHorizontal, 3).whileHeld(
-    //   new FeederCommand(m_feeder, FeederState.RUN, 0.0, 0.0)
+    // new JoystickButton(driverVertical, 3).whileHeld(
+    //   new ShooterCommand(m_shooterSubsystem)  
     // );
 
 
@@ -195,7 +196,7 @@ public class RobotContainer {
 
   public Command getTestCommand(){
     // return new PrototypeTestCommand(driverHorizontal, driverVertical);
-    return new SequentialCommandGroup(new FeederCommand(m_feeder, FeederState.INTAKE, 0.0, 0.0));
+    return new FeederCommand(m_feeder, FeederState.INTAKE, 0.0, 0.0);
     // return new SequentialCommandGroup(new IntakeCommand(m_intake, IntakeState.TEST, 0.0));
   }
 

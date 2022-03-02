@@ -1,14 +1,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Intake.IntakeState;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakeSubsystem.IntakeState;
 
 public class DeployIntakeCommand extends CommandBase {
-    private final Intake m_intake;
+    private final IntakeSubsystem m_intake;
     private IntakeState state;
 
-    public DeployIntakeCommand(Intake intakeSub, IntakeState state) {
+    public DeployIntakeCommand(IntakeSubsystem intakeSub, IntakeState state) {
         m_intake = intakeSub;
         this.state = state;
         addRequirements(intakeSub);

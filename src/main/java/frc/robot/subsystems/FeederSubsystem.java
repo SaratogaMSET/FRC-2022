@@ -79,7 +79,6 @@ public class FeederSubsystem extends SubsystemBase {
 
   public void setShooterFeeder(double velocity) {
     shooterFeederVelocity = velocity;
-    updateGates();
     if (runShooterFeeder)
       shooterFeederMotor.set(ControlMode.PercentOutput, velocity);
     else
@@ -88,7 +87,6 @@ public class FeederSubsystem extends SubsystemBase {
 
   public void setIntakeFeeder(double velocity) {
     intakeFeederVelocity = velocity;
-    updateGates();
     if (runIntakeFeeder)
       intakeFeederMotor.set(ControlMode.PercentOutput, velocity);
     else

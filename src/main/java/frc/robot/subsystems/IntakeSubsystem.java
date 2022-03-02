@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Intake extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase {
     private Solenoid rightValve;
     private Solenoid leftValve;
 
@@ -21,7 +21,7 @@ public class Intake extends SubsystemBase {
         UP
     }
 
-    public Intake() {
+    public IntakeSubsystem() {
         rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.RIGHT_PISTON);
         leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.LEFT_PISTON);
     }

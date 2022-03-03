@@ -20,32 +20,32 @@ public final class Constants {
          *
          * Should be measured from center to center.
          */
-        public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.9144;
+        public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.5588;
         /**
          * The front-to-back distance between the drivetrain wheels.
          *
          * Should be measured from center to center.
          */
-        public static final double DRIVETRAIN_WHEELBASE_METERS = 0.6096;
+        public static final double DRIVETRAIN_WHEELBASE_METERS = 0.635;
 
-        public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 32;
-        public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 33;
-        public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 43;
+        public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 36;
+        public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 37;
+        public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 47;
         public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(25.0);
 
-        public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 34;
-        public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 35;
-        public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 45;
+        public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 32;
+        public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 33;
+        public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 43;
         public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(-20.0);
 
-        public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 30;
-        public static final int BACK_LEFT_MODULE_STEER_MOTOR = 31;
-        public static final int BACK_LEFT_MODULE_STEER_ENCODER = 41;
+        public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 34;
+        public static final int BACK_LEFT_MODULE_STEER_MOTOR = 35;
+        public static final int BACK_LEFT_MODULE_STEER_ENCODER = 45;
         public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(40.0);
 
-        public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 36;
-        public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 37;
-        public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 47;
+        public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 30;
+        public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 31;
+        public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 41;
         public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(170.0);
 
         public static final double kPXController = 0.00; //0.033 1/30

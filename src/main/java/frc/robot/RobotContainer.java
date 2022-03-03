@@ -145,19 +145,29 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    new JoystickButton(driverVertical, 2).whileHeld(
-      new DeployIntakeCommand(m_intake, IntakeState.DOWN)  
-    );
-    new JoystickButton(driverHorizontal, 2).whileHeld(
-      new DeployIntakeCommand(m_intake, IntakeState.DOWN)  
+
+    new JoystickButton(driverVertical, 2).whileActiveOnce(
+      // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+      new FeederCommand(m_feeder, FeederState.INTAKE, 0.9, 0.2)
     );
 
-    new JoystickButton(driverVertical, 2).whenInactive(
-      new DeployIntakeCommand(m_intake, IntakeState.UP)
+    new JoystickButton(driverVertical, 3).whileActiveOnce(
+      // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+      new FeederCommand(m_feeder, FeederState.OUTTAKE, 0.5, 0.3)
     );
-    new JoystickButton(driverHorizontal, 2).whenInactive(
-      new DeployIntakeCommand(m_intake, IntakeState.UP)
-    );
+    // new JoystickButton(driverHorizontal, 1).whileHeld(
+    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+    //   new FeederCommand(m_feeder, FeederState.INTAKE, 0.5, 0.5) 
+    // );
+
+    // new JoystickButton(driverVertical, 1).whenInactive(
+    //   // new DeployIntakeCommand(m_intake, IntakeState.UP)
+    //   new FeederCommand(m_feeder, FeederState.IDLE, 0.0, 0.0)
+    // );
+    // new JoystickButton(driverHorizontal, 1).whenInactive(
+    //   // new DeployIntakeCommand(m_intake, IntakeState.UP)
+    //   new FeederCommand(m_feeder, FeederState.IDLE, 0.0, 0.0)
+    // );
 
     // new JoystickButton(driverVertical, 3).whileHeld(
     //   new ShooterCommand(m_shooterSubsystem)  
@@ -165,9 +175,9 @@ public class RobotContainer {
 
 
     // Back button zeros the gyroscope
-    new Button(m_controller::getYButtonPressed)
-            // No requirements because we don't need to interrupt anything
-            .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+    // new Button(m_controller::getYButtonPressed)
+    //         // No requirements because we don't need to interrupt anything
+    //         .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
   }
 
   private static double deadband(double value, double deadband) {
@@ -196,7 +206,7 @@ public class RobotContainer {
 
   public Command getTestCommand(){
     // return new PrototypeTestCommand(driverHorizontal, driverVertical);
-    return new FeederCommand(m_feeder, FeederState.INTAKE, 0.5, 0.5);
+    return new FeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4);
     // return new SequentialCommandGroup(new IntakeCommand(m_intake, IntakeState.TEST, 0.0));
   }
 

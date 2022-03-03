@@ -196,7 +196,7 @@ public class RobotContainer {
 
   public Command getTestCommand(){
     // return new PrototypeTestCommand(driverHorizontal, driverVertical);
-    return new FeederCommand(m_feeder, FeederState.INTAKE, 0.0, 0.0);
+    return new FeederCommand(m_feeder, FeederState.INTAKE, 0.5, 0.5);
     // return new SequentialCommandGroup(new IntakeCommand(m_intake, IntakeState.TEST, 0.0));
   }
 

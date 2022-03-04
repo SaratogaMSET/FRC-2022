@@ -98,9 +98,13 @@ public final class Constants {
         public static final int SHOOTER_MOTOR_2 = 22; // Port should be nagative speed
     }
 
-    public static class Hang {
-        public static final int HANG_RIGHT_MOTOR = 34;
-        public static final int HANG_LEFT_MOTOR = 40;
+    public static class HangConstants {
+        public static final int HANG_RIGHT_MOTOR = 26;
+        public static final int HANG_LEFT_MOTOR = 25;
+        public static final int RIGHT_HANG_LIMIT_SWITCH = 4;
+        public static final int LEFT_HANG_LIMIT_SWITCH = 5;
+        public static final int RIGHT_PISTON = 2; //change 
+        public static final int LEFT_PISTON = 2; //change
     }
     
     public static class OIConstants {

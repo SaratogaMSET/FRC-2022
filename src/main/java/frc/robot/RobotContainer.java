@@ -217,6 +217,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    //code hang on first rung
+    //return new FirstRungHangCommand(-0.1);
     // An ExampleCommand will run in autonomous
     m_autoSelected = m_autoSwitcher.getSelected();
     String autoSelect = "";

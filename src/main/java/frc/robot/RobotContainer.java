@@ -81,7 +81,7 @@ public class RobotContainer {
   public static final double pi = Math.PI;
   private final XboxController m_controller = new XboxController(0);
   private final Compressor m_compressor;
-  private final Joystick driverVertical, driverHorizontal;
+  // private final Joystick driverVertical, driverHorizontal;
   
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0 *
@@ -107,11 +107,11 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
-    new SequentialCommandGroup(
-        new WaitCommand(1),
-        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
-        new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(new Pose2d()))
-    ).schedule();
+    // new SequentialCommandGroup(
+    //     new WaitCommand(1),
+    //     new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+    //     new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(new Pose2d()))
+    // ).schedule();
     m_autoSwitcher.addOption(kAutoR1, kAutoR1);
     m_autoSwitcher.addOption(kAutoR2, kAutoR2);
     m_autoSwitcher.addOption(kAutoR3, kAutoR3);
@@ -121,13 +121,13 @@ public class RobotContainer {
 
   m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
           m_drivetrainSubsystem,
-          () -> modifyAxis(-m_controller.getLeftX())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-          () -> -modifyAxis(-m_controller.getLeftY())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+          () -> modifyAxis(m_controller.getLeftX())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+          () -> -modifyAxis(m_controller.getLeftY())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
           () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
   ));
 
-    driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
-    driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
+    // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
+    // driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
 
 
     
@@ -146,15 +146,15 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
 
-    new JoystickButton(driverVertical, 2).whileActiveOnce(
-      // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-      new FeederCommand(m_feeder, FeederState.INTAKE, 0.9, 0.2)
-    );
+    // new JoystickButton(driverVertical, 2).whileActiveOnce(
+    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+    //   new FeederCommand(m_feeder, FeederState.INTAKE, 0.9, 0.2)
+    // );
 
-    new JoystickButton(driverVertical, 3).whileActiveOnce(
-      // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-      new FeederCommand(m_feeder, FeederState.OUTTAKE, 0.5, 0.3)
-    );
+    // new JoystickButton(driverVertical, 3).whileActiveOnce(
+    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+    //   new FeederCommand(m_feeder, FeederState.OUTTAKE, 0.5, 0.3)
+    // );
     // new JoystickButton(driverHorizontal, 1).whileHeld(
     //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
     //   new FeederCommand(m_feeder, FeederState.INTAKE, 0.5, 0.5) 
@@ -213,9 +213,10 @@ public class RobotContainer {
 
 
   public Command getTestCommand(){
-    // return new PrototypeTestCommand(driverHorizontal, driverVertical);
     return new FeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4);
-    // return new SequentialCommandGroup(new IntakeCommand(m_intake, IntakeState.TEST, 0.0));
+
+    //code hang on first rung
+    //return new FirstRungHangCommand(-0.1);
   }
 
 
@@ -225,8 +226,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    //code hang on first rung
-    //return new FirstRungHangCommand(-0.1);
     // An ExampleCommand will run in autonomous
     m_autoSelected = m_autoSwitcher.getSelected();
     String autoSelect = "";

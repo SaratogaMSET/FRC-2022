@@ -66,7 +66,7 @@ public class FeederSubsystem extends SubsystemBase {
     }
   }
 
-  public FeederState getState() {
+  public FeederState updateFeederState() {
     double measuredShooterFeeder = shooterFeederMotor.getMotorOutputPercent();
     double measuredIntakeFeeder = intakeFeederMotor.getMotorOutputPercent();
     if (measuredShooterFeeder > 0.0 || measuredIntakeFeeder > 0.0)

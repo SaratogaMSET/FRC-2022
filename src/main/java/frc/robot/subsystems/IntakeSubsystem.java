@@ -40,6 +40,14 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
+    public IntakeState updateIntakeState(){
+        if(rightValve.get()){
+            return IntakeState.DOWN;
+        } else {
+            return IntakeState.UP;
+        }
+    }
+
     public void diagnostics() {
         String leftPistonStatus = "Left Piston Status";
         String rightPistonStatus = "Right Piston Status";

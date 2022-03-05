@@ -180,6 +180,14 @@ public class RobotContainer {
     //         .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
   }
 
+  public void updateRobotState() {
+    RobotState.intakeState = m_intake.updateIntakeState();
+    RobotState.feederState = m_feeder.updateFeederState();
+    // RobotState.shooterState = m_shooter.updateShooterState();
+    // RobotState.visionState = m_vision.updateVisionState();
+    SmartDashboard.putNumber("Distance", m_visionSubsystem.getDistance());
+  }
+
   private static double deadband(double value, double deadband) {
     if (Math.abs(value) > deadband) {
       if (value > 0.0) {

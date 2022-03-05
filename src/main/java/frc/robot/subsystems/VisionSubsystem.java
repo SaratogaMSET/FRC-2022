@@ -60,7 +60,7 @@ public class VisionSubsystem extends SubsystemBase {
     return VisionState.NO_TARGET;
   }
 
-  public static double getDistance(){
+  public double getDistance(){
     return (Constants.Vision.H2 - Constants.Vision.H1) / Math.tan(Math.toRadians(Constants.Vision.A1 + y));
   }
 

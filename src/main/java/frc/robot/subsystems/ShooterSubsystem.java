@@ -29,47 +29,16 @@ package frc.robot.subsystems;
  
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SPI;
-import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-import com.swervedrivespecialties.swervelib.SwerveModule;
- 
-import org.opencv.calib3d.StereoSGBM;
- 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
-import frc.robot.Constants.*;
 import frc.robot.util.drivers.LazyTalonFX;
  
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.util.drivers.LazyTalonFX;
-import frc.robot.util.drivers.TalonFXFactory;
  
  
 public class ShooterSubsystem extends SubsystemBase{
@@ -78,20 +47,19 @@ public class ShooterSubsystem extends SubsystemBase{
    }
  
    private final LazyTalonFX shooterMotor;
- 
    private final LazyTalonFX lsMotor;
  
  private ShuffleboardTab tab = Shuffleboard.getTab("Teleop");
  // private NetworkTableEntry shooterRPMEntry = tab.add("Shooter RPM", 0).getEntry();
  private NetworkTableEntry shooterPercentRPMEntry = tab.add("Shooter Percent RPM", 0).withWidget(BuiltInWidgets.kGraph).getEntry();
  private NetworkTableEntry shooterPercentOutputEntry = tab.add("Shooter Percent Output", 0).withWidget(BuiltInWidgets.kGraph).getEntry();
- private NetworkTableEntry shooterStateEntry = tab.add("Shooter State", "").getEntry();
+//  private NetworkTableEntry shooterStateEntry = tab.add("Shooter State", "").getEntry();
  private NetworkTableEntry shooterHoodEntry = tab.add("Shooter Hood Position", 0).getEntry();
  private NetworkTableEntry leadscrewSetpointEntry = Shuffleboard.getTab("Teleop").add("Shooter Hood Setpoint", 0).withPosition(1, 2).getEntry();
  
  // constants
- private double D1 = 4.25, D2 = 6.25, C1 = .5, C2 = .75;
- private double ANGLE_OFFSET = 6.32, INIT_LS_LEN = 2.8;
+//  private double D1 = 4.25, D2 = 6.25, C1 = .5, C2 = .75;
+//  private double ANGLE_OFFSET = 6.32, INIT_LS_LEN = 2.8;
  
  /** Creates a new ShooterSubsystem. */
  public ShooterSubsystem() {
@@ -155,19 +123,19 @@ public class ShooterSubsystem extends SubsystemBase{
  }
 
  
- public int angleToEncoder(double theta) {
-   // offset then convert to rad
-   theta += ANGLE_OFFSET;
-   theta = Math.toRadians(theta);
+//  public int angleToEncoder(double theta) {
+//    // offset then convert to rad
+//    theta += ANGLE_OFFSET;
+//    theta = Math.toRadians(theta);
  
-   // leadscrew length
-   double lsLen = Math.sqrt((-2 * D1 * D2 * Math.cos(theta)) + Math.pow(D1, 2) + Math.pow(D2, 2) - Math.pow(C1, 2)
-       - Math.pow(C2, 2) - (2 * C1 * C2));
-   double encoderCount = (lsLen - INIT_LS_LEN) * 10 * 2048;
+//    // leadscrew length
+//    double lsLen = Math.sqrt((-2 * D1 * D2 * Math.cos(theta)) + Math.pow(D1, 2) + Math.pow(D2, 2) - Math.pow(C1, 2)
+//        - Math.pow(C2, 2) - (2 * C1 * C2));
+//    double encoderCount = (lsLen - INIT_LS_LEN) * 10 * 2048;
  
-   // then run leadscrew motor to distance
-   return (int) encoderCount;
- }
+//    // then run leadscrew motor to distance
+//    return (int) encoderCount;
+//  }
  
  public boolean withinTolerance(ShooterState target) {
    return (Math.abs(getLeadscrewStatePosition(target) - lsMotor.getSelectedSensorPosition()) < Constants.ShooterConstants.LEADSCREW_TOLERANCE) ? true: false;
@@ -181,15 +149,20 @@ public class ShooterSubsystem extends SubsystemBase{
    switch(state) {
  
      case ZONE_2:
-       return angleToEncoder(Constants.ShooterConstants.DistanceConstants.ZONE_2.getHoodAngle());
+        return (int) Math.PI/360*55;
+       //return angleToEncoder(Constants.ShooterConstants.DistanceConstants.ZONE_2.getHoodAngle());
      case ZONE_3:
-       return angleToEncoder(Constants.ShooterConstants.DistanceConstants.ZONE_3.getHoodAngle());
+        return (int) Math.PI/360*55;
+       //return angleToEncoder(Constants.ShooterConstants.DistanceConstants.ZONE_3.getHoodAngle());
      case ZONE_4:
-       return angleToEncoder(Constants.ShooterConstants.DistanceConstants.ZONE_4.getHoodAngle());
+        return (int) Math.PI/360*55;
+       //return angleToEncoder(Constants.ShooterConstants.DistanceConstants.ZONE_4.getHoodAngle());
      case ZONE_5:
-       return angleToEncoder(Constants.ShooterConstants.DistanceConstants.ZONE_5.getHoodAngle());
+        return (int) Math.PI/360*55;
+       //return angleToEncoder(Constants.ShooterConstants.DistanceConstants.ZONE_5.getHoodAngle());
      case ZONE_6:
-       return angleToEncoder(Constants.ShooterConstants.DistanceConstants.ZONE_6.getHoodAngle());
+        return (int) Math.PI/360*55;
+       //return angleToEncoder(Constants.ShooterConstants.DistanceConstants.ZONE_6.getHoodAngle());
      default:
        return 0;
    }

@@ -40,6 +40,8 @@ import frc.robot.commands.DefaultDriveCommand;
 // import frc.robot.commands.HangForwardCommand;
 // import frc.robot.commands.HangReverseCommand;
 import frc.robot.commands.FeederCommand;
+import frc.robot.commands.HangDownCommand;
+import frc.robot.commands.HangUpCommand;
 import frc.robot.commands.DeployIntakeCommand;
 import frc.robot.commands.RotateDegrees;
 // import frc.robot.commands.DefaultDriveCommand;
@@ -48,6 +50,7 @@ import frc.robot.commands.SwerveControllerStrafe;
 import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
+import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
@@ -74,7 +77,7 @@ public class RobotContainer {
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final FeederSubsystem m_feeder = new FeederSubsystem();
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
-
+  private final HangSubsystem m_hangSubsystem = new HangSubsystem();
 
 
 
@@ -185,7 +188,11 @@ public class RobotContainer {
     RobotState.feederState = m_feeder.updateFeederState();
     // RobotState.shooterState = m_shooter.updateShooterState();
     // RobotState.visionState = m_vision.updateVisionState();
-    SmartDashboard.putNumber("Distance", m_visionSubsystem.getDistance());
+    SmartDashboard.putNumber("VISION: Distance", m_visionSubsystem.getDistance());
+    SmartDashboard.putString("HANG: limit switch right ", m_hangSubsystem.hangRightLimitSwitch.get() + "");
+    SmartDashboard.putString("HANG: limit switch left", m_hangSubsystem.hangLeftLimitSwitch.get() + "");
+    SmartDashboard.putString("HANG: encoder left ", m_hangSubsystem.encoderLeft.getSelectedSensorPosition() + "");
+    SmartDashboard.putString("HANG: encoder right ", m_hangSubsystem.encoderRight.getSelectedSensorPosition() + "");
   }
 
   private static double deadband(double value, double deadband) {
@@ -213,10 +220,13 @@ public class RobotContainer {
 
 
   public Command getTestCommand(){
-    return new FeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4);
+    // return new FeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4);
 
     //code hang on first rung
-    //return new FirstRungHangCommand(-0.1);
+    return new SequentialCommandGroup(
+      new HangUpCommand(0.1),
+      new HangDownCommand(0.1)
+    );
   }
 
 

@@ -9,16 +9,21 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class HangSubsystem extends SubsystemBase {
-    private final TalonFX rightHangMotor;
-    private final TalonFX leftHangMotor;
-    private final WPI_TalonFX encoderRight;
-    private final WPI_TalonFX encoderLeft; 
+    public TalonFX rightHangMotor;
+    public TalonFX leftHangMotor;
+    public WPI_TalonFX encoderRight;
+    public WPI_TalonFX encoderLeft; 
+    public DigitalInput hangRightLimitSwitch; 
+    public DigitalInput hangLeftLimitSwitch;
 
     public boolean triggeredLeftSwitch;
     public boolean triggeredRightSwitch;
+    public boolean maxHeightLeft;
+    public boolean maxHeightRight;
 
     public HangSubsystem() {
         rightHangMotor = new TalonFX(Constants.HangConstants.HANG_RIGHT_MOTOR);
@@ -28,14 +33,9 @@ public class HangSubsystem extends SubsystemBase {
 
         encoderRight = new WPI_TalonFX(Constants.HangConstants.HANG_RIGHT_MOTOR);
         encoderLeft = new WPI_TalonFX(Constants.HangConstants.HANG_LEFT_MOTOR);
-    }
 
-    public void hitLeft() {
-        triggeredLeftSwitch = true;
-    }
-
-    public void hitRight() {
-        triggeredRightSwitch = true;
+        hangRightLimitSwitch = new DigitalInput(Constants.HangConstants.RIGHT_HANG_LIMIT_SWITCH);
+        hangLeftLimitSwitch = new DigitalInput(Constants.HangConstants.LEFT_HANG_LIMIT_SWITCH);
     }
 
     public void setHangLeftSpeed(double speed) {
@@ -46,7 +46,6 @@ public class HangSubsystem extends SubsystemBase {
     }
 
     public double getLeftEncoder() {
-        SmartDashboard.putString("encoder left ", encoderLeft.getSelectedSensorPosition() + "");
         return encoderLeft.getSelectedSensorPosition();
     }
 

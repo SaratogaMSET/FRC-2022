@@ -22,7 +22,7 @@ public class ShooterSubsystemPoints extends SubsystemBase{
     public ShooterSubsystemPoints() {
         
         shooterMotor = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR);
-        shooterMotor2 = new LazyTalonFX(Constants.ShooterConstants.LS_MOTOR);
+        shooterMotor2 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR2);
     }
     @Override
     public void periodic() {

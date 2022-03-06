@@ -102,7 +102,7 @@ public final class Constants {
 
     public static class ShooterConstants {
         public static final int SHOOTER_MOTOR = 23;
-        public static final int LS_MOTOR = 22; // Port should be negative speed              //CHECK+MAYBE REPLACE
+        public static final int SHOOTER_MOTOR2 = 22; // Port should be negative speed              //CHECK+MAYBE REPLACE
   
         public static final double kFalconSensorUnitsToRPM = (600.0 / 2048.0);
         public static final double kFalcon500FreeSpeed = 6380;
@@ -114,8 +114,7 @@ public final class Constants {
         public static final int LEADSCREW_STATE_TOLERANCE = 1024;
 
 
-        public static final int RIGHT_PISTON = 0; // CHANGE VALUE
-        public static final int LEFT_PISTON = 0; // CHANGE VALUE
+        public static final int SHOOTER_PISTON = 0; // CHANGE VALUE
 
 
         public static enum DistanceConstants {

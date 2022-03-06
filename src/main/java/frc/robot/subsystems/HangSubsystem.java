@@ -10,6 +10,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class HangSubsystem extends SubsystemBase {
@@ -19,6 +21,8 @@ public class HangSubsystem extends SubsystemBase {
     public WPI_TalonFX encoderLeft; 
     public DigitalInput hangRightLimitSwitch; 
     public DigitalInput hangLeftLimitSwitch;
+    public Solenoid rightValve;
+    public Solenoid leftValve;
 
     public boolean triggeredLeftSwitch;
     public boolean triggeredRightSwitch;
@@ -36,6 +40,9 @@ public class HangSubsystem extends SubsystemBase {
 
         hangRightLimitSwitch = new DigitalInput(Constants.HangConstants.RIGHT_HANG_LIMIT_SWITCH);
         hangLeftLimitSwitch = new DigitalInput(Constants.HangConstants.LEFT_HANG_LIMIT_SWITCH);
+    
+        rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.HangConstants.RIGHT_PISTON);
+        leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.HangConstants.LEFT_PISTON);
     }
 
     public void setHangLeftSpeed(double speed) {
@@ -43,15 +50,6 @@ public class HangSubsystem extends SubsystemBase {
     }
     public void setHangRightSpeed(double speed) {
         rightHangMotor.set(ControlMode.PercentOutput, -speed);
-    }
-
-    public double getLeftEncoder() {
-        return encoderLeft.getSelectedSensorPosition();
-    }
-
-    public double getRightEncoder() {
-        SmartDashboard.putString("encoder right ", encoderRight.getSelectedSensorPosition() + "");
-        return encoderRight.getSelectedSensorPosition();
     }
 
 
@@ -67,10 +65,15 @@ public class HangSubsystem extends SubsystemBase {
     }
 
     public double getRightEncoderValue() {
-        return encoderRight.getSelectedSensorPosition();
+        return -encoderRight.getSelectedSensorPosition();
     }
     public double getLeftEncoderValue() {
         return encoderLeft.getSelectedSensorPosition();
+    }
+
+    public void deployHang(boolean position){
+        rightValve.set(position);
+        leftValve.set(position);
     }
 
     public double metersToNativeUnits(double positionMeters){

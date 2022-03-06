@@ -36,17 +36,14 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.DefaultDriveCommand;
-// import frc.robot.subsystems.HangSubsystem;
-// import frc.robot.commands.HangForwardCommand;
-// import frc.robot.commands.HangReverseCommand;
-import frc.robot.commands.FeederCommand;
-import frc.robot.commands.HangDownCommand;
-import frc.robot.commands.HangUpCommand;
-import frc.robot.commands.DeployIntakeCommand;
 import frc.robot.commands.RotateDegrees;
 // import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.SwerveControllerStrafe;
+import frc.robot.commands.Hang.HangDownCommand;
+import frc.robot.commands.Hang.HangUpCommand;
+import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
+import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
@@ -224,8 +221,9 @@ public class RobotContainer {
 
     //code hang on first rung
     return new SequentialCommandGroup(
-      new HangUpCommand(0.1),
-      new HangDownCommand(0.1)
+      new HangUpCommand(m_hangSubsystem, 0.1),
+      new HangDownCommand(m_hangSubsystem, 0.1)
+
     );
   }
 

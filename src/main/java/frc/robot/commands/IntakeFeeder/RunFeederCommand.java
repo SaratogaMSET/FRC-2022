@@ -1,15 +1,15 @@
-package frc.robot.commands;
+package frc.robot.commands.IntakeFeeder;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
 
-public class FeederCommand extends CommandBase {
+public class RunFeederCommand extends CommandBase {
     private final FeederSubsystem feeder;
     private FeederState feederState;
     private double shooterFeederSpeed, intakeFeederSpeed;
 
-    public FeederCommand(FeederSubsystem feeder, FeederState feederState, double shooterFeederSpeed,
+    public RunFeederCommand(FeederSubsystem feeder, FeederState feederState, double shooterFeederSpeed,
             double intakeFeederSpeed) {
         this.feeder = feeder;
         this.shooterFeederSpeed = shooterFeederSpeed;

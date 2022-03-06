@@ -83,7 +83,9 @@ public class RobotContainer {
   public static final double pi = Math.PI;
   private final XboxController m_controller = new XboxController(0);
   private final Compressor m_compressor;
-  // private final Joystick driverVertical, driverHorizontal;
+  private final Joystick driverVertical, driverHorizontal;
+
+  public static boolean feederFail = false;
   
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0 *
@@ -134,8 +136,8 @@ public class RobotContainer {
 
   SmartDashboard.putData(m_autoSwitcher);
 
-  // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
-  // driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
+  driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
+  driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
 
   m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
           m_drivetrainSubsystem,
@@ -168,6 +170,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    new JoystickButton(driverVertical, 10).whenPressed(
+      new RunFeederCommand(m_feeder)
+    );
 
     // new JoystickButton(driverVertical, 2).whileActiveOnce(
     //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)

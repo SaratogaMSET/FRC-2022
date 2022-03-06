@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import frc.robot.RobotContainer;
 
 public class FeederSubsystem extends SubsystemBase {
   private TalonFX shooterFeederMotor;
@@ -48,23 +49,31 @@ public class FeederSubsystem extends SubsystemBase {
   }
 
   public void updateGates() {
-    inIntakeFeeder = !intakeGate.get();
-    inShooterFeeder = !shooterGate.get();
-    SmartDashboard.putBoolean("Ball in Intake", inIntakeFeeder);
-    SmartDashboard.putBoolean("Ball in Shooter", inShooterFeeder);
-    if (shooterFeederVelocity < 0.0 || intakeFeederVelocity < 0.0) {
-      runIntakeFeeder = true;
-      runShooterFeeder = true;
-    } else if (inIntakeFeeder && inShooterFeeder) {
-      runIntakeFeeder = false;
-      runShooterFeeder = false;
-    } else if (inIntakeFeeder) {
-      runIntakeFeeder = true;
-      runShooterFeeder = true;
-    } else if (inShooterFeeder) {
-      runIntakeFeeder = true;
-      runShooterFeeder = false;
-    } else {
+    if (RobotContainer.feederFail == false) {
+      inIntakeFeeder = !intakeGate.get();
+      inShooterFeeder = !shooterGate.get();
+      SmartDashboard.putBoolean("Ball in Intake", inIntakeFeeder);
+      SmartDashboard.putBoolean("Ball in Shooter", inShooterFeeder);
+      if (shooterFeederVelocity < 0.0 || intakeFeederVelocity < 0.0) {
+        runIntakeFeeder = true;
+        runShooterFeeder = true;
+      } else if (inIntakeFeeder && inShooterFeeder) {
+        runIntakeFeeder = false;
+        runShooterFeeder = false;
+      } else if (inIntakeFeeder) {
+        runIntakeFeeder = true;
+        runShooterFeeder = true;
+      } else if (inShooterFeeder) {
+        runIntakeFeeder = true;
+        runShooterFeeder = false;
+      } else {
+        runIntakeFeeder = true;
+        runShooterFeeder = true;
+      }
+    }
+    else {
+      SmartDashboard.putBoolean("FEEDER SAFE-FAIL", true);
+      SmartDashboard.putBoolean("FEEDER SAFE-FAIL", true);
       runIntakeFeeder = true;
       runShooterFeeder = true;
     }

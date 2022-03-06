@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.DefaultDriveCommand;
 // import frc.robot.subsystems.HangSubsystem;
@@ -54,6 +55,7 @@ import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
+// import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 /**
@@ -84,7 +86,7 @@ public class RobotContainer {
   public static final double pi = Math.PI;
   private final XboxController m_controller = new XboxController(0);
   private final Compressor m_compressor;
-  // private final Joystick driverVertical, driverHorizontal;
+  private final Joystick driverVertical, driverHorizontal;
   
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0 *
@@ -129,8 +131,8 @@ public class RobotContainer {
           () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
   ));
 
-    // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
-    // driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
+    driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
+    driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
 
 
     
@@ -158,6 +160,12 @@ public class RobotContainer {
     //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
     //   new FeederCommand(m_feeder, FeederState.OUTTAKE, 0.5, 0.3)
     // );
+    // new JoystickButton(driverVertical, 3).whileActiveOnce(
+    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+    //   new FeederCommand(m_feeder, FeederState.OUTTAKE, 0.5, 0.3)
+    // );
+
+    // new JoystickButton(driverVertical, 4).whileHeld(new ShooterCommand(m_shooterSubsystem, m_visionSubsystem, ShooterState.ZONE_2));
     // new JoystickButton(driverHorizontal, 1).whileHeld(
     //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
     //   new FeederCommand(m_feeder, FeederState.INTAKE, 0.5, 0.5) 
@@ -172,9 +180,13 @@ public class RobotContainer {
     //   new FeederCommand(m_feeder, FeederState.IDLE, 0.0, 0.0)
     // );
 
-    // new JoystickButton(driverVertical, 3).whileHeld(
-    //   new ShooterCommand(m_shooterSubsystem)  
-    // );
+    new JoystickButton(driverVertical, 3).whileHeld(
+      new ParallelCommandGroup(
+        new ShooterCommand(m_shooterSubsystem),
+        new FeederCommand(m_feeder)
+      ) 
+    );
+
 
 
     // Back button zeros the gyroscope

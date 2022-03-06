@@ -67,11 +67,18 @@ public final class Constants {
         public static final double AREA_VISIBLE = 1; //if area is large enough to be visible (ta)
         
         public static class Distance {
-            public static final int GREEN = 90; 
+            public static final int GREEN = 90;
             public static final int YELLOW = 150;
             public static final int BLUE = 190;
             public static final int RED = 270;
+  
+            public static final int ZONE_2 = 185;
+            public static final int ZONE_3 = 218;
+            public static final int ZONE_4 = 245;
+            public static final int ZONE_5 = 263;
+            public static final int ZONE_6 = 290;
         }
+ 
 
         public static class Angle{
             // diff zones
@@ -94,9 +101,65 @@ public final class Constants {
     }
 
     public static class ShooterConstants {
-        public static final int SHOOTER_MOTOR = 23; 
-        public static final int SHOOTER_MOTOR_2 = 22; // Port should be nagative speed
+        public static final int SHOOTER_MOTOR = 23;
+        public static final int LS_MOTOR = 22; // Port should be negative speed              //CHECK+MAYBE REPLACE
+  
+        public static final double kFalconSensorUnitsToRPM = (600.0 / 2048.0);
+        public static final double kFalcon500FreeSpeed = 6380;
+         public static final int MAIN = 8;
+        public static final int[] FOLLOWERS = { 9 };
+        public static final int LEADSCREW = 10;
+        public static final int[] LIMIT_SWITCH = { 6, 7 };
+        public static final int LEADSCREW_TOLERANCE = 256;
+        public static final int LEADSCREW_STATE_TOLERANCE = 1024;
+
+
+        public static final int RIGHT_PISTON = 0; // CHANGE VALUE
+        public static final int LEFT_PISTON = 0; // CHANGE VALUE
+
+
+        public static enum DistanceConstants {
+            // ZONE_1 (3509/kFalcon500FreeSpeed, 60),
+            ZONE_2 (3509/kFalcon500FreeSpeed, 58),
+            ZONE_3 (3828/kFalcon500FreeSpeed, 64),
+            ZONE_4 (4019/kFalcon500FreeSpeed, 64),
+            ZONE_5 (4060/kFalcon500FreeSpeed, 67),
+            ZONE_6 (4300/kFalcon500FreeSpeed, 66);
+             private double percentRPM, hoodAngle; //final?
+            DistanceConstants (double percentRPM, double hoodAngle) {
+                this.percentRPM = percentRPM;
+                this.hoodAngle = hoodAngle;
+            }
+             public double getRPM() {
+                return percentRPM * kFalcon500FreeSpeed;
+            }
+             public double getHoodAngle() {
+                return hoodAngle;
+            }
+             public void setHoodAngle(double val){
+                hoodAngle = val;
+            }
+        }
+
+        public static enum AngleConstants {
+            // ZONE_1 (3509/kFalcon500FreeSpeed, 60),
+            TWOFIVE (25),
+            FOURZERO (40);
+
+
+            private double hoodAngle; //final?
+            AngleConstants (double hoodAngle) {
+                this.hoodAngle = hoodAngle;
+            }
+             public double getAngle() {
+                return hoodAngle;
+            }
+             public void setHoodAngle(double val){
+                hoodAngle = val;
+            }
+        }
     }
+ 
 
     public static class HangConstants {
         public static final int HANG_RIGHT_MOTOR = 26;

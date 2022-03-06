@@ -43,6 +43,10 @@ public class FeederSubsystem extends SubsystemBase {
     intakeFeederMotor.setInverted(true);
   }
 
+  public void setFeederSpeed(){
+    shooterFeederMotor.set(ControlMode.PercentOutput, 0.3);
+  }
+
   public void updateGates() {
     inIntakeFeeder = !intakeGate.get();
     inShooterFeeder = !shooterGate.get();

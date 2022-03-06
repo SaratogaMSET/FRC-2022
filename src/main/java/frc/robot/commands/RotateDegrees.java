@@ -43,6 +43,13 @@ public class RotateDegrees extends CommandBase {
             pidValue = pid.calculate(m_visionSubsystem.getRawAngle(), 0);
         }
         
+        VisionSubsystem.VisionState visionState = m_visionSubsystem.updateVisionState();
+
+        // failsafe code to make sure it does not keep spinning
+        if(visionState==VisionSubsystem.VisionState.NO_TARGET){
+            pidValue = 0;
+        }
+
         m_drivetrainSubsystem.drive(
             new ChassisSpeeds(
                 0,

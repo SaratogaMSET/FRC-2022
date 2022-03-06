@@ -11,7 +11,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-// import frc.robot.subsystems.ShooterSubsystem.ShooterState;
+import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
@@ -79,24 +79,24 @@ public class VisionSubsystem extends SubsystemBase {
     return SmartDashboard.putString("state", "idle");
   }
 
-  // public ShooterState getShooterStateFromDistance() {
-  //   double distance = getDistance();
-  //   if(distance == 0.0) {
-  //     return ShooterState.ZONE_2;
-  //   }
-  //   if (distance < Constants.Vision.Distance.ZONE_2) {
-  //     return ShooterState.ZONE_2;
-  //   } else if (distance < Constants.Vision.Distance.ZONE_3) {
-  //     return ShooterState.ZONE_3;
-  //   } else if (distance < Constants.Vision.Distance.ZONE_4) {
-  //     return ShooterState.ZONE_4;
-  //   } else if (distance < Constants.Vision.Distance.ZONE_5) {
-  //     return ShooterState.ZONE_5;
-  //   } else if (distance < Constants.Vision.Distance.ZONE_6) {
-  //     return ShooterState.ZONE_6;
-  //   } else
-  //   return ShooterState.ZONE_6;
-  // }
+  public ShooterState getShooterStateFromDistance() {
+    double distance = getDistance();
+    if(distance == 0.0) {
+      return ShooterState.ZONE_2;
+    }
+    if (distance < Constants.Vision.Distance.ZONE_2) {
+      return ShooterState.ZONE_2;
+    } else if (distance < Constants.Vision.Distance.ZONE_3) {
+      return ShooterState.ZONE_3;
+    } else if (distance < Constants.Vision.Distance.ZONE_4) {
+      return ShooterState.ZONE_4;
+    } else if (distance < Constants.Vision.Distance.ZONE_5) {
+      return ShooterState.ZONE_5;
+    } else if (distance < Constants.Vision.Distance.ZONE_6) {
+      return ShooterState.ZONE_6;
+    } else
+    return ShooterState.ZONE_6;
+  }
 
   public double getRawAngle() {
     return -x;

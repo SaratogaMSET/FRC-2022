@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
- 
+
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -17,6 +18,7 @@ public class ShooterSubsystem extends SubsystemBase {
         @Override
         public void periodic() {
                 SmartDashboard.putNumber("Sensor Vel:", shooterMotor.getSelectedSensorVelocity());
+                // Shuffleboard.
         }
         public void run(double d) {
                 shooterMotor.set(TalonFXControlMode.PercentOutput,d);

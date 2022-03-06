@@ -97,6 +97,10 @@ public class FeederSubsystem extends SubsystemBase {
       intakeFeederMotor.set(ControlMode.PercentOutput, 0.0);
   }
 
+  public void setRawShooterFeeder(double velocity){
+    shooterFeederMotor.set(ControlMode.PercentOutput, velocity);
+  }
+
   public void diagnostics() {
     String topStatus = "Feeder Top Status";
     String bottomStatus = "Feeder Bottom Status";

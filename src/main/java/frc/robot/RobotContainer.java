@@ -181,12 +181,10 @@ public class RobotContainer {
     //   new FeederCommand(m_feeder, FeederState.IDLE, 0.0, 0.0)
     // );
 
-    new JoystickButton(driverVertical, 3).whileHeld(
-      new ParallelCommandGroup(
-        new ShooterCommand(m_shooterSubsystem),
-        new FeederCommand(m_feeder)
-      ) 
-    );
+
+    // new JoystickButton(driverVertical, 3).whileHeld(
+    //   new ShooterCommand(m_feeder, m_shooterSubsystem)
+    // );
 
 
 
@@ -234,6 +232,8 @@ public class RobotContainer {
 
   public Command getTestCommand(){
     return new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4);
+
+    // return new ShooterCommand(m_feeder, m_shooterSubsystem);
 
     //code hang on first rung
     // return new SequentialCommandGroup(

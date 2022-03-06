@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RotateDegrees;
@@ -51,6 +52,7 @@ import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
+// import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 /**
@@ -159,6 +161,12 @@ public class RobotContainer {
     //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
     //   new FeederCommand(m_feeder, FeederState.OUTTAKE, 0.5, 0.3)
     // );
+    // new JoystickButton(driverVertical, 3).whileActiveOnce(
+    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+    //   new FeederCommand(m_feeder, FeederState.OUTTAKE, 0.5, 0.3)
+    // );
+
+    // new JoystickButton(driverVertical, 4).whileHeld(new ShooterCommand(m_shooterSubsystem, m_visionSubsystem, ShooterState.ZONE_2));
     // new JoystickButton(driverHorizontal, 1).whileHeld(
     //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
     //   new FeederCommand(m_feeder, FeederState.INTAKE, 0.5, 0.5) 
@@ -173,9 +181,11 @@ public class RobotContainer {
     //   new FeederCommand(m_feeder, FeederState.IDLE, 0.0, 0.0)
     // );
 
+
     // new JoystickButton(driverVertical, 3).whileHeld(
-    //   new ShooterCommand(m_shooterSubsystem)  
+    //   new ShooterCommand(m_feeder, m_shooterSubsystem)
     // );
+
 
 
     // Back button zeros the gyroscope
@@ -222,6 +232,8 @@ public class RobotContainer {
 
   public Command getTestCommand(){
     // return new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4);
+
+    // return new ShooterCommand(m_feeder, m_shooterSubsystem);
 
     //code hang on first rung
     return new SequentialCommandGroup(

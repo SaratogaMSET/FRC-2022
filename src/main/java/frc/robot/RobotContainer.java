@@ -81,7 +81,7 @@ public class RobotContainer {
   public static final double pi = Math.PI;
   private final XboxController m_controller = new XboxController(0);
   private final Compressor m_compressor;
-  // private final Joystick driverVertical, driverHorizontal;
+  private final Joystick driverVertical, driverHorizontal;
   
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0 *
@@ -126,8 +126,8 @@ public class RobotContainer {
           () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
   ));
 
-    // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
-    // driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
+    driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
+    driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
 
 
     
@@ -146,10 +146,14 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
 
-    // new JoystickButton(driverVertical, 2).whileActiveOnce(
-    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-    //   new FeederCommand(m_feeder, FeederState.INTAKE, 0.9, 0.2)
-    // );
+    new JoystickButton(driverVertical, 2).whileActiveOnce(
+      // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+      new RunFeederCommand(m_feeder, FeederState.INTAKE, 0.9, 0.2)
+    );
+    new JoystickButton(driverHorizontal, 2).whileActiveOnce(
+      // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+      new RunFeederCommand(m_feeder, FeederState.INTAKE, 0.9, 0.2)
+    );
 
     // new JoystickButton(driverVertical, 3).whileActiveOnce(
     //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
@@ -217,14 +221,13 @@ public class RobotContainer {
 
 
   public Command getTestCommand(){
-    // return new FeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4);
+    return new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4);
 
     //code hang on first rung
-    return new SequentialCommandGroup(
-      new HangUpCommand(m_hangSubsystem, 0.1),
-      new HangDownCommand(m_hangSubsystem, 0.1)
-
-    );
+    // return new SequentialCommandGroup(
+    //   new HangUpCommand(m_hangSubsystem, 0.1),
+    //   new HangDownCommand(m_hangSubsystem, 0.1)
+    // );
   }
 
 

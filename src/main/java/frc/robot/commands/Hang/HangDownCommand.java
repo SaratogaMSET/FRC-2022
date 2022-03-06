@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Hang;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -12,11 +12,11 @@ public class HangDownCommand extends CommandBase {
     private final HangSubsystem m_hangSubsystem;
     private double hangSpeed;
 
-    public HangDownCommand(double speed) {
-
-        m_hangSubsystem = new HangSubsystem();
+    public HangDownCommand(HangSubsystem hang, double speed) {
         hangSpeed = -speed;
+        m_hangSubsystem = hang;
         addRequirements(m_hangSubsystem);
+
         m_hangSubsystem.maxHeightRight = false;
         m_hangSubsystem.maxHeightLeft = false;
     }
@@ -24,16 +24,20 @@ public class HangDownCommand extends CommandBase {
     @Override
     public void execute() {
 
-        if (m_hangSubsystem.hangRightLimitSwitch.get() && !m_hangSubsystem.triggeredRightSwitch) {
+        if (m_hangSubsystem.hangRightLimitSwitch.get() || m_hangSubsystem.triggeredRightSwitch) {
             m_hangSubsystem.triggeredRightSwitch = true;
-            m_hangSubsystem.setHangLeftSpeed(0);
+            m_hangSubsystem.setHangRightSpeed(0);
+            m_hangSubsystem.rightResetEncoders();
+
         } else if (!m_hangSubsystem.triggeredRightSwitch) {
             m_hangSubsystem.setHangRightSpeed(hangSpeed);
         }
 
-        if (m_hangSubsystem.hangLeftLimitSwitch.get() && !m_hangSubsystem.triggeredLeftSwitch) {
+        if (m_hangSubsystem.hangLeftLimitSwitch.get() || m_hangSubsystem.triggeredLeftSwitch) {
             m_hangSubsystem.triggeredLeftSwitch = true;
             m_hangSubsystem.setHangLeftSpeed(0);
+            m_hangSubsystem.leftResetEncoders();
+
         } else if (!m_hangSubsystem.triggeredLeftSwitch) {
             m_hangSubsystem.setHangLeftSpeed(hangSpeed);
         }
@@ -50,6 +54,7 @@ public class HangDownCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+
         m_hangSubsystem.setHangLeftSpeed(0);
         m_hangSubsystem.setHangRightSpeed(0);
     }

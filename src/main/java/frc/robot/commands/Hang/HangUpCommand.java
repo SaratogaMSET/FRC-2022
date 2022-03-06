@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Hang;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -12,13 +12,11 @@ public class HangUpCommand extends CommandBase {
     private final HangSubsystem m_hangSubsystem;
     private double hangSpeed;
 
-    public HangUpCommand(double speed) {
-        m_hangSubsystem = new HangSubsystem();
+    public HangUpCommand(HangSubsystem hang, double speed) {
         hangSpeed = speed;
+        m_hangSubsystem = hang;
         addRequirements(m_hangSubsystem);
 
-        m_hangSubsystem.rightResetEncoders();
-        m_hangSubsystem.leftResetEncoders();
         m_hangSubsystem.triggeredRightSwitch = false;
         m_hangSubsystem.triggeredLeftSwitch = false;
     }

@@ -148,10 +148,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public double getNavHeading(){
-
     double angle = m_navx.getFusedHeading() - offset;
+    angle = angle + 90;
     angle = angle % 360;
-    return Math.toRadians(angle + 90);
+    SmartDashboard.putNumber("navX Angle", angle);
+    SmartDashboard.putNumber("navX Offset", offset);
+    return Math.toRadians(angle);
   }
 
   public Pose2d getPose() {
@@ -181,17 +183,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
     );
   }
 
-  public double getModuleState(int module){
-    if(module == 0){
-      return m_frontLeftModule.getSteerAngle();
-    }else if(module == 1){
-      return m_frontRightModule.getSteerAngle();
-    }else if(module == 2){
-      return m_backLeftModule.getSteerAngle();
-    }else{
-      return m_backRightModule.getSteerAngle();
-    }
-  }
+  // public double getModuleState(int module){
+  //   if(module == 0){
+  //     return m_frontLeftModule.getSteerAngle();
+  //   }else if(module == 1){
+  //     return m_frontRightModule.getSteerAngle();
+  //   }else if(module == 2){
+  //     return m_backLeftModule.getSteerAngle();
+  //   }else{
+  //     return m_backRightModule.getSteerAngle();
+  //   }
+  // }
 
 
   @Override

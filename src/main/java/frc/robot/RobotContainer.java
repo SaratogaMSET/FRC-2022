@@ -70,20 +70,20 @@ public class RobotContainer {
   public String m_autoSelected;
 
 
-  private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
-  private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
-  private final ColorSensorSystem m_ColorSensorSystem = new ColorSensorSystem();
-  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-  private final FeederSubsystem m_feeder = new FeederSubsystem();
-  private final IntakeSubsystem m_intake = new IntakeSubsystem();
-  private final HangSubsystem m_hangSubsystem = new HangSubsystem();
+  private final DrivetrainSubsystem m_drivetrainSubsystem;
+  private final VisionSubsystem m_visionSubsystem;
+  private final ColorSensorSystem m_ColorSensorSystem;
+  private final ShooterSubsystem m_shooterSubsystem;
+  private final FeederSubsystem m_feeder;
+  private final IntakeSubsystem m_intake;
+  private final HangSubsystem m_hangSubsystem;
 
 
 
   public static final double pi = Math.PI;
   private final XboxController m_controller = new XboxController(0);
   private final Compressor m_compressor;
-  private final Joystick driverVertical, driverHorizontal;
+  // private final Joystick driverVertical, driverHorizontal;
   
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0 *
@@ -111,9 +111,22 @@ public class RobotContainer {
 
     // new SequentialCommandGroup(
     //     new WaitCommand(1),
+    //     new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
     //     new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
     //     new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(new Pose2d()))
     // ).schedule();
+    m_drivetrainSubsystem = new DrivetrainSubsystem();
+    m_visionSubsystem = new VisionSubsystem();
+    m_ColorSensorSystem = new ColorSensorSystem();
+    m_shooterSubsystem = new ShooterSubsystem();
+    m_feeder = new FeederSubsystem();
+    m_intake = new IntakeSubsystem();
+    m_hangSubsystem = new HangSubsystem();
+
+    m_drivetrainSubsystem.zeroGyroscope();
+    m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    m_drivetrainSubsystem.resetOdometry(new Pose2d());
+
     m_autoSwitcher.addOption(kAutoR1, kAutoR1);
     m_autoSwitcher.addOption(kAutoR2, kAutoR2);
     m_autoSwitcher.addOption(kAutoR3, kAutoR3);
@@ -121,15 +134,23 @@ public class RobotContainer {
 
   SmartDashboard.putData(m_autoSwitcher);
 
+  // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
+  // driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
+
   m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
           m_drivetrainSubsystem,
           () -> modifyAxis(m_controller.getLeftX())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
           () -> -modifyAxis(m_controller.getLeftY())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-          () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+          () -> modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
   ));
+    // m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+    //         m_drivetrainSubsystem,
+    //         () -> modifyAxis(driverVertical.getX())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+    //         () -> modifyAxis(driverVertical.getY())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+    //         () -> -modifyAxis(driverHorizontal.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    // ));
 
-    driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
-    driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
+
 
 
     
@@ -148,14 +169,14 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
 
-    new JoystickButton(driverVertical, 2).whileActiveOnce(
-      // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-      new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4)
-    );
-    new JoystickButton(driverHorizontal, 2).whileActiveOnce(
-      // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-      new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4)
-    );
+    // new JoystickButton(driverVertical, 2).whileActiveOnce(
+    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+    //   new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4)
+    // );
+    // new JoystickButton(driverHorizontal, 2).whileActiveOnce(
+    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+    //   new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4)
+    // );
 
     // new JoystickButton(driverVertical, 3).whileActiveOnce(
     //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
@@ -181,17 +202,16 @@ public class RobotContainer {
     //   new FeederCommand(m_feeder, FeederState.IDLE, 0.0, 0.0)
     // );
 
+    // new Button(m_controller::getAButtonPressed).whenPressed(command)
 
-    // new JoystickButton(driverVertical, 3).whileHeld(
-    //   new ShooterCommand(m_feeder, m_shooterSubsystem)
-    // );
-
-
+    new Button(m_controller::getAButtonPressed).whenPressed(
+      new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem)
+    );
 
     // Back button zeros the gyroscope
-    // new Button(m_controller::getYButtonPressed)
-    //         // No requirements because we don't need to interrupt anything
-    //         .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+    new Button(m_controller::getYButtonPressed).whenPressed(
+      m_drivetrainSubsystem::zeroGyroscope
+    );
   }
 
   public void updateRobotState() {
@@ -200,6 +220,7 @@ public class RobotContainer {
     // RobotState.shooterState = m_shooter.updateShooterState();
     // RobotState.visionState = m_vision.updateVisionState();
     SmartDashboard.putNumber("VISION: Distance", m_visionSubsystem.getDistance());
+    SmartDashboard.putNumber("VISION: Angle", m_visionSubsystem.getRawAngle());
     SmartDashboard.putString("HANG: limit switch right ", m_hangSubsystem.hangRightLimitSwitch.get() + "");
     SmartDashboard.putString("HANG: limit switch left", m_hangSubsystem.hangLeftLimitSwitch.get() + "");
     SmartDashboard.putString("HANG: encoder left ", m_hangSubsystem.encoderLeft.getSelectedSensorPosition() + "");
@@ -235,11 +256,13 @@ public class RobotContainer {
 
     // return new ShooterCommand(m_feeder, m_shooterSubsystem);
 
+    return new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem);
+
     //code hang on first rung
-    return new SequentialCommandGroup(
-      new HangUpCommand(m_hangSubsystem, 0.1),
-      new HangDownCommand(m_hangSubsystem, 0.1)
-    );
+    // return new SequentialCommandGroup(
+    //   new HangUpCommand(m_hangSubsystem, 0.1),
+    //   new HangDownCommand(m_hangSubsystem, 0.1)
+    // );
   }
 
 

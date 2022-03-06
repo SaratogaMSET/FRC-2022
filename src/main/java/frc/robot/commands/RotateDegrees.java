@@ -14,12 +14,13 @@ public class RotateDegrees extends CommandBase {
     private final DrivetrainSubsystem m_drivetrainSubsystem;
     private final VisionSubsystem m_visionSubsystem;
     private final PIDController pid;
+    public double pidValue = 0;
 
 
-    public CANCoder backRightCanCoder = new CANCoder(Constants.Drivetrain.BACK_RIGHT_MODULE_STEER_ENCODER);
-    public CANCoder backLeftCanCoder = new CANCoder(Constants.Drivetrain.BACK_LEFT_MODULE_STEER_ENCODER);
-    public CANCoder frontRightCanCoder = new CANCoder(Constants.Drivetrain.FRONT_RIGHT_MODULE_STEER_ENCODER);
-    public CANCoder frontLeftCanCoder = new CANCoder(Constants.Drivetrain.FRONT_LEFT_MODULE_STEER_ENCODER);
+    // public CANCoder backRightCanCoder = new CANCoder(Constants.Drivetrain.BACK_RIGHT_MODULE_STEER_ENCODER);
+    // public CANCoder backLeftCanCoder = new CANCoder(Constants.Drivetrain.BACK_LEFT_MODULE_STEER_ENCODER);
+    // public CANCoder frontRightCanCoder = new CANCoder(Constants.Drivetrain.FRONT_RIGHT_MODULE_STEER_ENCODER);
+    // public CANCoder frontLeftCanCoder = new CANCoder(Constants.Drivetrain.FRONT_LEFT_MODULE_STEER_ENCODER);
 
     public RotateDegrees(DrivetrainSubsystem drivetrainSubsystem, VisionSubsystem visionSystem) {
         this.m_drivetrainSubsystem = drivetrainSubsystem;
@@ -33,9 +34,7 @@ public class RotateDegrees extends CommandBase {
 
     @Override
     public void execute() {
-        
-
-        double pidValue = 0;
+        m_visionSubsystem.refresh();
         if (pid.calculate(m_visionSubsystem.getRawAngle(), 0) > 9) {
             pidValue = 9;
         } else if (pid.calculate(m_visionSubsystem.getRawAngle(), 0) < -9) {

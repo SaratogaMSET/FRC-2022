@@ -148,11 +148,11 @@ public class RobotContainer {
 
     new JoystickButton(driverVertical, 2).whileActiveOnce(
       // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-      new RunFeederCommand(m_feeder, FeederState.INTAKE, 0.9, 0.2)
+      new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4)
     );
     new JoystickButton(driverHorizontal, 2).whileActiveOnce(
       // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-      new RunFeederCommand(m_feeder, FeederState.INTAKE, 0.9, 0.2)
+      new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4)
     );
 
     // new JoystickButton(driverVertical, 3).whileActiveOnce(
@@ -221,13 +221,13 @@ public class RobotContainer {
 
 
   public Command getTestCommand(){
-    return new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4);
+    // return new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4);
 
     //code hang on first rung
-    // return new SequentialCommandGroup(
-    //   new HangUpCommand(m_hangSubsystem, 0.1),
-    //   new HangDownCommand(m_hangSubsystem, 0.1)
-    // );
+    return new SequentialCommandGroup(
+      new HangUpCommand(m_hangSubsystem, 0.1),
+      new HangDownCommand(m_hangSubsystem, 0.1)
+    );
   }
 
 

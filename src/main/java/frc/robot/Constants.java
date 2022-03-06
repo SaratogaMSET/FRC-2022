@@ -171,6 +171,10 @@ public final class Constants {
         public static final int HANG_MAX_ENCODER_COUNTS = 100000;
     }
     
+    public static class Photoelectric{
+        public static final int SENSOR = 100;
+    }
+
     public static class OIConstants {
         public static final int JOYSTICK_DRIVE_VERTICAL = 2;
         public static final int JOYSTICK_DRIVE_HORIZONTAL = 3;

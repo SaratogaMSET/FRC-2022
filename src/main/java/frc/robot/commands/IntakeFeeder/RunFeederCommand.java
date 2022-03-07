@@ -3,6 +3,7 @@ package frc.robot.commands.IntakeFeeder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
+import frc.robot.RobotContainer;
 
 public class RunFeederCommand extends CommandBase {
     private final FeederSubsystem feeder;
@@ -15,6 +16,13 @@ public class RunFeederCommand extends CommandBase {
         this.shooterFeederSpeed = shooterFeederSpeed;
         this.intakeFeederSpeed = intakeFeederSpeed;
         this.feederState = feederState;
+        addRequirements(feeder);
+    }
+
+    public RunFeederCommand(FeederSubsystem feeder) {
+        this.feeder = feeder;
+        if (RobotContainer.feederFail == false) RobotContainer.feederFail = true;
+        else RobotContainer.feederFail = false;
         addRequirements(feeder);
     }
 

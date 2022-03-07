@@ -18,7 +18,7 @@ public class ShooterCommand extends CommandBase {
 
 
     /** Creates a new ShooterCommand. */
-    public ShooterCommand(ShooterSubsystem shooter, VisionSubsystem vision, ShooterState target) {
+    public ShooterCommand(ShooterSubsystem shooter, ShooterState target) {
         this.m_shooter = shooter;
         this.target = target;
         this.rpm = m_shooter.getShooterStateRPM(target);
@@ -45,10 +45,10 @@ public class ShooterCommand extends CommandBase {
         m_shooter.setRPM(rpm);
 
 
-        if (angleState == ShooterStateAngle.FOURZERO)
-            m_shooter.deploy(true);
-        else
-            m_shooter.deploy(false);
+        // if (angleState == ShooterStateAngle.FOURZERO)
+        //     m_shooter.deploy(true);
+        // else
+        //     m_shooter.deploy(false);
     }
     
 

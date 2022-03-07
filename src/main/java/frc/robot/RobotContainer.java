@@ -52,6 +52,7 @@ import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
+import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 // import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -169,10 +170,10 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
 
-    // new JoystickButton(driverVertical, 2).whileActiveOnce(
-    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-    //   new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4)
-    // );
+    new Button(m_controller::getBButton).whileActiveOnce(
+      // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+      new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4)
+    );
     // new JoystickButton(driverHorizontal, 2).whileActiveOnce(
     //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
     //   new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4)
@@ -205,7 +206,9 @@ public class RobotContainer {
     // new Button(m_controller::getAButtonPressed).whenPressed(command)
 
     new Button(m_controller::getAButtonPressed).whenPressed(
-      new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem)
+      new SequentialCommandGroup(
+        new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem)
+      )
     );
 
     // Back button zeros the gyroscope

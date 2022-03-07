@@ -22,8 +22,8 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public IntakeSubsystem() {
-        rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.RIGHT_PISTON);
-        leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.LEFT_PISTON);
+        // rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.RIGHT_PISTON);
+        // leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.LEFT_PISTON);
     }
 
     @Override
@@ -41,11 +41,12 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public IntakeState updateIntakeState(){
-        if(rightValve.get()){
-            return IntakeState.DOWN;
-        } else {
-            return IntakeState.UP;
-        }
+        // if(rightValve.get()){
+        //     return IntakeState.DOWN;
+        // } else {
+        //     return IntakeState.UP;
+        // }
+        return IntakeState.UP;
     }
 
     public void diagnostics() {

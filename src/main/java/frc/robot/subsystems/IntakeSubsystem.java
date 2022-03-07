@@ -4,73 +4,50 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
-    private Solenoid rightValve;
-    private Solenoid leftValve;
+    private static final boolean INTAKE_UP = false;
+    private static final boolean INTAKE_DOWN = true;
+
+    // There is just one solenoid that controls both the intake pistons.
+    private Solenoid intakeSolenoid;
 
     public static enum IntakeState {
-        TEST,
         DOWN,
         UP
     }
 
     public IntakeSubsystem() {
-        // rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.RIGHT_PISTON);
-        // leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.LEFT_PISTON);
+        intakeSolenoid = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.INTAKE_SOLENOID);
     }
 
     @Override
-    public void periodic() {}
+    public void periodic() {
 
+    }
 
-    public void deploy(boolean status) {
-        if (status) { // moves the piston out if the status is true (intake down)
-            rightValve.set(true);
-            // leftValve.set(true);
-        } else { // moves the piston in if the status is false (intake up)
-            rightValve.set(false);
-            leftValve.set(false);
+    public IntakeState getIntakeState() {
+        // Check the current state of the intake from the intakeSolenoid
+        if (intakeSolenoid.get() == INTAKE_UP) {
+            return IntakeState.UP;
+        } else {
+            return IntakeState.DOWN;
         }
     }
 
-    public IntakeState updateIntakeState(){
-        // if(rightValve.get()){
-        //     return IntakeState.DOWN;
-        // } else {
-        //     return IntakeState.UP;
-        // }
-        return IntakeState.UP;
-    }
-
-    public void diagnostics() {
-        String leftPistonStatus = "Left Piston Status";
-        String rightPistonStatus = "Right Piston Status";
-
-        try {
-            deploy(true);
-            if (rightValve.get()) {
-                SmartDashboard.putString(rightPistonStatus, "Success");
-            } else
-                SmartDashboard.putString(rightPistonStatus, "Failed");
-        } catch (Exception e) {
-            SmartDashboard.putString(rightPistonStatus, "Failed");
+    public void updateIntakeState(IntakeState newIntakeState) {
+        if (getIntakeState() == IntakeState.DOWN && newIntakeState == IntakeState.UP) {
+            // Intake is down and we are being asked to move it up.
+            intakeSolenoid.set(INTAKE_UP);
         }
 
-        try {
-        deploy(true);
-        if (leftValve.get()) {
-        SmartDashboard.putString(leftPistonStatus, "Success");
-        } else
-        SmartDashboard.putString(leftPistonStatus, "Failed");
-        } catch (Exception e) {
-        SmartDashboard.putString(leftPistonStatus, "Failed");
+        if (getIntakeState() == IntakeState.UP && newIntakeState == IntakeState.DOWN) {
+            // Intake is up and we are being asked to move it down.
+            intakeSolenoid.set(INTAKE_DOWN);
         }
     }
 }

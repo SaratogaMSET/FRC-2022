@@ -159,7 +159,6 @@ public final class Constants {
         }
     }
  
-
     public static class HangConstants {
         public static final int HANG_RIGHT_MOTOR = 26;
         public static final int HANG_LEFT_MOTOR = 25;
@@ -170,7 +169,7 @@ public final class Constants {
         public static final int HANG_MAX_ENCODER_COUNTS = 100000;
     }
     
-    public static class Photoelectric{
+    public static class Photoelectric {
         public static final int SENSOR = 100;
     }
 
@@ -186,7 +185,7 @@ public final class Constants {
     }
 
     public static class IntakeConstants {
-        public static final int LEFT_PISTON = 0;
-        public static final int RIGHT_PISTON = 1;
+        // TODO: Verify that this is correct ID.
+        public static final int INTAKE_SOLENOID = 0; 
     }
 }

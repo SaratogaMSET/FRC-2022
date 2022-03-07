@@ -223,7 +223,7 @@ public class RobotContainer {
   }
 
   public void updateRobotState() {
-    RobotState.intakeState = m_intake.updateIntakeState();
+    RobotState.intakeState = m_intake.getIntakeState();
     RobotState.feederState = m_feeder.updateFeederState();
     // RobotState.shooterState = m_shooter.updateShooterState();
     // RobotState.visionState = m_vision.updateVisionState();

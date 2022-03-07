@@ -21,8 +21,10 @@ public class RunFeederCommand extends CommandBase {
 
     public RunFeederCommand(FeederSubsystem feeder) {
         this.feeder = feeder;
-        if (RobotContainer.feederFail == false) RobotContainer.feederFail = true;
-        else RobotContainer.feederFail = false;
+        if (RobotContainer.feederFail == false) 
+            RobotContainer.feederFail = true;
+        else 
+            RobotContainer.feederFail = false;
         addRequirements(feeder);
     }
 

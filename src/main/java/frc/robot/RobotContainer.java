@@ -22,7 +22,6 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
-// import frc.robot.commands.PrototypeTestCommand;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
@@ -34,26 +33,20 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RotateDegrees;
-// import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.SwerveControllerStrafe;
-import frc.robot.commands.Hang.HangDownCommand;
-import frc.robot.commands.Hang.HangUpCommand;
-import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
+import frc.robot.commands.Test.TestFeederCommandGroup;
+import frc.robot.commands.Test.TestHangCommandGroup;
+import frc.robot.commands.Test.TestIntakeCommandGroup;
 import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
-import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
+import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.IntakeSubsystem.IntakeState;
-import frc.robot.subsystems.ShooterSubsystem.ShooterState;
-// import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 /**
@@ -85,9 +78,6 @@ public class RobotContainer {
   private final XboxController m_controller = new XboxController(0);
   private final Compressor m_compressor;
   private final Joystick driverVertical, driverHorizontal;
-
-  public static boolean feederFail = false;
-  
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0 *
           SdsModuleConfigurations.MK4_L2.getDriveReduction() *
@@ -170,15 +160,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
-    new JoystickButton(driverVertical, 10).whenPressed(
-      new RunFeederCommand(m_feeder)
-    );
-
     new Button(m_controller::getBButton).whileActiveOnce(
       // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
       new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4)
     );
+
     // new JoystickButton(driverHorizontal, 2).whileActiveOnce(
     //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
     //   new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4)
@@ -224,7 +210,7 @@ public class RobotContainer {
 
   public void updateRobotState() {
     RobotState.intakeState = m_intake.getIntakeState();
-    RobotState.feederState = m_feeder.updateFeederState();
+    RobotState.feederState = m_feeder.getFeederState();
     // RobotState.shooterState = m_shooter.updateShooterState();
     // RobotState.visionState = m_vision.updateVisionState();
     SmartDashboard.putNumber("VISION: Distance", m_visionSubsystem.getDistance());
@@ -257,20 +243,21 @@ public class RobotContainer {
     return value;
   }
 
-
-
   public Command getTestCommand(){
-    // return new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4);
-
     // return new ShooterCommand(m_feeder, m_shooterSubsystem);
 
-    return new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem);
+    // return new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem);
 
-    //code hang on first rung
-    // return new SequentialCommandGroup(
-    //   new HangUpCommand(m_hangSubsystem, 0.1),
-    //   new HangDownCommand(m_hangSubsystem, 0.1)
-    // );
+    return new SequentialCommandGroup(
+      // Will make the intake go up and down.
+      new TestIntakeCommandGroup(m_intake),
+
+      // Will make the feeder intake, followed by outtake
+      new TestFeederCommandGroup(m_feeder, 1.0, 0.4),
+
+      // Will move the hang up and down, followed by moving the static hang go forward and backwards
+      new TestHangCommandGroup(m_hangSubsystem, 0.1)
+    );
   }
 
 

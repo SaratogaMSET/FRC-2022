@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
+    // TODO: Verify that these are correct constants. We might need to switch 
+    // them when we test this.
     private static final boolean INTAKE_UP = false;
     private static final boolean INTAKE_DOWN = true;
 

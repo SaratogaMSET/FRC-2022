@@ -1,13 +1,13 @@
 package frc.robot.commands.Hang;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-
-import frc.robot.subsystems.HangSubsystem;
-import frc.robot.Constants;
-
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.subsystems.HangSubsystem;
 
+/**
+ * This command is used to move the hang arms up (to reach to a rung and latch on to it)
+ */
 public class HangUpCommand extends CommandBase {
     private final HangSubsystem m_hangSubsystem;
     private double hangSpeed;
@@ -39,6 +39,11 @@ public class HangUpCommand extends CommandBase {
         } else {
             m_hangSubsystem.setHangLeftSpeed(hangSpeed);
         }
+
+        SmartDashboard.putNumber("Right encoder ", m_hangSubsystem.getRightEncoderValue());
+        SmartDashboard.putNumber("Left encoder ", m_hangSubsystem.getLeftEncoderValue());
+        SmartDashboard.putNumber("Right motor speed ", m_hangSubsystem.rightHangMotor.getMotorOutputPercent());
+        SmartDashboard.putNumber("Left motor speed ", m_hangSubsystem.leftHangMotor.getMotorOutputPercent());
     }
 
     // Returns true when the command should end.

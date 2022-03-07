@@ -1,6 +1,7 @@
-package frc.robot.commands.IntakeFeeder;
+package frc.robot.commands.Test;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
 

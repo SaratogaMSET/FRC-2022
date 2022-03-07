@@ -1,18 +1,15 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class HangSubsystem extends SubsystemBase {
     public TalonFX rightHangMotor;
@@ -21,13 +18,15 @@ public class HangSubsystem extends SubsystemBase {
     public WPI_TalonFX encoderLeft; 
     public DigitalInput hangRightLimitSwitch; 
     public DigitalInput hangLeftLimitSwitch;
-    public Solenoid rightValve;
-    public Solenoid leftValve;
+    public Solenoid hangSolenoid;
 
     public boolean triggeredLeftSwitch;
     public boolean triggeredRightSwitch;
     public boolean maxHeightLeft;
     public boolean maxHeightRight;
+
+    public static final boolean POSITION_FORWARD = true;
+    public static final boolean POSITION_NORMAL = false;
 
     public HangSubsystem() {
         rightHangMotor = new TalonFX(Constants.HangConstants.HANG_RIGHT_MOTOR);
@@ -41,8 +40,7 @@ public class HangSubsystem extends SubsystemBase {
         hangRightLimitSwitch = new DigitalInput(Constants.HangConstants.RIGHT_HANG_LIMIT_SWITCH);
         hangLeftLimitSwitch = new DigitalInput(Constants.HangConstants.LEFT_HANG_LIMIT_SWITCH);
     
-        rightValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.HangConstants.RIGHT_PISTON);
-        leftValve = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.HangConstants.LEFT_PISTON);
+        hangSolenoid = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.HangConstants.HANG_SOLENOID);
     }
 
     public void setHangLeftSpeed(double speed) {
@@ -55,13 +53,9 @@ public class HangSubsystem extends SubsystemBase {
 
     public void rightResetEncoders() {
         encoderRight.setSelectedSensorPosition(0);
-
-        //SmartDashboard.putString("encoder right after reset ", encoderRight.getSelectedSensorPosition() + "");
     }
     public void leftResetEncoders() {
         encoderLeft.setSelectedSensorPosition(0);
-
-        //SmartDashboard.putString("encoder left after reset ", encoderLeft.getSelectedSensorPosition() + "");
     }
 
     public double getRightEncoderValue() {
@@ -71,9 +65,12 @@ public class HangSubsystem extends SubsystemBase {
         return encoderLeft.getSelectedSensorPosition();
     }
 
-    public void deployHang(boolean position){
-        rightValve.set(position);
-        leftValve.set(position);
+    public void deployHang(boolean position) {
+        hangSolenoid.set(position);
+    }
+
+    public boolean isHangDeployed() {
+        return hangSolenoid.get();
     }
 
     public double metersToNativeUnits(double positionMeters){

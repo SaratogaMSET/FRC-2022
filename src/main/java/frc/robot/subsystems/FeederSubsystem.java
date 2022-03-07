@@ -4,29 +4,21 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import frc.robot.RobotContainer;
 
 public class FeederSubsystem extends SubsystemBase {
-  private TalonFX shooterFeederMotor;
-  private TalonFX intakeFeederMotor;
-  private DigitalInput shooterGate;
-  private DigitalInput intakeGate;
-  public boolean inIntakeFeeder;
-  public boolean inShooterFeeder;
-  private boolean runIntakeFeeder;
-  private boolean runShooterFeeder;
-  private double shooterFeederVelocity;
-  private double intakeFeederVelocity;
+  public TalonFX shooterFeederMotor;
+  public TalonFX intakeFeederMotor;
 
+  public DigitalInput shooterGate;
+  public DigitalInput intakeGate;
+  
   public static enum FeederState {
-    TEST,
     INTAKE,
     OUTTAKE,
     IDLE
@@ -35,51 +27,60 @@ public class FeederSubsystem extends SubsystemBase {
   public FeederSubsystem() {
     shooterFeederMotor = new TalonFX(Constants.FeederConstants.SHOOTER_FEEDER_MOTOR);
     intakeFeederMotor = new TalonFX(Constants.FeederConstants.INTAKE_FEEDER_MOTOR);
+    intakeFeederMotor.setInverted(true);
+
     shooterGate = new DigitalInput(Constants.FeederConstants.IR_GATES[0]);
     intakeGate = new DigitalInput(Constants.FeederConstants.IR_GATES[1]);
-    inIntakeFeeder = false;
-    inShooterFeeder = false;
-    runIntakeFeeder = false;
-    runShooterFeeder = false;
-    intakeFeederMotor.setInverted(true);
   }
 
-  public void setFeederSpeed(){
-    shooterFeederMotor.set(ControlMode.PercentOutput, 0.3);
+  public void stopFeeder() {
+    setIntakeFeeder(0.0);
+    setShooterFeeder(0.0);
   }
 
-  public void updateGates() {
-    if (RobotContainer.feederFail == false) {
-      inIntakeFeeder = !intakeGate.get();
-      inShooterFeeder = !shooterGate.get();
-      SmartDashboard.putBoolean("Ball in Intake", inIntakeFeeder);
-      SmartDashboard.putBoolean("Ball in Shooter", inShooterFeeder);
-      if (shooterFeederVelocity < 0.0 || intakeFeederVelocity < 0.0) {
-        runIntakeFeeder = true;
-        runShooterFeeder = true;
-      } else if (inIntakeFeeder && inShooterFeeder) {
-        runIntakeFeeder = false;
-        runShooterFeeder = false;
-      } else if (inIntakeFeeder) {
-        runIntakeFeeder = true;
-        runShooterFeeder = true;
-      } else if (inShooterFeeder) {
-        runIntakeFeeder = true;
-        runShooterFeeder = false;
+  private void setIntakeFeeder(double velocity) {
+    if (velocity == 0.0) {
+      intakeFeederMotor.set(ControlMode.PercentOutput, 0.0);
+    } else {
+      if (canRunIntakeFeeder()) {
+        intakeFeederMotor.set(ControlMode.PercentOutput, velocity);
       } else {
-        runIntakeFeeder = true;
-        runShooterFeeder = true;
+        intakeFeederMotor.set(ControlMode.PercentOutput, 0.0);
       }
     }
-    else {
-      SmartDashboard.putBoolean("FEEDER SAFE-FAIL", true);
-      SmartDashboard.putBoolean("FEEDER SAFE-FAIL", true);
-      runIntakeFeeder = true;
-      runShooterFeeder = true;
+  }
+
+  private void setShooterFeeder(double velocity) {
+    if (velocity == 0.0) {
+      shooterFeederMotor.set(ControlMode.PercentOutput, 0.0);
+    } else {
+      if (canRunShooterFeeder()) {
+        shooterFeederMotor.set(ControlMode.PercentOutput, velocity);
+      } else {
+        shooterFeederMotor.set(ControlMode.PercentOutput, 0.0);
+      }
     }
   }
 
-  public FeederState updateFeederState() {
+  private boolean canRunIntakeFeeder() {
+    return intakeGate.get();
+  }
+
+  private boolean canRunShooterFeeder() {
+    return shooterGate.get();
+  }
+
+  public void runIntakeIfPossible(double shooterFeederSpeed, double intakeFeederSpeed) {
+    setShooterFeeder(shooterFeederSpeed);
+    setIntakeFeeder(intakeFeederSpeed);
+  }
+
+  public void runOuttake(double shooterFeederSpeed, double intakeFeederSpeed) {
+    shooterFeederMotor.set(ControlMode.PercentOutput, -shooterFeederSpeed);
+    intakeFeederMotor.set(ControlMode.PercentOutput, -intakeFeederSpeed);
+  }
+
+  public FeederState getFeederState() {
     double measuredShooterFeeder = shooterFeederMotor.getMotorOutputPercent();
     double measuredIntakeFeeder = intakeFeederMotor.getMotorOutputPercent();
     if (measuredShooterFeeder > 0.0 || measuredIntakeFeeder > 0.0)
@@ -88,51 +89,6 @@ public class FeederSubsystem extends SubsystemBase {
       return FeederState.OUTTAKE;
     else
       return FeederState.IDLE;
-  }
-
-  public void setShooterFeeder(double velocity) {
-    shooterFeederVelocity = velocity;
-    if (runShooterFeeder)
-      shooterFeederMotor.set(ControlMode.PercentOutput, velocity);
-    else
-      shooterFeederMotor.set(ControlMode.PercentOutput, 0.0);
-  }
-
-  public void setIntakeFeeder(double velocity) {
-    intakeFeederVelocity = velocity;
-    if (runIntakeFeeder)
-      intakeFeederMotor.set(ControlMode.PercentOutput, velocity);
-    else
-      intakeFeederMotor.set(ControlMode.PercentOutput, 0.0);
-  }
-
-  public void setRawShooterFeeder(double velocity){
-    shooterFeederMotor.set(ControlMode.PercentOutput, velocity);
-  }
-
-  public void diagnostics() {
-    String topStatus = "Feeder Top Status";
-    String bottomStatus = "Feeder Bottom Status";
-
-    try {
-      setShooterFeeder(0.1);
-      if (shooterFeederMotor.getMotorOutputPercent() > -0.08 || shooterFeederMotor.getMotorOutputPercent() < -0.12) {
-        SmartDashboard.putString(topStatus, "Failed");
-      } else
-        SmartDashboard.putString(topStatus, "Success");
-    } catch (Exception e) {
-      SmartDashboard.putString(topStatus, "Failed");
-    }
-
-    try {
-      setIntakeFeeder(0.1);
-      if (intakeFeederMotor.getMotorOutputPercent() < 0.08 || intakeFeederMotor.getMotorOutputPercent() > 0.12) {
-        SmartDashboard.putString(bottomStatus, "Failed");
-      } else
-        SmartDashboard.putString(bottomStatus, "Success");
-    } catch (Exception e) {
-      SmartDashboard.putString(bottomStatus, "Failed");
-    }
   }
 
   @Override

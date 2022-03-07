@@ -185,7 +185,6 @@ public final class Constants {
     }
 
     public static class IntakeConstants {
-        // TODO: Verify that this is correct ID.
-        public static final int INTAKE_SOLENOID = 0; 
+        public static final int INTAKE_SOLENOID = 5; 
     }
 }

@@ -6,30 +6,24 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
 import frc.robot.util.drivers.LazyTalonFX;
 
-
-
-public class ShooterSubsystemPoints extends SubsystemBase{
-    public LazyTalonFX shooterMotor;
+public class ShooterSubsystemPoints extends SubsystemBase {
+    public LazyTalonFX shooterMotor1;
     private LazyTalonFX shooterMotor2;
-
     private ArrayList<Points> points = new ArrayList<Points>(100);
 
-
-
     public ShooterSubsystemPoints() {
-        
-        shooterMotor = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR);
+        shooterMotor1 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR1);
         shooterMotor2 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR2);
     }
     @Override
     public void periodic() {
         // SmartDashboard.putNumber("Sensor Vel:", shooterMotor.getSelectedSensorVelocity());
     }
+    
     public void run(double d) {
-        shooterMotor.set(TalonFXControlMode.PercentOutput,getVelocity(d));
+        shooterMotor1.set(TalonFXControlMode.PercentOutput,getVelocity(d));
         shooterMotor2.set(TalonFXControlMode.PercentOutput,-getVelocity(d));
     }
 

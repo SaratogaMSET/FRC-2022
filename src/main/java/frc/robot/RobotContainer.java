@@ -32,12 +32,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.RotateDegrees;
 import frc.robot.commands.SwerveControllerStrafe;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
+import frc.robot.commands.Shooter.AimForShootCommand;
 import frc.robot.commands.Test.TestFeederCommandGroup;
 import frc.robot.commands.Test.TestHangCommandGroup;
 import frc.robot.commands.Test.TestIntakeCommandGroup;
@@ -198,7 +197,7 @@ public class RobotContainer {
 
     new Button(m_controller::getAButtonPressed).whenPressed(
       new SequentialCommandGroup(
-        new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem)
+        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem)
       )
     );
 
@@ -380,7 +379,7 @@ public class RobotContainer {
       m_drivetrainSubsystem
     );
     
-    RotateDegrees rotateDegrees = new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem);
+    AimForShootCommand rotateDegrees = new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem);
 
 
 

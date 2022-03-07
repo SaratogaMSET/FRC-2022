@@ -1,6 +1,4 @@
-package frc.robot.commands;
-
-import com.ctre.phoenix.sensors.CANCoder;
+package frc.robot.commands.Shooter;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -10,7 +8,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class RotateDegrees extends CommandBase {
+public class AimForShootCommand extends CommandBase {
     private final DrivetrainSubsystem m_drivetrainSubsystem;
     private final VisionSubsystem m_visionSubsystem;
     private final PIDController pid;
@@ -22,7 +20,7 @@ public class RotateDegrees extends CommandBase {
     // public CANCoder frontRightCanCoder = new CANCoder(Constants.Drivetrain.FRONT_RIGHT_MODULE_STEER_ENCODER);
     // public CANCoder frontLeftCanCoder = new CANCoder(Constants.Drivetrain.FRONT_LEFT_MODULE_STEER_ENCODER);
 
-    public RotateDegrees(DrivetrainSubsystem drivetrainSubsystem, VisionSubsystem visionSystem) {
+    public AimForShootCommand(DrivetrainSubsystem drivetrainSubsystem, VisionSubsystem visionSystem) {
         this.m_drivetrainSubsystem = drivetrainSubsystem;
         this.m_visionSubsystem = visionSystem;
 

@@ -201,7 +201,7 @@ public class RobotContainer {
     RobotState.visionState = m_visionSubsystem.getVisionState();
 
 
-    SmartDashboard.putNumber("VISION: Distance", m_visionSubsystem.getDistance());
+    SmartDashboard.putNumber("VISION: Distance", m_visionSubsystem.getDistanceFromTarget());
     SmartDashboard.putNumber("VISION: Angle", m_visionSubsystem.getRawAngle());
     SmartDashboard.putString("HANG: limit switch right ", m_hangSubsystem.hangRightLimitSwitch.get() + "");
     SmartDashboard.putString("HANG: limit switch left", m_hangSubsystem.hangLeftLimitSwitch.get() + "");

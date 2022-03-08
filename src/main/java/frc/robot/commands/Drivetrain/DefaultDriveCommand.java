@@ -1,14 +1,13 @@
 package frc.robot.commands.Drivetrain;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.subsystems.DrivetrainSubsystem;
-
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.sensors.CANCoder;
+
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class DefaultDriveCommand extends CommandBase {
     private final DrivetrainSubsystem m_drivetrainSubsystem;

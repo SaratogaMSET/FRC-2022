@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.drivers.LazyTalonFX;
-import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
 
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -36,60 +35,50 @@ public class ShooterSubsystem extends SubsystemBase {
   private NetworkTableEntry shooterPercentOutputEntry = tab.add("Shooter Percent Output", 0).withWidget(BuiltInWidgets.kGraph).getEntry();
   private NetworkTableEntry shooterHoodEntry = tab.add("Shooter Hood Position", 0).getEntry();
 
+  /** Creates a new ShooterSubsystem. */
+  public ShooterSubsystem() {
+    shooterMotor1 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR1);
+    shooterMotor2 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR2);
 
-/** Creates a new ShooterSubsystem. */
-public ShooterSubsystem() {
-  shooterMotor1 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR1);
-  shooterMotor2 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR2);
-
-  shooterSolenoid = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.ShooterConstants.SHOOTER_SOLENOID); //CHANGE VALUES
- 
-  resetSensors();
-}
-
-public void setRPM(double rpm) {
-  shooterMotor1.set(ControlMode.PercentOutput, rpm);
-  shooterMotor2.set(ControlMode.PercentOutput, -rpm);
-}
-public void resetSensors() {
-  shooterMotor1.setSelectedSensorPosition(0);
-  shooterMotor2.setSelectedSensorPosition(0);
-}
-
-public void deploy(boolean status) {
-        if (status) { // moves the piston out if the status is true (shooter down)
-                shooterSolenoid.set(true);
-        } else { // moves the piston in if the status is false (shooter up)
-                shooterSolenoid.set(false);
-        }
-}
-
-public ShooterAngle updateShooterStateAngle(){
-
-        if(shooterSolenoid.get()){
-                return ShooterAngle.TWOFIVE;
-        } else {
-                return ShooterAngle.FOURZERO;
-        }
-}
-
-
-public double getShooterStateRPM(ShooterZone state) {
-  switch(state) {
-    case ZONE_2:
-      return Constants.ShooterConstants.DistanceConstants.ZONE_2.getPercentOutput();
-    case ZONE_3:
-      return Constants.ShooterConstants.DistanceConstants.ZONE_3.getPercentOutput();
-    case ZONE_4:
-      return Constants.ShooterConstants.DistanceConstants.ZONE_4.getPercentOutput();
-    case ZONE_5:
-      return Constants.ShooterConstants.DistanceConstants.ZONE_5.getPercentOutput();
-    case ZONE_6:
-      return Constants.ShooterConstants.DistanceConstants.ZONE_6.getPercentOutput();
-    default:
-      return 0;
+    shooterSolenoid = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.ShooterConstants.SHOOTER_SOLENOID); //CHANGE VALUES
+  
+    resetSensors();
   }
-}
+
+  public void setRPM(double rpm) {
+    shooterMotor1.set(ControlMode.PercentOutput, rpm);
+    shooterMotor2.set(ControlMode.PercentOutput, -rpm);
+  }
+
+  public void resetSensors() {
+    shooterMotor1.setSelectedSensorPosition(0);
+    shooterMotor2.setSelectedSensorPosition(0);
+  }
+
+  public ShooterAngle getShooterAngle(){
+      if(shooterSolenoid.get()) {
+        return ShooterAngle.TWOFIVE;
+      } else {
+        return ShooterAngle.FOURZERO;
+      }
+  }
+
+  public double getShooterStateRPM(ShooterZone state) {
+    switch(state) {
+      case ZONE_2:
+        return Constants.ShooterConstants.DistanceConstants.ZONE_2.getPercentOutput();
+      case ZONE_3:
+        return Constants.ShooterConstants.DistanceConstants.ZONE_3.getPercentOutput();
+      case ZONE_4:
+        return Constants.ShooterConstants.DistanceConstants.ZONE_4.getPercentOutput();
+      case ZONE_5:
+        return Constants.ShooterConstants.DistanceConstants.ZONE_5.getPercentOutput();
+      case ZONE_6:
+        return Constants.ShooterConstants.DistanceConstants.ZONE_6.getPercentOutput();
+      default:
+        return 0;
+    }
+  }
 
   public void setAngle(ShooterAngle desiredAngle) {
     if (desiredAngle == ShooterAngle.FOURZERO)
@@ -126,22 +115,22 @@ public double getShooterStateRPM(ShooterZone state) {
     return ShooterZone.ZONE_6;
   }
 
-public ShooterAngle getAngleState(ShooterZone state) {
-  switch(state) {
-          case ZONE_2:
-                  return ShooterAngle.TWOFIVE;
-          case ZONE_3:
-                  return ShooterAngle.TWOFIVE;
-          case ZONE_4:
-                  return ShooterAngle.TWOFIVE;
-          case ZONE_5:
-                  return ShooterAngle.TWOFIVE;
-          case ZONE_6:
-                  return ShooterAngle.TWOFIVE;
-          default:
-                  return ShooterAngle.TWOFIVE;
+  public ShooterAngle getShooterAngle(ShooterZone state) {
+    switch(state) {
+      case ZONE_2:
+        return ShooterAngle.TWOFIVE;
+      case ZONE_3:
+        return ShooterAngle.TWOFIVE;
+      case ZONE_4:
+        return ShooterAngle.TWOFIVE;
+      case ZONE_5:
+        return ShooterAngle.TWOFIVE;
+      case ZONE_6:
+        return ShooterAngle.TWOFIVE;
+      default:
+        return ShooterAngle.TWOFIVE;
+    }
   }
-}
 
   public double getDesiredShooterRPM(ShooterZone state) {
     switch(state) {

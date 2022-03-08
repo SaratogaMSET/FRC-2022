@@ -64,7 +64,7 @@ public class VisionSubsystem extends SubsystemBase {
     return VisionState.NO_TARGET;
   }
 
-  public double getDistance() {
+  public double getDistanceFromTarget() {
     if (table == null) {
       return -1.0;
     }
@@ -75,25 +75,6 @@ public class VisionSubsystem extends SubsystemBase {
   public double getRawAngle() {
     return -x;
     // return 15;
-  }
-
-  public ShooterZone getShooterStateFromDistance() {
-    double distance = getDistance();
-    if(distance == 0.0) {
-      return ShooterZone.ZONE_2;
-    }
-    if (distance < Constants.Vision.Distance.ZONE_2) {
-      return ShooterZone.ZONE_2;
-    } else if (distance < Constants.Vision.Distance.ZONE_3) {
-      return ShooterZone.ZONE_3;
-    } else if (distance < Constants.Vision.Distance.ZONE_4) {
-      return ShooterZone.ZONE_4;
-    } else if (distance < Constants.Vision.Distance.ZONE_5) {
-      return ShooterZone.ZONE_5;
-    } else if (distance < Constants.Vision.Distance.ZONE_6) {
-      return ShooterZone.ZONE_6;
-    } else
-    return ShooterZone.ZONE_6;
   }
 
   private void updateSmartDashboard() {

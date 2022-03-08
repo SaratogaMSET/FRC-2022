@@ -46,7 +46,7 @@ import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
-import frc.robot.subsystems.ShooterSubsystem.ShooterState;
+import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -175,7 +175,7 @@ public class RobotContainer {
       // new SequentialCommandGroup(
       //   new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem),
         new ParallelCommandGroup(
-          new ShooterCommand(m_shooterSubsystem, ShooterState.ZONE_2),
+          new ShooterCommand(m_shooterSubsystem, ShooterZone.ZONE_2),
           new SequentialCommandGroup(
             new WaitCommand(1),
             new RunFeederCommand(m_feeder, FeederState.FEED, 0.2, 0.8)
@@ -217,22 +217,6 @@ public class RobotContainer {
     //   // new DeployIntakeCommand(m_intake, IntakeState.UP)
     //   new FeederCommand(m_feeder, FeederState.IDLE, 0.0, 0.0)
     // );
-
-    // new Button(m_controller::getAButtonPressed).whenPressed(command)
-<<<<<<< HEAD
-=======
-
-    new Button(m_controller::getAButtonPressed).whenPressed(
-      new SequentialCommandGroup(
-        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem)
-      )
-    );
-
-    // Back button zeros the gyroscope
-    new Button(m_controller::getYButtonPressed).whenPressed(
-      m_drivetrainSubsystem::zeroGyroscope
-    );
->>>>>>> 307dba005500905dd61a49fcbb5cbe3c519ab8a6
   }
 
   public void updateRobotState() {

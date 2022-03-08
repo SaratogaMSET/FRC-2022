@@ -21,11 +21,11 @@ public class RunFeederCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (direction == FeederState.INTAKE) {
+        if (direction == FeederState.IR_ASSISTED_INTAKE) {
             feeder.runIntakeIfPossible(shooterFeederSpeed, intakeFeederSpeed);
         } else if (direction == FeederState.OUTTAKE) {
             feeder.runOuttake(shooterFeederSpeed, intakeFeederSpeed);
-        } else if (direction == FeederState.FEED){
+        } else if (direction == FeederState.MANUAL_INTAKE){
             feeder.feedToShoot(shooterFeederSpeed, intakeFeederSpeed);
         } else if (direction == FeederState.IDLE) {
             feeder.stopFeeder();

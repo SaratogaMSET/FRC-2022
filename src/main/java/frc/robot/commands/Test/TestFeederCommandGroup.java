@@ -12,7 +12,7 @@ public class TestFeederCommandGroup extends SequentialCommandGroup {
         try {
             if (feeder.getFeederState() == FeederState.IDLE) {
                 addCommands(
-                        (new RunFeederCommand(feeder, FeederState.INTAKE, shooterFeederSpeed, intakeFeederSpeed))
+                        (new RunFeederCommand(feeder, FeederState.IR_ASSISTED_INTAKE, shooterFeederSpeed, intakeFeederSpeed))
                                 .withTimeout(2),
                         (new RunFeederCommand(feeder, FeederState.OUTTAKE, shooterFeederSpeed, intakeFeederSpeed))
                                 .withTimeout(2));

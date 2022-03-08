@@ -41,7 +41,7 @@ public class AimForShootCommand extends CommandBase {
             pidValue = pid.calculate(m_visionSubsystem.getRawAngle(), 0);
         }
         
-        VisionSubsystem.VisionState visionState = m_visionSubsystem.updateVisionState();
+        VisionSubsystem.VisionState visionState = m_visionSubsystem.getVisionState();
 
         // failsafe code to make sure it does not keep spinning
         if(visionState==VisionSubsystem.VisionState.NO_TARGET){

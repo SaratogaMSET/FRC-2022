@@ -34,8 +34,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.Constants.Drivetrain;
-import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.SwerveControllerStrafe;
+import frc.robot.commands.Drivetrain.DefaultDriveCommand;
+import frc.robot.commands.Drivetrain.SwerveControllerStrafe;
+import frc.robot.commands.Drivetrain.ZeroGyroCommand;
 import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.commands.Shooter.AimForShootCommand;
@@ -167,7 +168,7 @@ public class RobotContainer {
     new Button(m_controller::getXButton).whileActiveOnce(
       new ParallelCommandGroup(
         new DeployIntakeCommand(m_intake, IntakeState.DOWN),
-        new RunFeederCommand(m_feeder, FeederState.INTAKE, 0.2, 0.8)
+        new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
       )
     );
     new Button(m_controller::getBButton).whileActiveOnce(
@@ -182,7 +183,7 @@ public class RobotContainer {
           new ShootCommand(m_shooterSubsystem, ShooterZone.ZONE_2),
           new SequentialCommandGroup(
             new WaitCommand(1),
-            new RunFeederCommand(m_feeder, FeederState.FEED, 0.2, 0.5)
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.2, 0.5)
           )
         )
       )
@@ -190,44 +191,16 @@ public class RobotContainer {
 
     // Back button zeros the gyroscope
     new Button(m_controller::getLeftBumper).whenPressed(
-      m_drivetrainSubsystem::zeroGyroscope
+      new ZeroGyroCommand(m_drivetrainSubsystem)
     );
-
-    // new JoystickButton(driverHorizontal, 2).whileActiveOnce(
-    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-    //   new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4)
-    // );
-
-    // new JoystickButton(driverVertical, 3).whileActiveOnce(
-    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-    //   new FeederCommand(m_feeder, FeederState.OUTTAKE, 0.5, 0.3)
-    // );
-    // new JoystickButton(driverVertical, 3).whileActiveOnce(
-    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-    //   new FeederCommand(m_feeder, FeederState.OUTTAKE, 0.5, 0.3)
-    // );
-
-    // new JoystickButton(driverVertical, 4).whileHeld(new ShooterCommand(m_shooterSubsystem, m_visionSubsystem, ShooterState.ZONE_2));
-    // new JoystickButton(driverHorizontal, 1).whileHeld(
-    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-    //   new FeederCommand(m_feeder, FeederState.INTAKE, 0.5, 0.5) 
-    // );
-
-    // new JoystickButton(driverVertical, 1).whenInactive(
-    //   // new DeployIntakeCommand(m_intake, IntakeState.UP)
-    //   new FeederCommand(m_feeder, FeederState.IDLE, 0.0, 0.0)
-    // );
-    // new JoystickButton(driverHorizontal, 1).whenInactive(
-    //   // new DeployIntakeCommand(m_intake, IntakeState.UP)
-    //   new FeederCommand(m_feeder, FeederState.IDLE, 0.0, 0.0)
-    // );
   }
 
   public void updateRobotState() {
     RobotState.intakeState = m_intake.getIntakeState();
     RobotState.feederState = m_feeder.getFeederState();
-    // RobotState.shooterState = m_shooter.updateShooterState();
-    // RobotState.visionState = m_vision.updateVisionState();
+    RobotState.visionState = m_visionSubsystem.getVisionState();
+
+
     SmartDashboard.putNumber("VISION: Distance", m_visionSubsystem.getDistance());
     SmartDashboard.putNumber("VISION: Angle", m_visionSubsystem.getRawAngle());
     SmartDashboard.putString("HANG: limit switch right ", m_hangSubsystem.hangRightLimitSwitch.get() + "");

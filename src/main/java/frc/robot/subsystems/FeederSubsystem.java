@@ -19,10 +19,10 @@ public class FeederSubsystem extends SubsystemBase {
   public DigitalInput intakeGate;
   
   public static enum FeederState {
-    INTAKE,
+    IR_ASSISTED_INTAKE,
     OUTTAKE,
     IDLE,
-    FEED
+    MANUAL_INTAKE
   }
 
   public FeederSubsystem() {
@@ -77,7 +77,7 @@ public class FeederSubsystem extends SubsystemBase {
     double measuredShooterFeeder = shooterFeederMotor.getMotorOutputPercent();
     double measuredIntakeFeeder = intakeFeederMotor.getMotorOutputPercent();
     if (measuredShooterFeeder > 0.0 || measuredIntakeFeeder > 0.0)
-      return FeederState.INTAKE;
+      return FeederState.IR_ASSISTED_INTAKE;
     else if (measuredShooterFeeder < 0.0 || measuredIntakeFeeder < 0.0)
       return FeederState.OUTTAKE;
     else

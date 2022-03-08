@@ -51,13 +51,13 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("LimelightY", y);
     SmartDashboard.putNumber("LimelightTargets", v);
 
-    updateVisionState();
+    getVisionState();
     updateSmartDashboard();
     //SmartDashboard.putString("testExecute", "TestExecute");
     // This method will be called once per scheduler run
   }
 
-  public VisionState updateVisionState(){
+  public VisionState getVisionState(){
     if(v == 1) {
       return VisionState.TARGET_VISIBLE;
     }

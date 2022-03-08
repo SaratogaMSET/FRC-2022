@@ -55,11 +55,11 @@ public class FeederSubsystem extends SubsystemBase {
     }
   }
 
-  private boolean canRunIntakeFeeder() {
+  public boolean canRunIntakeFeeder() {
     return (intakeGate.get() || shooterGate.get());
   }
 
-  private boolean canRunShooterFeeder() {
+  public boolean canRunShooterFeeder() {
     return shooterGate.get();
   }
 

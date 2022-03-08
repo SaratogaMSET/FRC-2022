@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
@@ -36,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RotateDegrees;
+import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.SwerveControllerStrafe;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.commands.Test.TestFeederCommandGroup;
@@ -45,6 +47,7 @@ import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
+import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -160,9 +163,31 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    new Button(m_controller::getXButton).whileActiveOnce(
+      // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+      new RunFeederCommand(m_feeder, FeederState.INTAKE, 0.2, 0.8)
+    );
     new Button(m_controller::getBButton).whileActiveOnce(
       // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-      new RunFeederCommand(m_feeder, FeederState.INTAKE, 1.0, 0.4)
+      new RunFeederCommand(m_feeder, FeederState.OUTTAKE, 0.2, 0.8)
+    );
+
+    new Button(m_controller::getYButton).whileActiveOnce(
+      // new SequentialCommandGroup(
+      //   new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem),
+        new ParallelCommandGroup(
+          new ShooterCommand(m_shooterSubsystem, ShooterState.ZONE_2),
+          new SequentialCommandGroup(
+            new WaitCommand(1),
+            new RunFeederCommand(m_feeder, FeederState.FEED, 0.2, 0.8)
+          )
+        )
+      // )
+    );
+
+    // Back button zeros the gyroscope
+    new Button(m_controller::getLeftBumper).whenPressed(
+      m_drivetrainSubsystem::zeroGyroscope
     );
 
     // new JoystickButton(driverHorizontal, 2).whileActiveOnce(
@@ -195,17 +220,6 @@ public class RobotContainer {
     // );
 
     // new Button(m_controller::getAButtonPressed).whenPressed(command)
-
-    new Button(m_controller::getAButtonPressed).whenPressed(
-      new SequentialCommandGroup(
-        new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem)
-      )
-    );
-
-    // Back button zeros the gyroscope
-    new Button(m_controller::getYButtonPressed).whenPressed(
-      m_drivetrainSubsystem::zeroGyroscope
-    );
   }
 
   public void updateRobotState() {
@@ -253,7 +267,7 @@ public class RobotContainer {
       new TestIntakeCommandGroup(m_intake),
 
       // Will make the feeder intake, followed by outtake
-      new TestFeederCommandGroup(m_feeder, 1.0, 0.4),
+      new TestFeederCommandGroup(m_feeder, 0.2, 0.8),
 
       // Will move the hang up and down, followed by moving the static hang go forward and backwards
       new TestHangCommandGroup(m_hangSubsystem, 0.1)

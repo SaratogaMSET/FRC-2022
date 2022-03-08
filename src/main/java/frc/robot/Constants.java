@@ -129,8 +129,8 @@ public final class Constants {
                 this.percentRPM = percentRPM;
                 this.hoodAngle = hoodAngle;
             }
-             public double getRPM() {
-                return percentRPM * kFalcon500FreeSpeed;
+             public double getPercentOutput() {
+                return percentRPM;
             }
              public double getHoodAngle() {
                 return hoodAngle;

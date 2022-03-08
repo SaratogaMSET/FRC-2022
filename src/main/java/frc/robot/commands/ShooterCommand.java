@@ -1,6 +1,7 @@
 package frc.robot.commands;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterState;
@@ -27,22 +28,23 @@ public class ShooterCommand extends CommandBase {
     }
 
 
-    public ShooterCommand(ShooterSubsystem shooter, VisionSubsystem vision, ShooterStateAngle angleState) {
+    public ShooterCommand(ShooterSubsystem shooter, VisionSubsystem vision) {
         addRequirements(shooter);
         addRequirements(vision);
         this.m_shooter = shooter;
         this.m_vision = vision;
-        this.angleState = angleState;
+        this.target = m_vision.getShooterStateFromDistance();
         
     }
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
         isFinished = false;
-        this.target = m_vision.getShooterStateFromDistance();
+        
         this.rpm = m_shooter.getShooterStateRPM(target);
         this.angleState = m_shooter.getAngleState(target);
         m_shooter.setRPM(rpm);
+        SmartDashboard.putNumber("Shooter Rpm Setpoint", rpm);
 
 
         // if (angleState == ShooterStateAngle.FOURZERO)
@@ -62,7 +64,7 @@ public class ShooterCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         if (interrupted) {
-            m_shooter.set(ControlMode.PercentOutput, 0);
+            m_shooter.setRPM(0);
         }
     }
     // Returns true when the command should end.

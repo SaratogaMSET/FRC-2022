@@ -11,8 +11,8 @@ public class TestFeederCommandGroup extends SequentialCommandGroup {
         
         if (feeder.getFeederState() == FeederState.IDLE) {
             addCommands(
-                (new RunFeederCommand(feeder, FeederState.INTAKE, shooterFeederSpeed, intakeFeederSpeed)).withTimeout(20),
-                (new RunFeederCommand(feeder, FeederState.OUTTAKE, shooterFeederSpeed, intakeFeederSpeed)).withTimeout(10)
+                (new RunFeederCommand(feeder, FeederState.INTAKE, shooterFeederSpeed, intakeFeederSpeed)).withTimeout(5),
+                (new RunFeederCommand(feeder, FeederState.OUTTAKE, shooterFeederSpeed, intakeFeederSpeed)).withTimeout(5)
             );
         }
     }

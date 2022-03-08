@@ -21,7 +21,8 @@ public class FeederSubsystem extends SubsystemBase {
   public static enum FeederState {
     INTAKE,
     OUTTAKE,
-    IDLE
+    IDLE,
+    FEED
   }
 
   public FeederSubsystem() {
@@ -63,7 +64,7 @@ public class FeederSubsystem extends SubsystemBase {
   }
 
   private boolean canRunIntakeFeeder() {
-    return intakeGate.get();
+    return (intakeGate.get() || shooterGate.get());
   }
 
   private boolean canRunShooterFeeder() {
@@ -93,5 +94,9 @@ public class FeederSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+  }
+
+  public void feedToShoot(double shooterFeederSpeed, double intakeFeederSpeed) {
+    runOuttake(-shooterFeederSpeed, -intakeFeederSpeed);
   }
 }

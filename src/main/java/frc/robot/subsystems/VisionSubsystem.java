@@ -99,7 +99,8 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getRawAngle() {
-    return -x;
+    // return -x;
+    return 15;
   }
 
   public boolean getShooterAngle(){

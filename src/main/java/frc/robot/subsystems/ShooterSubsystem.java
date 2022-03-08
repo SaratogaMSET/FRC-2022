@@ -54,16 +54,9 @@ public ShooterSubsystem() {
   resetSensors();
 }
 
-
-
-
-public void set(ControlMode mode, double demand) {
-  shooterMotor.set(mode, demand);
-}
-
 public void setRPM(double rpm) {
-  shooterMotor.set(ControlMode.Velocity, rpm / Constants.ShooterConstants.kFalconSensorUnitsToRPM);
-  shooterMotor2.set(ControlMode.Velocity, - rpm / Constants.ShooterConstants.kFalconSensorUnitsToRPM);
+  shooterMotor.set(ControlMode.PercentOutput, rpm);
+  shooterMotor2.set(ControlMode.PercentOutput, -rpm);
 }
 public void resetSensors() {
   shooterMotor.setSelectedSensorPosition(0);
@@ -90,15 +83,15 @@ public ShooterStateAngle updateShooterStateAngle(){
 public double getShooterStateRPM(ShooterState state) {
   switch(state) {
     case ZONE_2:
-      return Constants.ShooterConstants.DistanceConstants.ZONE_2.getRPM();
+      return Constants.ShooterConstants.DistanceConstants.ZONE_2.getPercentOutput();
     case ZONE_3:
-      return Constants.ShooterConstants.DistanceConstants.ZONE_3.getRPM();
+      return Constants.ShooterConstants.DistanceConstants.ZONE_3.getPercentOutput();
     case ZONE_4:
-      return Constants.ShooterConstants.DistanceConstants.ZONE_4.getRPM();
+      return Constants.ShooterConstants.DistanceConstants.ZONE_4.getPercentOutput();
     case ZONE_5:
-      return Constants.ShooterConstants.DistanceConstants.ZONE_5.getRPM();
+      return Constants.ShooterConstants.DistanceConstants.ZONE_5.getPercentOutput();
     case ZONE_6:
-      return Constants.ShooterConstants.DistanceConstants.ZONE_6.getRPM();
+      return Constants.ShooterConstants.DistanceConstants.ZONE_6.getPercentOutput();
     default:
       return 0;
   }

@@ -25,6 +25,8 @@ public class RunFeederCommand extends CommandBase {
             feeder.runIntakeIfPossible(shooterFeederSpeed, intakeFeederSpeed);
         } else if (direction == FeederState.OUTTAKE) {
             feeder.runOuttake(shooterFeederSpeed, intakeFeederSpeed);
+        } else if (direction == FeederState.FEED){
+            feeder.feedToShoot(shooterFeederSpeed, intakeFeederSpeed);
         } else if (direction == FeederState.IDLE) {
             feeder.stopFeeder();
         }

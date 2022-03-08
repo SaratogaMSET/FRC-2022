@@ -101,7 +101,7 @@ public final class Constants {
     }
 
     public static class ShooterConstants {
-        public static final int SHOOTER_MOTOR = 23;
+        public static final int SHOOTER_MOTOR1 = 23;
         public static final int SHOOTER_MOTOR2 = 22; // Port should be negative speed              //CHECK+MAYBE REPLACE
   
         public static final double kFalconSensorUnitsToRPM = (600.0 / 2048.0);
@@ -113,9 +113,8 @@ public final class Constants {
         public static final int LEADSCREW_TOLERANCE = 256;
         public static final int LEADSCREW_STATE_TOLERANCE = 1024;
 
-
-        public static final int SHOOTER_PISTON = 0; // CHANGE VALUE
-
+        // TODO: Get the right value for the shooter solenoid.
+        public static final int SHOOTER_SOLENOID = 0;
 
         public static enum DistanceConstants {
             // ZONE_1 (3509/kFalcon500FreeSpeed, 60),
@@ -124,7 +123,9 @@ public final class Constants {
             ZONE_4 (4019/kFalcon500FreeSpeed, 64),
             ZONE_5 (4060/kFalcon500FreeSpeed, 67),
             ZONE_6 (4300/kFalcon500FreeSpeed, 66);
-             private double percentRPM, hoodAngle; //final?
+            
+            private double percentRPM, hoodAngle; //final?
+
             DistanceConstants (double percentRPM, double hoodAngle) {
                 this.percentRPM = percentRPM;
                 this.hoodAngle = hoodAngle;
@@ -144,7 +145,6 @@ public final class Constants {
             // ZONE_1 (3509/kFalcon500FreeSpeed, 60),
             TWOFIVE (25),
             FOURZERO (40);
-
 
             private double hoodAngle; //final?
             AngleConstants (double hoodAngle) {

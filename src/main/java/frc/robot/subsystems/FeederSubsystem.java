@@ -40,26 +40,18 @@ public class FeederSubsystem extends SubsystemBase {
   }
 
   private void setIntakeFeeder(double velocity) {
-    if (velocity == 0.0) {
-      intakeFeederMotor.set(ControlMode.PercentOutput, 0.0);
+    if (canRunIntakeFeeder()) {
+      intakeFeederMotor.set(ControlMode.PercentOutput, velocity);
     } else {
-      if (canRunIntakeFeeder()) {
-        intakeFeederMotor.set(ControlMode.PercentOutput, velocity);
-      } else {
-        intakeFeederMotor.set(ControlMode.PercentOutput, 0.0);
-      }
+      intakeFeederMotor.set(ControlMode.PercentOutput, 0.0);
     }
   }
 
   private void setShooterFeeder(double velocity) {
-    if (velocity == 0.0) {
-      shooterFeederMotor.set(ControlMode.PercentOutput, 0.0);
+    if (canRunShooterFeeder()) {
+      shooterFeederMotor.set(ControlMode.PercentOutput, velocity);
     } else {
-      if (canRunShooterFeeder()) {
-        shooterFeederMotor.set(ControlMode.PercentOutput, velocity);
-      } else {
-        shooterFeederMotor.set(ControlMode.PercentOutput, 0.0);
-      }
+      shooterFeederMotor.set(ControlMode.PercentOutput, 0.0);
     }
   }
 

@@ -4,22 +4,22 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ShooterSubsystem.ShooterState;
-import frc.robot.subsystems.ShooterSubsystem.ShooterStateAngle;
+import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
+import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class ShooterCommand extends CommandBase {
     private final ShooterSubsystem m_shooter;
-    private ShooterState target;
+    private ShooterZone target;
     private double rpm;
     private boolean isFinished;
     private VisionSubsystem m_vision;
-    private ShooterStateAngle angleState;
+    private ShooterAngle angleState;
 
 
 
     /** Creates a new ShooterCommand. */
-    public ShooterCommand(ShooterSubsystem shooter, ShooterState target) {
+    public ShooterCommand(ShooterSubsystem shooter, ShooterZone target) {
         this.m_shooter = shooter;
         this.target = target;
         this.rpm = m_shooter.getShooterStateRPM(target);

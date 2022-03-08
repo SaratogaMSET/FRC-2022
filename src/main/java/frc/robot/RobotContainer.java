@@ -33,13 +33,12 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.RotateDegrees;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.SwerveControllerStrafe;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
+import frc.robot.commands.Shooter.AimForShootCommand;
 import frc.robot.commands.Test.TestFeederCommandGroup;
 import frc.robot.commands.Test.TestHangCommandGroup;
 import frc.robot.commands.Test.TestIntakeCommandGroup;
@@ -220,6 +219,20 @@ public class RobotContainer {
     // );
 
     // new Button(m_controller::getAButtonPressed).whenPressed(command)
+<<<<<<< HEAD
+=======
+
+    new Button(m_controller::getAButtonPressed).whenPressed(
+      new SequentialCommandGroup(
+        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem)
+      )
+    );
+
+    // Back button zeros the gyroscope
+    new Button(m_controller::getYButtonPressed).whenPressed(
+      m_drivetrainSubsystem::zeroGyroscope
+    );
+>>>>>>> 307dba005500905dd61a49fcbb5cbe3c519ab8a6
   }
 
   public void updateRobotState() {
@@ -394,7 +407,7 @@ public class RobotContainer {
       m_drivetrainSubsystem
     );
     
-    RotateDegrees rotateDegrees = new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem);
+    AimForShootCommand rotateDegrees = new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem);
 
 
 

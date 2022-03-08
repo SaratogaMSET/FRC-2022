@@ -7,11 +7,10 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-// import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.ShooterSubsystem.ShooterState;
+import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
@@ -32,6 +31,10 @@ public class VisionSubsystem extends SubsystemBase {
   }
   
   public void refresh() {
+    if (table == null) {
+      return;
+    }
+
     table.getEntry("pipeline").setNumber(0);
 
     ta = table.getEntry("ta"); // area of target visible
@@ -49,77 +52,62 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("LimelightTargets", v);
 
     updateVisionState();
-    getShooterAngle();
+    updateSmartDashboard();
     //SmartDashboard.putString("testExecute", "TestExecute");
     // This method will be called once per scheduler run
   }
 
   public VisionState updateVisionState(){
-    if(v==1){
+    if(v == 1) {
       return VisionState.TARGET_VISIBLE;
     }
     return VisionState.NO_TARGET;
   }
 
-  public double getDistance(){
+  public double getDistance() {
+    if (table == null) {
+      return -1.0;
+    }
+
     return (Constants.Vision.H2 - Constants.Vision.H1) / Math.tan(Math.toRadians(Constants.Vision.A1 + y));
   }
 
-  public boolean getShooterState(){
-    double distance = getDistance();
-    if (distance < Constants.Vision.Distance.GREEN) {
-      return SmartDashboard.putString("state", "green");
-    } else if (distance < Constants.Vision.Distance.YELLOW) {
-      return SmartDashboard.putString("state", "yellow");
-    } else if (distance < Constants.Vision.Distance.BLUE) {
-      return SmartDashboard.putString("state", "blue");
-    } else if (distance < Constants.Vision.Distance.RED) {
-      return SmartDashboard.putString("state", "red");
-    }
-    return SmartDashboard.putString("state", "idle");
+  public double getRawAngle() {
+    return -x;
+    // return 15;
   }
 
-  public ShooterState getShooterStateFromDistance() {
+  public ShooterZone getShooterStateFromDistance() {
     double distance = getDistance();
     if(distance == 0.0) {
-      return ShooterState.ZONE_2;
+      return ShooterZone.ZONE_2;
     }
     if (distance < Constants.Vision.Distance.ZONE_2) {
-      return ShooterState.ZONE_2;
+      return ShooterZone.ZONE_2;
     } else if (distance < Constants.Vision.Distance.ZONE_3) {
-      return ShooterState.ZONE_3;
+      return ShooterZone.ZONE_3;
     } else if (distance < Constants.Vision.Distance.ZONE_4) {
-      return ShooterState.ZONE_4;
+      return ShooterZone.ZONE_4;
     } else if (distance < Constants.Vision.Distance.ZONE_5) {
-      return ShooterState.ZONE_5;
+      return ShooterZone.ZONE_5;
     } else if (distance < Constants.Vision.Distance.ZONE_6) {
-      return ShooterState.ZONE_6;
+      return ShooterZone.ZONE_6;
     } else
-    return ShooterState.ZONE_6;
+    return ShooterZone.ZONE_6;
   }
 
-  public double getRawAngle() {
-    // return -x;
-    return 15;
-  }
-
-  public boolean getShooterAngle(){
+  private void updateSmartDashboard() {
     double temp_x = Math.abs(x);
     if(a >= Constants.Vision.AREA_VISIBLE) {
       if (temp_x <= Constants.Vision.Angle.ON_TARGET_X) {
-        return SmartDashboard.putString("angle", "on target");
+        SmartDashboard.putString("angle", "on target");
       } else {
-        return SmartDashboard.putString("angle", "visible");
+        SmartDashboard.putString("angle", "visible");
       }
-    }
-    else {
-      return SmartDashboard.putString("angle", "off");
+    } else {
+      SmartDashboard.putString("angle", "off");
     }
   } 
-
-  public void test(){
-    //SmartDashboard.putString("testIniitialize", "TestInitialize");
-  }
 
   @Override
   public void simulationPeriodic() {

@@ -99,7 +99,7 @@ public double getShooterStateRPM(ShooterZone state) {
   }
 
   public ShooterZone getShooterZone(double distance) {
-    if(distance == 0.0) {
+    if(distance <= 0.0) {
       return ShooterZone.ZONE_2;
     }
 
@@ -127,20 +127,20 @@ public double getShooterStateRPM(ShooterZone state) {
   }
 
 public ShooterAngle getAngleState(ShooterZone state) {
-        switch(state) {
-                case ZONE_2:
-                        return ShooterAngle.TWOFIVE;
-                case ZONE_3:
-                        return ShooterAngle.TWOFIVE;
-                case ZONE_4:
-                        return ShooterAngle.TWOFIVE;
-                case ZONE_5:
-                        return ShooterAngle.TWOFIVE;
-                case ZONE_6:
-                        return ShooterAngle.TWOFIVE;
-                default:
-                        return ShooterAngle.TWOFIVE;
-        }
+  switch(state) {
+          case ZONE_2:
+                  return ShooterAngle.TWOFIVE;
+          case ZONE_3:
+                  return ShooterAngle.TWOFIVE;
+          case ZONE_4:
+                  return ShooterAngle.TWOFIVE;
+          case ZONE_5:
+                  return ShooterAngle.TWOFIVE;
+          case ZONE_6:
+                  return ShooterAngle.TWOFIVE;
+          default:
+                  return ShooterAngle.TWOFIVE;
+  }
 }
 
   public double getDesiredShooterRPM(ShooterZone state) {

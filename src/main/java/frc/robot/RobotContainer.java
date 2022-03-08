@@ -164,7 +164,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new Button(m_controller::getXButton).whileHeld(
+    new Button(m_controller::getXButton).whileActiveOnce(
       new ParallelCommandGroup(
         new DeployIntakeCommand(m_intake, IntakeState.DOWN),
         new RunFeederCommand(m_feeder, FeederState.INTAKE, 0.2, 0.8)
@@ -176,8 +176,8 @@ public class RobotContainer {
     );
 
     new Button(m_controller::getYButton).whileActiveOnce(
-      // new SequentialCommandGroup(
-      //   new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem),
+      new SequentialCommandGroup(
+        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
         new ParallelCommandGroup(
           new ShooterCommand(m_shooterSubsystem, ShooterZone.ZONE_2),
           new SequentialCommandGroup(
@@ -185,7 +185,7 @@ public class RobotContainer {
             new RunFeederCommand(m_feeder, FeederState.FEED, 0.2, 0.8)
           )
         )
-      // )
+      )
     );
 
     // Back button zeros the gyroscope

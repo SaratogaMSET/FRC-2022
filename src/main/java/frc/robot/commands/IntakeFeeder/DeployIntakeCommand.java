@@ -13,13 +13,14 @@ public class DeployIntakeCommand extends CommandBase {
         m_newIntakeState = state;
         addRequirements(intakeSub);
 
-        m_intake.updateIntakeState(m_newIntakeState);
+        
     }
 
     @Override
     public void execute() {
         // Since this code needs to execute just once, the isFinished() should return true so that
         // execute doesn't get called more than once.
+        m_intake.updateIntakeState(m_newIntakeState);
         
     }
 

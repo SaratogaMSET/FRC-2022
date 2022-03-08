@@ -113,8 +113,7 @@ public final class Constants {
         public static final int LEADSCREW_TOLERANCE = 256;
         public static final int LEADSCREW_STATE_TOLERANCE = 1024;
 
-        // TODO: Get the right value for the shooter solenoid.
-        public static final int SHOOTER_SOLENOID = 0;
+        public static final int SHOOTER_SOLENOID = 6;
 
         public static enum DistanceConstants {
             // ZONE_1 (3509/kFalcon500FreeSpeed, 60),
@@ -165,8 +164,7 @@ public final class Constants {
         public static final int RIGHT_HANG_LIMIT_SWITCH = 4;
         public static final int LEFT_HANG_LIMIT_SWITCH = 5;
 
-        // TODO: Get the right solenoid id for hang.
-        public static final int HANG_SOLENOID = 2;
+        public static final int HANG_SOLENOID = 7;
         public static final int HANG_MAX_ENCODER_COUNTS = 100000;
     }
     

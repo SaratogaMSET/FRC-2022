@@ -37,6 +37,7 @@ import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.SwerveControllerStrafe;
+import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.commands.Shooter.AimForShootCommand;
 import frc.robot.commands.Test.TestFeederCommandGroup;
@@ -46,6 +47,7 @@ import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
+import frc.robot.subsystems.IntakeSubsystem.IntakeState;
 import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -150,7 +152,7 @@ public class RobotContainer {
 
     
     m_compressor = new Compressor(2, PneumaticsModuleType.REVPH);
-    m_compressor.disable();
+    // m_compressor.disable();
     // //Configure the button bindings
     configureButtonBindings();
   }
@@ -162,9 +164,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new Button(m_controller::getXButton).whileActiveOnce(
-      // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-      new RunFeederCommand(m_feeder, FeederState.INTAKE, 0.2, 0.8)
+    new Button(m_controller::getXButton).whileHeld(
+      new ParallelCommandGroup(
+        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+        new RunFeederCommand(m_feeder, FeederState.INTAKE, 0.2, 0.8)
+      )
     );
     new Button(m_controller::getBButton).whileActiveOnce(
       // new DeployIntakeCommand(m_intake, IntakeState.DOWN)

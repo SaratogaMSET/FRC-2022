@@ -12,22 +12,25 @@ public class DeployIntakeCommand extends CommandBase {
         m_intake = intakeSub;
         m_newIntakeState = state;
         addRequirements(intakeSub);
+
+        m_intake.updateIntakeState(m_newIntakeState);
     }
 
     @Override
     public void execute() {
         // Since this code needs to execute just once, the isFinished() should return true so that
         // execute doesn't get called more than once.
-        m_intake.updateIntakeState(m_newIntakeState);
+        
     }
 
     public boolean isFinished() {
         // Since we just want the command to execute just one.
-        return true;
+        return false;
     }
 
     @Override
     public void end(boolean interrupted) {
         // There is nothing to clean up.
+        m_intake.updateIntakeState(IntakeState.UP);
     }
 }

@@ -11,14 +11,16 @@ public class TestHangCommandGroup extends SequentialCommandGroup {
     public TestHangCommandGroup(HangSubsystem hang, double speed) {
         try {
             addCommands(
-                    new HangDownCommand(hang, speed),
-                    new HangUpCommand(hang, speed),
-                    new DeployHangCommand(hang, HangSubsystem.POSITION_FORWARD),
-                    new DeployHangCommand(hang, HangSubsystem.POSITION_NORMAL),
-                    new HangDownCommand(hang, speed));
-            SmartDashboard.putString("Intake Solenoid", "Success");
+                // new SequentialCommandGroup(new HangDownCommand(hang, speed),
+                new HangUpCommand(hang, speed),
+                new DeployHangCommand(hang, HangSubsystem.POSITION_FORWARD),
+                new DeployHangCommand(hang, HangSubsystem.POSITION_NORMAL),
+                new HangDownCommand(hang, speed))  
+                // new HangDownCommand(hang, speed) 
+                ;                 
+            SmartDashboard.putString("Hang", "Success");
         } catch (Exception e) {
-            SmartDashboard.putString("Intake Solenoid", "Failed");
+            SmartDashboard.putString("Hang", "Failed");
         }
     }
 }

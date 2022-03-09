@@ -86,4 +86,15 @@ public class HangSubsystem extends SubsystemBase {
         double positionMeters = wheelRotations * (2 * Math.PI * 0.5);
         return positionMeters;
     }
+    
+    @Override
+    public void periodic() {
+        if(hangRightLimitSwitch.get()){
+            rightResetEncoders();
+        }
+
+        if(hangLeftLimitSwitch.get()){
+            leftResetEncoders();
+        }
+    }
 }

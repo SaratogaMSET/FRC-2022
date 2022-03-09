@@ -15,10 +15,6 @@ public class HangDownCommand extends CommandBase {
         hangSpeed = -speed;
         m_hangSubsystem = hang;
         addRequirements(m_hangSubsystem);
-
-        // Hemendra: again, don't reset the max height here. 
-        m_hangSubsystem.maxHeightRight = false;
-        m_hangSubsystem.maxHeightLeft = false;
     }
     // Called when the command is initially scheduled.
     @Override
@@ -26,7 +22,6 @@ public class HangDownCommand extends CommandBase {
         if (m_hangSubsystem.hangRightLimitSwitch.get() && !m_hangSubsystem.triggeredRightSwitch) {
             m_hangSubsystem.triggeredRightSwitch = true;
             m_hangSubsystem.setHangRightSpeed(0);
-            m_hangSubsystem.rightResetEncoders();
         } else if (!m_hangSubsystem.triggeredRightSwitch) {
             m_hangSubsystem.setHangRightSpeed(hangSpeed);
         }
@@ -34,11 +29,13 @@ public class HangDownCommand extends CommandBase {
         if (m_hangSubsystem.hangLeftLimitSwitch.get() || m_hangSubsystem.triggeredLeftSwitch) {
             m_hangSubsystem.triggeredLeftSwitch = true;
             m_hangSubsystem.setHangLeftSpeed(0);
-            m_hangSubsystem.leftResetEncoders();
         } else if (!m_hangSubsystem.triggeredLeftSwitch) {
             m_hangSubsystem.setHangLeftSpeed(hangSpeed);
         }
 
+        m_hangSubsystem.maxHeightRight = false;
+        m_hangSubsystem.maxHeightLeft = false;
+        
         SmartDashboard.putNumber("Right encoder ", m_hangSubsystem.getRightEncoderValue());
         SmartDashboard.putNumber("Left encoder ", m_hangSubsystem.getLeftEncoderValue());
         SmartDashboard.putNumber("Right motor speed ", m_hangSubsystem.rightHangMotor.getMotorOutputPercent());

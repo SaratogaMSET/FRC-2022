@@ -37,6 +37,9 @@ import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.Drivetrain.DefaultDriveCommand;
 import frc.robot.commands.Drivetrain.SwerveControllerStrafe;
 import frc.robot.commands.Drivetrain.ZeroGyroCommand;
+import frc.robot.commands.Hang.DeployHangCommand;
+import frc.robot.commands.Hang.HangDownCommand;
+import frc.robot.commands.Hang.HangUpCommand;
 import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.commands.Shooter.AimForShootCommand;
@@ -160,34 +163,60 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new Button(m_controller::getXButton).whileActiveOnce(
-      new ParallelCommandGroup(
-        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
-        new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
-      )
-    );
-    new Button(m_controller::getBButton).whileActiveOnce(
-      // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-      new RunFeederCommand(m_feeder, FeederState.OUTTAKE, 0.2, 0.8)
-    );
+    // new Button(m_controller::getXButton).whileActiveOnce(
+    //   new ParallelCommandGroup(
+    //     new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+    //     new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
+    //   )
+    // );
+    // new Button(m_controller::getBButton).whileActiveOnce(
+    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+    //   new RunFeederCommand(m_feeder, FeederState.OUTTAKE, 0.2, 0.8)
+    // );
 
-    new Button(m_controller::getYButton).whileActiveOnce(
-      new SequentialCommandGroup(
-        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
-        new ParallelCommandGroup(
-          new ShootCommand(m_shooterSubsystem, ShooterZone.ZONE_2),
-          new SequentialCommandGroup(
-            new WaitCommand(1),
-            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.2, 0.5)
-          )
-        )
-      )
-    );
+    // new Button(m_controller::getYButton).whileActiveOnce(
+    //   new SequentialCommandGroup(
+    //     new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+    //     new ParallelCommandGroup(
+    //       new ShootCommand(m_shooterSubsystem, ShooterZone.ZONE_2),
+    //       new SequentialCommandGroup(
+    //         new WaitCommand(1),
+    //         new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.2, 0.5)
+    //       )
+    //     )
+    //   )
+    // );
 
     // Back button zeros the gyroscope
-    new Button(m_controller::getLeftBumper).whenPressed(
-      new ZeroGyroCommand(m_drivetrainSubsystem)
+    // new Button(m_controller::getLeftBumper).whenPressed(
+    //   new ZeroGyroCommand(m_drivetrainSubsystem)
+    // );
+
+    new Button(m_controller::getYButton).whenPressed(
+      new HangUpCommand(m_hangSubsystem, 0.5)
     );
+
+    new Button(m_controller::getAButton).whenPressed(
+      new HangDownCommand(m_hangSubsystem, 0.5)
+    );
+
+    new Button(m_controller::getBButton).whenPressed(
+      new DeployHangCommand(m_hangSubsystem, false)
+    );
+
+    new Button(m_controller::getXButton).whenPressed(
+      new DeployHangCommand(m_hangSubsystem, true)
+    );
+    // new Button(m_controller::getAButton).whenPressed(
+    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+    //   // new InstantCommand(() -> m_hangSubsystem.setHangRightSpeed(-0.1))
+    //   new SequentialCommandGroup(
+    //     new HangDownCommand(m_hangSubsystem, 0.1),
+    //     new DeployHangCommand(m_hangSubsystem, true),
+    //     new HangUpCommand(m_hangSubsystem, 0.1),
+    //     new DeployHangCommand(m_hangSubsystem, false)
+    //   )
+    // );
   }
 
   public void updateRobotState() {
@@ -229,17 +258,25 @@ public class RobotContainer {
     // return new ShooterCommand(m_feeder, m_shooterSubsystem);
 
     // return new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem);
+    
+    return new InstantCommand(() -> m_hangSubsystem.setHangRightSpeed(0.1));
 
-    return new SequentialCommandGroup(
-      // Will make the intake go up and down.
-      new TestIntakeCommandGroup(m_intake),
+    // return new SequentialCommandGroup(
+    //   new HangUpCommand(m_hangSubsystem, -0.1),
+    //   // new HangDownCommand(m_hangSubsystem, 0.1),
+    //   new DeployHangCommand(m_hangSubsystem, false)
+    // );
 
-      // Will make the feeder intake, followed by outtake
-      new TestFeederCommandGroup(m_feeder, 0.2, 0.8),
+    // return new SequentialCommandGroup(
+    //   // Will make the intake go up and down.
+    //   new TestIntakeCommandGroup(m_intake),
 
-      // Will move the hang up and down, followed by moving the static hang go forward and backwards
-      new TestHangCommandGroup(m_hangSubsystem, 0.1)
-    );
+    //   // Will make the feeder intake, followed by outtake
+    //   new TestFeederCommandGroup(m_feeder, 0.2, 0.8),
+
+    //   // Will move the hang up and down, followed by moving the static hang go forward and backwards
+    //   new TestHangCommandGroup(m_hangSubsystem, 0.1)
+    // );
   }
 
   /**

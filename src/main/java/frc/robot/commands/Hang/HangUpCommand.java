@@ -16,9 +16,6 @@ public class HangUpCommand extends CommandBase {
         hangSpeed = speed;
         m_hangSubsystem = hang;
         addRequirements(m_hangSubsystem);
-
-        m_hangSubsystem.triggeredRightSwitch = false;
-        m_hangSubsystem.triggeredLeftSwitch = false;
     }
     // Called when the command is initially scheduled.
     @Override
@@ -40,10 +37,8 @@ public class HangUpCommand extends CommandBase {
             m_hangSubsystem.setHangLeftSpeed(hangSpeed);
         }
 
-        SmartDashboard.putNumber("Right encoder ", m_hangSubsystem.getRightEncoderValue());
-        SmartDashboard.putNumber("Left encoder ", m_hangSubsystem.getLeftEncoderValue());
-        SmartDashboard.putNumber("Right motor speed ", m_hangSubsystem.rightHangMotor.getMotorOutputPercent());
-        SmartDashboard.putNumber("Left motor speed ", m_hangSubsystem.leftHangMotor.getMotorOutputPercent());
+        m_hangSubsystem.triggeredRightSwitch = false;
+        m_hangSubsystem.triggeredLeftSwitch = false;
     }
 
     // Returns true when the command should end.
@@ -52,8 +47,10 @@ public class HangUpCommand extends CommandBase {
         if (m_hangSubsystem.maxHeightRight && m_hangSubsystem.maxHeightLeft) {
             return true;
         }
+
         return false;
     }
+
 
     @Override
     public void end(boolean interrupted) {

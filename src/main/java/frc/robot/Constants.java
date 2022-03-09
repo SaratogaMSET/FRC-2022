@@ -165,7 +165,7 @@ public final class Constants {
         public static final int LEFT_HANG_LIMIT_SWITCH = 5;
 
         public static final int HANG_SOLENOID = 7;
-        public static final int HANG_MAX_ENCODER_COUNTS = 100000;
+        public static final int HANG_MAX_ENCODER_COUNTS = 130000;
     }
     
     public static class Photoelectric {

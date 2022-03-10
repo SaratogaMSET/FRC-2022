@@ -106,37 +106,30 @@ public final class Constants {
   
         public static final double kFalconSensorUnitsToRPM = (600.0 / 2048.0);
         public static final double kFalcon500FreeSpeed = 6380;
-         public static final int MAIN = 8;
-        public static final int[] FOLLOWERS = { 9 };
-        public static final int LEADSCREW = 10;
-        public static final int[] LIMIT_SWITCH = { 6, 7 };
-        public static final int LEADSCREW_TOLERANCE = 256;
-        public static final int LEADSCREW_STATE_TOLERANCE = 1024;
 
         public static final int SHOOTER_SOLENOID = 6;
 
         public static enum DistanceConstants {
             // ZONE_1 (3509/kFalcon500FreeSpeed, 60),
-            ZONE_2 (3509/kFalcon500FreeSpeed, 58),
-            ZONE_3 (3828/kFalcon500FreeSpeed, 64),
-            ZONE_4 (4019/kFalcon500FreeSpeed, 64),
-            ZONE_5 (4060/kFalcon500FreeSpeed, 67),
-            ZONE_6 (4300/kFalcon500FreeSpeed, 66);
+            ZONE_2 (0.1, false),
+            ZONE_3 (0.3, false),
+            ZONE_4 (0.5, true),
+            ZONE_5 (0.7, true),
+            ZONE_6 (0.9, true),
+            TEST (0.85, true);
             
-            private double percentRPM, hoodAngle; //final?
+            private double percentRPM;
+            private boolean hoodAngle; //final?
 
-            DistanceConstants (double percentRPM, double hoodAngle) {
+            DistanceConstants (double percentRPM, boolean hoodAngle) {
                 this.percentRPM = percentRPM;
                 this.hoodAngle = hoodAngle;
             }
              public double getPercentOutput() {
                 return percentRPM;
             }
-             public double getHoodAngle() {
+             public boolean getHoodAngle() {
                 return hoodAngle;
-            }
-             public void setHoodAngle(double val){
-                hoodAngle = val;
             }
         }
 

@@ -2,6 +2,7 @@ package frc.robot.subsystems;
  
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -17,9 +18,10 @@ import frc.robot.util.drivers.LazyTalonFX;
 public class ShooterSubsystem extends SubsystemBase {
   public static final boolean SHOOTER_UP = true;
   public static final boolean SHOOTER_DOWN = false;
+  public static final PIDController pid = new PIDController(0.2, 0.03, 0);
 
   public static enum ShooterZone {
-    MOVING, ZONE_1, ZONE_2, ZONE_3, ZONE_4, ZONE_5, ZONE_6
+    MOVING, ZONE_1, ZONE_2, ZONE_3, ZONE_4, ZONE_5, ZONE_6, TEST
   };
 
   public static enum ShooterAngle {
@@ -46,6 +48,10 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setRPM(double rpm) {
+    // double p = pid.calculate(shooterMotor1.getSelectedSensorVelocity()/Constants.ShooterConstants.kFalcon500FreeSpeed, rpm);
+    // shooterMotor1.set(ControlMode.PercentOutput, p);
+    // shooterMotor2.set(ControlMode.PercentOutput, -p);
+
     shooterMotor1.set(ControlMode.PercentOutput, rpm);
     shooterMotor2.set(ControlMode.PercentOutput, -rpm);
   }
@@ -75,16 +81,19 @@ public class ShooterSubsystem extends SubsystemBase {
         return Constants.ShooterConstants.DistanceConstants.ZONE_5.getPercentOutput();
       case ZONE_6:
         return Constants.ShooterConstants.DistanceConstants.ZONE_6.getPercentOutput();
+      case TEST:
+        return Constants.ShooterConstants.DistanceConstants.TEST.getPercentOutput();
       default:
         return 0;
     }
   }
 
-  public void setAngle(ShooterAngle desiredAngle) {
-    if (desiredAngle == ShooterAngle.FOURZERO)
-      shooterSolenoid.set(SHOOTER_UP);
-    else
-      shooterSolenoid.set(SHOOTER_DOWN);
+  public void setAngle(boolean desiredAngle) {
+    shooterSolenoid.set(desiredAngle);
+    // if (desiredAngle == ShooterAngle.FOURZERO)
+    //   shooterSolenoid.set(SHOOTER_UP);
+    // else
+    //   shooterSolenoid.set(SHOOTER_DOWN);
   }
 
   public ShooterZone getShooterZone(double distance) {
@@ -115,20 +124,22 @@ public class ShooterSubsystem extends SubsystemBase {
     return ShooterZone.ZONE_6;
   }
 
-  public ShooterAngle getShooterAngle(ShooterZone state) {
+  public boolean getShooterAngle(ShooterZone state) {
     switch(state) {
       case ZONE_2:
-        return ShooterAngle.TWOFIVE;
+        return Constants.ShooterConstants.DistanceConstants.ZONE_2.getHoodAngle();
       case ZONE_3:
-        return ShooterAngle.TWOFIVE;
+        return Constants.ShooterConstants.DistanceConstants.ZONE_3.getHoodAngle();
       case ZONE_4:
-        return ShooterAngle.TWOFIVE;
+        return Constants.ShooterConstants.DistanceConstants.ZONE_4.getHoodAngle();
       case ZONE_5:
-        return ShooterAngle.TWOFIVE;
+        return Constants.ShooterConstants.DistanceConstants.ZONE_5.getHoodAngle();
       case ZONE_6:
-        return ShooterAngle.TWOFIVE;
+        return Constants.ShooterConstants.DistanceConstants.ZONE_6.getHoodAngle();
+      case TEST:
+        return Constants.ShooterConstants.DistanceConstants.TEST.getHoodAngle();
       default:
-        return ShooterAngle.TWOFIVE;
+        return Constants.ShooterConstants.DistanceConstants.ZONE_2.getHoodAngle();
     }
   }
 
@@ -151,6 +162,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Sensor Curr Out:", shooterMotor1.getStatorCurrent());
     SmartDashboard.putNumber("Sensor Vel:", shooterMotor1.getSelectedSensorVelocity());
     shooterPercentRPMEntry.setDouble(shooterMotor1.getSelectedSensorVelocity() * Constants.ShooterConstants.kFalconSensorUnitsToRPM / Constants.ShooterConstants.kFalcon500FreeSpeed);
     shooterPercentOutputEntry.setDouble(shooterMotor1.getMotorOutputPercent());

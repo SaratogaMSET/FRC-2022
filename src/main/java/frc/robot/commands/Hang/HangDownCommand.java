@@ -19,7 +19,7 @@ public class HangDownCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void execute() {
-        if (m_hangSubsystem.hangRightLimitSwitch.get() && !m_hangSubsystem.triggeredRightSwitch) {
+        if (m_hangSubsystem.hangRightLimitSwitch.get() || m_hangSubsystem.triggeredRightSwitch) {
             m_hangSubsystem.triggeredRightSwitch = true;
             m_hangSubsystem.setHangRightSpeed(0);
         } else if (!m_hangSubsystem.triggeredRightSwitch) {
@@ -35,11 +35,6 @@ public class HangDownCommand extends CommandBase {
 
         m_hangSubsystem.maxHeightRight = false;
         m_hangSubsystem.maxHeightLeft = false;
-        
-        SmartDashboard.putNumber("Right encoder ", m_hangSubsystem.getRightEncoderValue());
-        SmartDashboard.putNumber("Left encoder ", m_hangSubsystem.getLeftEncoderValue());
-        SmartDashboard.putNumber("Right motor speed ", m_hangSubsystem.rightHangMotor.getMotorOutputPercent());
-        SmartDashboard.putNumber("Left motor speed ", m_hangSubsystem.leftHangMotor.getMotorOutputPercent());
     }
 
     // Returns true when the command should end.

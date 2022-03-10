@@ -32,7 +32,7 @@ public class AimForShootCommand extends CommandBase {
 
     @Override
     public void execute() {
-        m_visionSubsystem.refresh();
+        // m_visionSubsystem.refresh();
         if (pid.calculate(m_visionSubsystem.getRawAngle(), 0) > 9) {
             pidValue = 9;
         } else if (pid.calculate(m_visionSubsystem.getRawAngle(), 0) < -9) {

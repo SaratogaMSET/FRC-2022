@@ -8,10 +8,12 @@ import frc.robot.subsystems.VisionSubsystem;
 
 public class ShootCommand extends CommandBase {
     private final ShooterSubsystem m_shooter;
-    private ShooterZone m_zone;
-    private double m_rpm;
     private VisionSubsystem m_vision;
-    private ShooterAngle m_shooterAngle;
+
+    private ShooterZone m_zone;
+
+    private boolean m_shooterAngle;
+    private double m_rpm;
 
     /** Creates a new ShooterCommand. */
     public ShootCommand(ShooterSubsystem shooter, ShooterZone zone) {
@@ -33,13 +35,10 @@ public class ShootCommand extends CommandBase {
     public void initialize() {
         m_rpm = m_shooter.getShooterStateRPM(m_zone);
         m_shooterAngle = m_shooter.getShooterAngle(m_zone);
+
+        
         m_shooter.setRPM(m_rpm);
         m_shooter.setAngle(m_shooterAngle);
-
-        // if (angleState == ShooterStateAngle.FOURZERO)
-        //     m_shooter.deploy(true);
-        // else
-        //     m_shooter.deploy(false);
     }
 
     // Called every time the scheduler runs while the command is scheduled.

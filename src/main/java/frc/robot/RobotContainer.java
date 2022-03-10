@@ -163,50 +163,50 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // new Button(m_controller::getXButton).whileActiveOnce(
-    //   new ParallelCommandGroup(
-    //     new DeployIntakeCommand(m_intake, IntakeState.DOWN),
-    //     new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
-    //   )
-    // );
-    // new Button(m_controller::getBButton).whileActiveOnce(
-    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-    //   new RunFeederCommand(m_feeder, FeederState.OUTTAKE, 0.2, 0.8)
-    // );
+    new Button(m_controller::getXButton).whileActiveOnce(
+      // new ParallelCommandGroup(
+      //   new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+        new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
+      // )
+    );
+    new Button(m_controller::getBButton).whileActiveOnce(
+      // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+      new RunFeederCommand(m_feeder, FeederState.OUTTAKE, 0.2, 0.8)
+    );
 
-    // new Button(m_controller::getYButton).whileActiveOnce(
-    //   new SequentialCommandGroup(
-    //     new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
-    //     new ParallelCommandGroup(
-    //       new ShootCommand(m_shooterSubsystem, ShooterZone.ZONE_2),
-    //       new SequentialCommandGroup(
-    //         new WaitCommand(1),
-    //         new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.2, 0.5)
-    //       )
-    //     )
-    //   )
-    // );
+    new Button(m_controller::getYButton).whileActiveOnce(
+      // new SequentialCommandGroup(
+      //   new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+        new ParallelCommandGroup(
+          new ShootCommand(m_shooterSubsystem, ShooterZone.TEST),
+          new SequentialCommandGroup(
+            new WaitCommand(3),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.1)
+          )
+        )
+      // )
+    );
 
     // Back button zeros the gyroscope
-    // new Button(m_controller::getLeftBumper).whenPressed(
-    //   new ZeroGyroCommand(m_drivetrainSubsystem)
+    new Button(m_controller::getLeftBumper).whenPressed(
+      new ZeroGyroCommand(m_drivetrainSubsystem)
+    );
+
+    // new Button(m_controller::getYButton).whenPressed(
+    //   new HangUpCommand(m_hangSubsystem, 0.5)
     // );
 
-    new Button(m_controller::getYButton).whenPressed(
-      new HangUpCommand(m_hangSubsystem, 0.5)
-    );
+    // new Button(m_controller::getAButton).whenPressed(
+    //   new HangDownCommand(m_hangSubsystem, 0.5)
+    // );
 
-    new Button(m_controller::getAButton).whenPressed(
-      new HangDownCommand(m_hangSubsystem, 0.5)
-    );
+    // new Button(m_controller::getBButton).whenPressed(
+    //   new DeployHangCommand(m_hangSubsystem, false)
+    // );
 
-    new Button(m_controller::getBButton).whenPressed(
-      new DeployHangCommand(m_hangSubsystem, false)
-    );
-
-    new Button(m_controller::getXButton).whenPressed(
-      new DeployHangCommand(m_hangSubsystem, true)
-    );
+    // new Button(m_controller::getXButton).whenPressed(
+    //   new DeployHangCommand(m_hangSubsystem, true)
+    // );
     // new Button(m_controller::getAButton).whenPressed(
     //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
     //   // new InstantCommand(() -> m_hangSubsystem.setHangRightSpeed(-0.1))

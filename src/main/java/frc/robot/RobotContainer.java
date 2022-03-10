@@ -291,10 +291,13 @@ public class RobotContainer {
       return null;
     }
 
-    PIDController xController = new PIDController(Constants.Drivetrain.kPXController, Constants.Drivetrain.kIXController, 0); //FIXME
-    PIDController yController = new PIDController(Constants.Drivetrain.kPYController, Constants.Drivetrain.kIYController, 0);//FIXME
+    PIDController xController = new PIDController(Constants.Drivetrain.kPXController, 
+        Constants.Drivetrain.kIXController, 0); //FIXME
+    PIDController yController = new PIDController(Constants.Drivetrain.kPYController, 
+        Constants.Drivetrain.kIYController, 0);//FIXME
     ProfiledPIDController thetaController = new ProfiledPIDController(
-          Constants.Drivetrain.kPThetaControllerTrajectory, 0, 0, new TrapezoidProfile.Constraints(  //FIXME
+          Constants.Drivetrain.kPThetaControllerTrajectory, 0, 0, 
+          new TrapezoidProfile.Constraints(  //FIXME
               MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
               MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND/3));
     
@@ -302,7 +305,7 @@ public class RobotContainer {
     // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(2, 0.7).setKinematics(m_kinematics);
     // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(MAX_VELOCITY_METERS_PER_SECOND, 0.5).setKinematics(m_kinematics);
 
-    if (selectedAutoPath.equals(kAutoR1)) {
+    if (selectedAutoPath.equals("Back Path")) {
       return getAutonomousCommand1(xController, yController, thetaController);
     } else if (selectedAutoPath.equals(kAutoR1)) {
       return getAutonomousCommand2(xController, yController, thetaController);
@@ -319,24 +322,38 @@ public class RobotContainer {
   private Command getAutonomousCommand1(PIDController xController, PIDController yController, 
     ProfiledPIDController thetaController) {
 
-    Trajectory trajectory = PathPlanner.loadPath("New Path", 2, 0.7);  // TODO: Change the name of the path here.
+    Trajectory trajectory = PathPlanner.loadPath("One Path", 5, 0.7);  // TODO: Change the name of the path here.
     if (trajectory == null) {
       return null;
     }
+  //  TrajectoryConfig trajectoryConfig = new TrajectoryConfig(DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 0.7)
+  //      .setKinematics(m_kinematics);
+  //      trajectoryConfig.setReversed(true);
+  //  Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+  //       new Pose2d(0,0, new Rotation2d(0)), //start  at origin facing +x direction
+  //       List.of(
+  //           new Translation2d(0, 1)
+  //           // new Translation2d(2, 0)
+  //       ),
+  //       new Pose2d(1,0, new Rotation2d(0)), //straight ahead of where we started, facing same direction
+  //       trajectoryConfig
+  //     );
+
+    
 
     return new SequentialCommandGroup(
       // Aim to the vision target
-      new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+      // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
 
-      // Shoot the ball
-      new ParallelCommandGroup(
-        new ShootCommand(m_shooterSubsystem, ShooterZone.ZONE_2).withTimeout(3),
-        new SequentialCommandGroup(
-          // Wait for the shooter to rev.
-          new WaitCommand(1),
-          new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.2, 0.5).withTimeout(2)
-        )
-      ),
+      // // Shoot the ball
+      // new ParallelCommandGroup(
+      //   new ShootCommand(m_shooterSubsystem, ShooterZone.ZONE_2).withTimeout(3),
+      //   new SequentialCommandGroup(
+      //     // Wait for the shooter to rev.
+      //     new WaitCommand(1),
+      //     new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.2, 0.5).withTimeout(2)
+      //   )
+      // ),
 
       // Prepare to follow the trajectory
       new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
@@ -352,7 +369,7 @@ public class RobotContainer {
         thetaController,
         m_drivetrainSubsystem::setModuleStates,
         m_drivetrainSubsystem
-      ).withTimeout(5)
+      )
     );
   }
 

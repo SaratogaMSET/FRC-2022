@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
@@ -302,11 +303,21 @@ public class RobotContainer {
 
       // Prepare to follow the trajectory
       new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
-      new AutoRunCommand(m_drivetrainSubsystem, -1).withTimeout(2)
-
-     
-
-
+      new ParallelRaceGroup(
+        new AutoRunCommand(m_drivetrainSubsystem, -1).withTimeout(2),
+        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+        new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
+      ),
+      new SequentialCommandGroup(
+        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+        new ParallelCommandGroup(
+          new ShootCommand(m_shooterSubsystem, ShooterZone.TEST),
+          new SequentialCommandGroup(
+            new WaitCommand(1.5),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.1).withTimeout(3)
+          )
+        )
+      )
     );
   }
 }

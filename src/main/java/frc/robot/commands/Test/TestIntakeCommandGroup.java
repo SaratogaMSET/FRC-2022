@@ -11,8 +11,8 @@ public class TestIntakeCommandGroup extends SequentialCommandGroup {
         try {
             if (intake.getIntakeState() == IntakeState.UP) {
                 addCommands(
-                        new DeployIntakeCommand(intake, IntakeState.DOWN),
-                        new DeployIntakeCommand(intake, IntakeState.UP));
+                        new DeployIntakeCommand(intake, IntakeState.DOWN).withTimeout(1),
+                        new DeployIntakeCommand(intake, IntakeState.UP).withTimeout(1));
             } else {
                 addCommands(
                         new DeployIntakeCommand(intake, IntakeState.UP),

@@ -4,22 +4,12 @@
 
 package frc.robot;
 
-import java.util.List;
-
-import com.pathplanner.lib.PathPlanner;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -35,20 +25,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.Constants.Drivetrain;
+import frc.robot.commands.Autos.AutoRunCommand;
 import frc.robot.commands.Drivetrain.DefaultDriveCommand;
-import frc.robot.commands.Drivetrain.AutoRunCommand;
-import frc.robot.commands.Drivetrain.SwerveControllerStrafe;
 import frc.robot.commands.Drivetrain.ZeroGyroCommand;
-import frc.robot.commands.Hang.DeployHangCommand;
-import frc.robot.commands.Hang.HangDownCommand;
-import frc.robot.commands.Hang.HangUpCommand;
 import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.commands.Shooter.AimForShootCommand;
 import frc.robot.commands.Shooter.ShootCommand;
-import frc.robot.commands.Test.TestFeederCommandGroup;
-import frc.robot.commands.Test.TestHangCommandGroup;
-import frc.robot.commands.Test.TestIntakeCommandGroup;
 import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
@@ -166,10 +149,10 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     new Button(m_controller::getXButton).whileActiveOnce(
-      // new ParallelCommandGroup(
-      //   new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+      new ParallelCommandGroup(
+        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
         new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
-      // )
+      )
     );
     new Button(m_controller::getBButton).whileActiveOnce(
       // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
@@ -177,8 +160,8 @@ public class RobotContainer {
     );
 
     new Button(m_controller::getYButton).whileActiveOnce(
-      // new SequentialCommandGroup(
-      //   new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+      new SequentialCommandGroup(
+        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
         new ParallelCommandGroup(
           new ShootCommand(m_shooterSubsystem, ShooterZone.TEST),
           new SequentialCommandGroup(
@@ -186,7 +169,7 @@ public class RobotContainer {
             new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.1)
           )
         )
-      // )
+      )
     );
 
     // Back button zeros the gyroscope
@@ -288,23 +271,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return new SequentialCommandGroup(
-      // Aim to the vision target
-      // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
-
-      // // Shoot the ball
-      // new ParallelCommandGroup(
-      //   new ShootCommand(m_shooterSubsystem, ShooterZone.ZONE_2).withTimeout(3),
-      //   new SequentialCommandGroup(
-      //     // Wait for the shooter to rev.
-      //     new WaitCommand(1),
-      //     new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.2, 0.5).withTimeout(2)
-      //   )
-      // ),
-
-      // Prepare to follow the trajectory
       new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
       new ParallelRaceGroup(
-        new AutoRunCommand(m_drivetrainSubsystem, -1).withTimeout(2),
+        new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(2),
         new DeployIntakeCommand(m_intake, IntakeState.DOWN),
         new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
       ),

@@ -20,6 +20,15 @@ public class AimForShootCommand extends CommandBase {
     // public CANCoder frontRightCanCoder = new CANCoder(Constants.Drivetrain.FRONT_RIGHT_MODULE_STEER_ENCODER);
     // public CANCoder frontLeftCanCoder = new CANCoder(Constants.Drivetrain.FRONT_LEFT_MODULE_STEER_ENCODER);
 
+    public AimForShootCommand(DrivetrainSubsystem drivetrainSubsystem, double angle) {
+        this.m_drivetrainSubsystem = drivetrainSubsystem;
+        this.m_visionSubsystem = null;
+
+        pid = new PIDController(Constants.Drivetrain.kPThetaController, Constants.Drivetrain.kIThetaController, 0);
+
+        addRequirements(m_drivetrainSubsystem);
+    }
+
     public AimForShootCommand(DrivetrainSubsystem drivetrainSubsystem, VisionSubsystem visionSystem) {
         this.m_drivetrainSubsystem = drivetrainSubsystem;
         this.m_visionSubsystem = visionSystem;

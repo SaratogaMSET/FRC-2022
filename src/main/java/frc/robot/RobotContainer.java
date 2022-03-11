@@ -30,11 +30,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.Drivetrain.DefaultDriveCommand;
+import frc.robot.commands.Drivetrain.AutoRunCommand;
 import frc.robot.commands.Drivetrain.SwerveControllerStrafe;
 import frc.robot.commands.Drivetrain.ZeroGyroCommand;
 import frc.robot.commands.Hang.DeployHangCommand;
@@ -281,62 +283,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    String selectedAutoPath = m_autoSwitcher.getSelected();
-    if (selectedAutoPath == null) {
-      return null;
-    }
-
-    PIDController xController = new PIDController(Constants.Drivetrain.kPXController, 
-        Constants.Drivetrain.kIXController, 0); //FIXME
-    PIDController yController = new PIDController(Constants.Drivetrain.kPYController, 
-        Constants.Drivetrain.kIYController, 0);//FIXME
-    ProfiledPIDController thetaController = new ProfiledPIDController(
-          Constants.Drivetrain.kPThetaControllerTrajectory, 0, 0, 
-          new TrapezoidProfile.Constraints(  //FIXME
-              MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-              MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND/3));
-    
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(2, 0.7).setKinematics(m_kinematics);
-    // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(MAX_VELOCITY_METERS_PER_SECOND, 0.5).setKinematics(m_kinematics);
-
-    if (selectedAutoPath.equals("Back Path")) {
-      return getAutonomousCommand1(xController, yController, thetaController);
-    } else if (selectedAutoPath.equals(kAutoR1)) {
-      return getAutonomousCommand2(xController, yController, thetaController);
-    } else if (selectedAutoPath.equals(kAutoR1)) {
-      return getAutonomousCommand3(xController, yController, thetaController);
-    } else {
-      return null;
-    }
-  }
-
-  /**
-   * Shoot one ball + go back
-   */
-  private Command getAutonomousCommand1(PIDController xController, PIDController yController, 
-    ProfiledPIDController thetaController) {
-
-    Trajectory trajectory = PathPlanner.loadPath("One Path", 5, 0.7);  // TODO: Change the name of the path here.
-    if (trajectory == null) {
-      return null;
-    }
-  //  TrajectoryConfig trajectoryConfig = new TrajectoryConfig(DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 0.7)
-  //      .setKinematics(m_kinematics);
-  //      trajectoryConfig.setReversed(true);
-  //  Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-  //       new Pose2d(0,0, new Rotation2d(0)), //start  at origin facing +x direction
-  //       List.of(
-  //           new Translation2d(0, 1)
-  //           // new Translation2d(2, 0)
-  //       ),
-  //       new Pose2d(1,0, new Rotation2d(0)), //straight ahead of where we started, facing same direction
-  //       trajectoryConfig
-  //     );
-
-    
-
     return new SequentialCommandGroup(
       // Aim to the vision target
       // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
@@ -353,118 +299,19 @@ public class RobotContainer {
 
       // Prepare to follow the trajectory
       new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
-      new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose())),
-
-      // Follow the path
-      new SwerveControllerStrafe(
-        trajectory,
-        m_drivetrainSubsystem::getPose,
-        m_kinematics,
-        xController,
-        yController,
-        thetaController,
-        m_drivetrainSubsystem::setModuleStates,
-        m_drivetrainSubsystem
-      )
-    );
-  }
-
-  /**
-   * Go back + collect one ball + shoot two balls + go back + collect one ball + shoot one ball
-   */
-  private Command getAutonomousCommand2(PIDController xController, PIDController yController, 
-    ProfiledPIDController thetaController) {
-
-    Trajectory trajectory = PathPlanner.loadPath("New New Path", 2, 0.7); // TODO: Change the name of the path here.
-    if (trajectory == null) {
-      return null;
-    }
-
-    return new SequentialCommandGroup(
-      // Deploy the intake
-      new DeployIntakeCommand(m_intake, IntakeState.DOWN),
-
-      // Start the intake till it fills up with the second ball
-      new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8).withInterrupt(m_feeder::canRunIntakeFeeder),
-
-      // Prepare to follow the trajectory
-      new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
-      new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose())),
-
-      // Follow the path
-      new SwerveControllerStrafe(
-        trajectory,
-        m_drivetrainSubsystem::getPose,
-        m_kinematics,
-        xController,
-        yController,
-        thetaController,
-        m_drivetrainSubsystem::setModuleStates,
-        m_drivetrainSubsystem
+      new ParallelRaceGroup(
+        new AutoRunCommand(m_drivetrainSubsystem, -1).withTimeout(2),
+        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+        new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
       ),
-
-      // Aim to the vision target
-      new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
-
-      // Shoot the two balls
-      new ParallelCommandGroup(
-        new ShootCommand(m_shooterSubsystem, ShooterZone.ZONE_2).withTimeout(3),
-        new SequentialCommandGroup(
-          // Wait for the shooter to rev.
-          new WaitCommand(1),
-          new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.2, 0.5).withTimeout(2)
-        )
-      )
-    );
-  }
-
-  /**
-   * auto command 2 + go back + collect one ball + shoot one ball
-   */
-  private Command getAutonomousCommand3(PIDController xController, PIDController yController, 
-    ProfiledPIDController thetaController) {
-
-    Trajectory trajectory = PathPlanner.loadPath("New New Path", 2, 0.7); // TODO: Change the name of the path here.
-    if (trajectory == null) {
-      return null;
-    }
-
-    return new SequentialCommandGroup(
-      // Run the autonomous command2 first
-      getAutonomousCommand2(xController, yController, thetaController),
-
-      // Deploy the intake
-      new DeployIntakeCommand(m_intake, IntakeState.DOWN),
-
-      // Start the intake till it fills up with one ball
-      new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8).withInterrupt(m_feeder::canRunShooterFeeder),
-
-      // Prepare to follow the trajectory
-      new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
-      new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(trajectory.getInitialPose())),
-
-      // Follow the path
-      new SwerveControllerStrafe(
-        trajectory,
-        m_drivetrainSubsystem::getPose,
-        m_kinematics,
-        xController,
-        yController,
-        thetaController,
-        m_drivetrainSubsystem::setModuleStates,
-        m_drivetrainSubsystem
-      ),
-
-      // Aim to the vision target
-      new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
-
-      // Shoot the two balls
-      new ParallelCommandGroup(
-        new ShootCommand(m_shooterSubsystem, ShooterZone.ZONE_2).withTimeout(3),
-        new SequentialCommandGroup(
-          // Wait for the shooter to rev.
-          new WaitCommand(1),
-          new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.2, 0.5).withTimeout(2)
+      new SequentialCommandGroup(
+        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+        new ParallelCommandGroup(
+          new ShootCommand(m_shooterSubsystem, ShooterZone.TEST),
+          new SequentialCommandGroup(
+            new WaitCommand(1.5),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.1).withTimeout(3)
+          )
         )
       )
     );

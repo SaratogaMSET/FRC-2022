@@ -57,6 +57,7 @@ import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
 import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.PhotoelectricSystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
@@ -78,6 +79,7 @@ public class RobotContainer {
 
   private final DrivetrainSubsystem m_drivetrainSubsystem;
   private final VisionSubsystem m_visionSubsystem;
+  private final PhotoelectricSystem m_photoelectricSystem;
   private final ColorSensorSystem m_ColorSensorSystem;
   private final ShooterSubsystem m_shooterSubsystem;
   private final FeederSubsystem m_feeder;
@@ -119,6 +121,7 @@ public class RobotContainer {
     //     new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(new Pose2d()))
     // ).schedule();
     m_drivetrainSubsystem = new DrivetrainSubsystem();
+    m_photoelectricSystem = new PhotoelectricSystem();
     m_visionSubsystem = new VisionSubsystem();
     m_ColorSensorSystem = new ColorSensorSystem();
     m_shooterSubsystem = new ShooterSubsystem();

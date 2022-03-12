@@ -162,7 +162,7 @@ public final class Constants {
     }
     
     public static class Photoelectric {
-        public static final int SENSOR = 100;
+        public static final int SENSOR = 0;
     }
 
     public static class OIConstants {

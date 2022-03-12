@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import com.revrobotics.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
+
 import com.revrobotics.ColorSensorV3;
 import frc.robot.Constants;
 import edu.wpi.first.networktables.NetworkTable;
@@ -20,10 +22,12 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class PhotoelectricSystem extends SubsystemBase {
 
   private static AnalogInput analog = new AnalogInput(Constants.Photoelectric.SENSOR);
+  private static DigitalInput dig = new DigitalInput(Constants.Photoelectric.SENSOR);
   private static int lineval = 500; 
   private static int thresh = 100;
 
   public PhotoelectricSystem() { //init
+
   }
 
   public static enum PhotoelectricState {
@@ -31,16 +35,23 @@ public class PhotoelectricSystem extends SubsystemBase {
   }
 
   public PhotoelectricState updateVisionState(){
+    SmartDashboard.putNumber("PhotoTest: ", 1);
     int a = analog.getValue();
+    boolean d = dig.get();
     SmartDashboard.putNumber("photoelectric", a);
-    if(a>=lineval-thresh &&  a<=lineval+thresh){
+    SmartDashboard.putBoolean("d", d);
+    if(!d){
+      SmartDashboard.putBoolean("Over shadow line: ", true);
       return PhotoelectricState.LINE;
     }
+    SmartDashboard.putBoolean("Over shadow line: ", false);
     return PhotoelectricState.NOT_LINE;
   }
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Test: ", 1);
+    updateVisionState();
     // This method will be called once per scheduler run
   }
 

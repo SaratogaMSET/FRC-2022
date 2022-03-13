@@ -2,7 +2,6 @@ package frc.robot.subsystems;
  
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -31,6 +30,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public LazyTalonFX shooterMotor2;
   public Solenoid shooterSolenoid;
 
+  private double m_lastNonZeroRPM = 0.60;
+
   private ShuffleboardTab tab = Shuffleboard.getTab("Teleop");
   private NetworkTableEntry shooterPercentRPMEntry = tab.add("Shooter Percent RPM", 0).withWidget(BuiltInWidgets.kGraph).getEntry();
   private NetworkTableEntry shooterPercentOutputEntry = tab.add("Shooter Percent Output", 0).withWidget(BuiltInWidgets.kGraph).getEntry();
@@ -53,6 +54,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     shooterMotor1.set(ControlMode.PercentOutput, actual_rpm);
     shooterMotor2.set(ControlMode.PercentOutput, -actual_rpm);
+
+    if (rpm > 0) {
+      m_lastNonZeroRPM = rpm;
+    }
   }
 
   public void resetSensors() {
@@ -157,5 +162,9 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterPercentRPMEntry.setDouble(shooterMotor1.getSelectedSensorVelocity() * Constants.ShooterConstants.kFalconSensorUnitsToRPM / Constants.ShooterConstants.kFalcon500FreeSpeed);
     shooterPercentOutputEntry.setDouble(shooterMotor1.getMotorOutputPercent());
     shooterHoodEntry.setDouble(shooterMotor2.getSelectedSensorPosition());
+  }
+
+  public double getLastNonZeroRPM() {
+      return m_lastNonZeroRPM;
   }
 }

@@ -37,6 +37,8 @@ import frc.robot.commands.Drivetrain.ZeroGyroCommand;
 import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.commands.Shooter.AimForShootCommand;
+import frc.robot.commands.Shooter.ChangeShooterSpeedCommand;
+import frc.robot.commands.Shooter.ManualShootCommand;
 import frc.robot.commands.Shooter.ShootCommand;
 import frc.robot.commands.Shooter.ToggleShooterAngleCommand;
 import frc.robot.commands.Test.TestDrivetrainCommandGroup;
@@ -195,6 +197,16 @@ public class RobotContainer {
       new ToggleShooterAngleCommand(m_shooterSubsystem)
     );
 
+    // Decrease the speed of the shooter
+    new Button(m_controller::getLeftStickButton).whenPressed(
+      new ChangeShooterSpeedCommand(m_shooterSubsystem, false)
+    );
+
+    // Increase the speed of the shooter
+    new Button(m_controller::getRightStickButton).whenPressed(
+      new ChangeShooterSpeedCommand(m_shooterSubsystem, true)
+    );
+
     // Left bumper zeros the gyroscope
     new Button(m_controller::getLeftBumper).whenPressed(
       new ZeroGyroCommand(m_drivetrainSubsystem)
@@ -262,8 +274,9 @@ public class RobotContainer {
     return value;
   }
 
-  public Command getTestCommand(){
-    return new ShootCommand(m_shooterSubsystem, ShooterZone.TEST);
+  public Command getTestCommand() {
+    // return new ShootCommand(m_shooterSubsystem, ShooterZone.TEST);
+    return new ManualShootCommand(m_shooterSubsystem);
 
     // return new SequentialCommandGroup(
     //   // Will make the intake go up and down.

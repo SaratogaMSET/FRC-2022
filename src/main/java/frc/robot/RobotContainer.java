@@ -168,6 +168,7 @@ public class RobotContainer {
       new RunFeederCommand(m_feeder, FeederState.OUTTAKE, 0.2, 0.8)
     );
 
+    new Button(m_controller::getAButton).whileActiveContinuous(new ShootCommand(m_shooterSubsystem, m_visionSubsystem));
     new Button(m_controller::getYButton).whileActiveOnce(
       new SequentialCommandGroup(
         new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
@@ -249,7 +250,7 @@ public class RobotContainer {
   }
 
   public Command getTestCommand(){
-    return new ShootCommand(m_shooterSubsystem, ShooterZone.TEST);
+    return new ShootCommand(m_shooterSubsystem, m_visionSubsystem);
 
     // return new SequentialCommandGroup(
     //   // Will make the intake go up and down.

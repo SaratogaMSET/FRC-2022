@@ -193,12 +193,12 @@ public class RobotContainer {
 
     // Decrease the speed of the shooter
     new Button(m_controller::getLeftStickButton).whenPressed(
-      new ChangeShooterSpeedCommand(m_shooterSubsystem, false)
+      new ChangeShooterSpeedCommand(m_shooterSubsystem, ChangeShooterSpeedCommand.DECREASE)
     );
 
     // Increase the speed of the shooter
     new Button(m_controller::getRightStickButton).whenPressed(
-      new ChangeShooterSpeedCommand(m_shooterSubsystem, true)
+      new ChangeShooterSpeedCommand(m_shooterSubsystem, ChangeShooterSpeedCommand.INCREASE)
     );
 
     // Left bumper zeros the gyroscope

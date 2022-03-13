@@ -5,6 +5,9 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class ChangeShooterSpeedCommand extends CommandBase {
     private static final double INCREMENT = 0.05;
+    
+    public static final boolean INCREASE = true;
+    public static final boolean DECREASE = false;
 
     private ShooterSubsystem m_shooter;
     private boolean m_increase;

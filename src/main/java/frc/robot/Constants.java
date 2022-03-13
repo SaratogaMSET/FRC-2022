@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -111,24 +113,24 @@ public final class Constants {
 
         public static enum DistanceConstants {
             // ZONE_1 (3509/kFalcon500FreeSpeed, 60),
-            ZONE_2 (0.1, false),
-            ZONE_3 (0.3, false),
-            ZONE_4 (0.5, true),
-            ZONE_5 (0.7, true),
-            ZONE_6 (0.9, true),
-            TEST (0.85, true);
+            ZONE_2 (0.1, ShooterAngle.FOURZERO),
+            ZONE_3 (0.3, ShooterAngle.FOURZERO),
+            ZONE_4 (0.5, ShooterAngle.TWOFIVE),
+            ZONE_5 (0.7, ShooterAngle.TWOFIVE),
+            ZONE_6 (0.9, ShooterAngle.TWOFIVE),
+            TEST (0.85, ShooterAngle.TWOFIVE);
             
             private double percentRPM;
-            private boolean hoodAngle; //final?
+            private ShooterAngle hoodAngle; //final?
 
-            DistanceConstants (double percentRPM, boolean hoodAngle) {
+            DistanceConstants (double percentRPM, ShooterAngle hoodAngle) {
                 this.percentRPM = percentRPM;
                 this.hoodAngle = hoodAngle;
             }
              public double getPercentOutput() {
                 return percentRPM;
             }
-             public boolean getHoodAngle() {
+             public ShooterAngle getHoodAngle() {
                 return hoodAngle;
             }
         }

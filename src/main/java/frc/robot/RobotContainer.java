@@ -38,6 +38,7 @@ import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.commands.Shooter.AimForShootCommand;
 import frc.robot.commands.Shooter.ShootCommand;
+import frc.robot.commands.Shooter.ToggleShooterAngleCommand;
 import frc.robot.commands.Test.TestDrivetrainCommandGroup;
 import frc.robot.commands.Test.TestFeederCommandGroup;
 import frc.robot.commands.Test.TestHangCommandGroup;
@@ -189,7 +190,12 @@ public class RobotContainer {
       // )
     );
 
-    // Back button zeros the gyroscope
+    // Start button changes the shooter angle
+    new Button(m_controller::getStartButton).whenPressed(
+      new ToggleShooterAngleCommand(m_shooterSubsystem)
+    );
+
+    // Left bumper zeros the gyroscope
     new Button(m_controller::getLeftBumper).whenPressed(
       new ZeroGyroCommand(m_drivetrainSubsystem)
     );

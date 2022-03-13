@@ -15,11 +15,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.drivers.LazyTalonFX;
 
-
 public class ShooterSubsystem extends SubsystemBase {
-  public static final boolean SHOOTER_UP = true;
-  public static final boolean SHOOTER_DOWN = false;
-  public static final PIDController pid = new PIDController(0.2, 0.03, 0);
+  private static final boolean SHOOTER_UP = false;
+  private static final boolean SHOOTER_DOWN = true;
 
   public static enum ShooterZone {
     MOVING, ZONE_1, ZONE_2, ZONE_3, ZONE_4, ZONE_5, ZONE_6, TEST
@@ -62,7 +60,7 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMotor2.setSelectedSensorPosition(0);
   }
 
-  public ShooterAngle getShooterAngle(){
+  private ShooterAngle getShooterAngle(){
       if(shooterSolenoid.get()) {
         return ShooterAngle.TWOFIVE;
       } else {
@@ -70,7 +68,16 @@ public class ShooterSubsystem extends SubsystemBase {
       }
   }
 
-  public double getShooterStateRPM(ShooterZone state) {
+  public void toggleShooterAngle() {
+    ShooterAngle angle = getShooterAngle();
+    if (angle == ShooterAngle.FOURZERO) {
+      setShooterAngle(ShooterAngle.TWOFIVE);
+    } else {
+      setShooterAngle(ShooterAngle.FOURZERO);
+    }
+  }
+
+  public double getShooterRPM(ShooterZone state) {
     switch(state) {
       case ZONE_2:
         return Constants.ShooterConstants.DistanceConstants.ZONE_2.getPercentOutput();
@@ -89,12 +96,11 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public void setAngle(boolean desiredAngle) {
-    shooterSolenoid.set(desiredAngle);
-    // if (desiredAngle == ShooterAngle.FOURZERO)
-    //   shooterSolenoid.set(SHOOTER_UP);
-    // else
-    //   shooterSolenoid.set(SHOOTER_DOWN);
+  public void setShooterAngle(ShooterAngle desiredAngle) {
+    if (desiredAngle == ShooterAngle.FOURZERO)
+      shooterSolenoid.set(SHOOTER_UP);
+    else
+      shooterSolenoid.set(SHOOTER_DOWN);
   }
 
   public ShooterZone getShooterZone(double distance) {
@@ -125,7 +131,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return ShooterZone.ZONE_6;
   }
 
-  public boolean getShooterAngle(ShooterZone state) {
+  public ShooterAngle getShooterAngle(ShooterZone state) {
     switch(state) {
       case ZONE_2:
         return Constants.ShooterConstants.DistanceConstants.ZONE_2.getHoodAngle();
@@ -144,23 +150,6 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public double getDesiredShooterRPM(ShooterZone state) {
-    switch(state) {
-      case ZONE_2:
-        return Constants.ShooterConstants.DistanceConstants.ZONE_2.getPercentOutput();
-      case ZONE_3:
-        return Constants.ShooterConstants.DistanceConstants.ZONE_3.getPercentOutput();
-      case ZONE_4:
-        return Constants.ShooterConstants.DistanceConstants.ZONE_4.getPercentOutput();
-      case ZONE_5:
-        return Constants.ShooterConstants.DistanceConstants.ZONE_5.getPercentOutput();
-      case ZONE_6:
-        return Constants.ShooterConstants.DistanceConstants.ZONE_6.getPercentOutput();
-      default:
-        return 0;
-    }
-  }
-
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Sensor Curr Out:", shooterMotor1.getStatorCurrent());
@@ -169,58 +158,4 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterPercentOutputEntry.setDouble(shooterMotor1.getMotorOutputPercent());
     shooterHoodEntry.setDouble(shooterMotor2.getSelectedSensorPosition());
   }
-
-  public ShooterAngle getDesiredShooterAngle(ShooterZone zone) {
-    switch(zone) {
-      case ZONE_2:
-        return ShooterAngle.TWOFIVE;
-      case ZONE_3:
-        return ShooterAngle.TWOFIVE;
-      case ZONE_4:
-        return ShooterAngle.TWOFIVE;
-      case ZONE_5:
-        return ShooterAngle.TWOFIVE;
-      case ZONE_6:
-        return ShooterAngle.TWOFIVE;
-      default:
-        return ShooterAngle.TWOFIVE;
-    }
-  }
 }
-
-
-// /* Code for manually testing */
-// import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-// import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
-// import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import frc.robot.Constants;
-// import frc.robot.util.drivers.LazyTalonFX;
-// public class ShooterSubsystem extends SubsystemBase {
- 
-//   public LazyTalonFX shooterMotor1; //change to LazyTalonFX for safety
-//   public LazyTalonFX shooterMotor2; //change to LazyTalonFX for safety
-
-//   public ShooterSubsystem() {
-//     shooterMotor1 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR1);
-//     shooterMotor2 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR2);
-//   }
-//   @Override
-//   public void periodic() {
-//           SmartDashboard.putNumber("Sensor Vel:", shooterMotor1.getSelectedSensorVelocity());
-//           // Shuffleboard.
-//   }
-//   public void setRPM(double rpm) {
-
-//     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.66189, 0.14002, 0.0092594);
-//     double actual_rpm = feedforward.calculate(rpm);
-
-
-//     shooterMotor1.set(ControlMode.PercentOutput, actual_rpm);
-//     shooterMotor2.set(ControlMode.PercentOutput, -actual_rpm);
-//   }
-
-// }
- 

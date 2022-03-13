@@ -67,16 +67,10 @@ public final class Constants {
         public static final double AREA_VISIBLE = 1; //if area is large enough to be visible (ta)
         
         public static class Distance {
-            public static final int GREEN = 90;
-            public static final int YELLOW = 150;
-            public static final int BLUE = 190;
-            public static final int RED = 270;
-  
-            public static final int ZONE_2 = 185;
-            public static final int ZONE_3 = 218;
-            public static final int ZONE_4 = 245;
-            public static final int ZONE_5 = 263;
-            public static final int ZONE_6 = 290;
+            public static final int ZONE_1 = 117;
+            public static final int ZONE_2 = 215;
+            public static final int ZONE_3 = 285;
+            public static final int ZONE_4 = 330;
         }
  
 
@@ -111,12 +105,11 @@ public final class Constants {
 
         public static enum DistanceConstants {
             // ZONE_1 (3509/kFalcon500FreeSpeed, 60),
-            ZONE_2 (0.1, false),
-            ZONE_3 (0.3, false),
-            ZONE_4 (0.5, true),
-            ZONE_5 (0.7, true),
-            ZONE_6 (0.9, true),
-            TEST (0.77, true);
+            ZONE_1 (0.6, false),
+            ZONE_2 (0.65, true),
+            ZONE_3 (0.75, true),
+            ZONE_4 (0.77, true),
+            TEST (0.57, true);
             
             private double percentRPM;
             private boolean hoodAngle; //final?

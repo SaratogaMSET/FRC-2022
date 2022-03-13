@@ -131,8 +131,8 @@ public class RobotContainer {
 
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(m_controller.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_controller.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
@@ -144,7 +144,7 @@ public class RobotContainer {
     ).schedule();
     
     m_compressor = new Compressor(2, PneumaticsModuleType.REVPH);
-    // m_compressor.disable();
+    m_compressor.disable();
 
     // Configure the button bindings
     configureButtonBindings();
@@ -157,11 +157,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new Button(m_controller::getXButton).whileActiveOnce(
-      new ParallelCommandGroup(
-        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
-        new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
-      )
+    new Button(m_controller::getRightBumper).whileActiveOnce(
+      // new ParallelCommandGroup(
+      //   new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+        new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.15, 0.8)
+      // )
     );
     new Button(m_controller::getBButton).whileActiveOnce(
       // new DeployIntakeCommand(m_intake, IntakeState.DOWN)

@@ -155,7 +155,8 @@ public final class Constants {
     }
     
     public static class Photoelectric {
-        public static final int SENSOR = 9;
+        public static final int SENSOR_LEFT = 9;
+        public static final int SENSOR_RIGHT = 10;
     }
 
     public static class OIConstants {

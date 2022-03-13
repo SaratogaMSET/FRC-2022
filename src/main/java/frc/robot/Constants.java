@@ -107,7 +107,7 @@ public final class Constants {
         public static final double kFalconSensorUnitsToRPM = (600.0 / 2048.0);
         public static final double kFalcon500FreeSpeed = 6380;
 
-        public static final int SHOOTER_SOLENOID = 6;
+        public static final int SHOOTER_SOLENOID = 1;
 
         public static enum DistanceConstants {
             // ZONE_1 (3509/kFalcon500FreeSpeed, 60),
@@ -157,12 +157,12 @@ public final class Constants {
         public static final int RIGHT_HANG_LIMIT_SWITCH = 4;
         public static final int LEFT_HANG_LIMIT_SWITCH = 5;
 
-        public static final int HANG_SOLENOID = 7;
+        public static final int HANG_SOLENOID = 0;
         public static final int HANG_MAX_ENCODER_COUNTS = 130000;
     }
     
     public static class Photoelectric {
-        public static final int SENSOR = 100;
+        public static final int SENSOR = 9;
     }
 
     public static class OIConstants {
@@ -177,6 +177,6 @@ public final class Constants {
     }
 
     public static class IntakeConstants {
-        public static final int INTAKE_SOLENOID = 5; 
+        public static final int INTAKE_SOLENOID = 2; 
     }
 }

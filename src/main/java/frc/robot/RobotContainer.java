@@ -32,6 +32,10 @@ import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.commands.Shooter.AimForShootCommand;
 import frc.robot.commands.Shooter.ShootCommand;
+import frc.robot.commands.Test.TestDrivetrainCommandGroup;
+import frc.robot.commands.Test.TestFeederCommandGroup;
+import frc.robot.commands.Test.TestIntakeCommandGroup;
+import frc.robot.commands.Test.TestShooterCommandGroup;
 import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
@@ -123,8 +127,8 @@ public class RobotContainer {
 
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> modifyAxis(m_controller.getLeftX())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getLeftY())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
     // m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
@@ -142,7 +146,7 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
+   * Use this method to define your button->command mappings. Buttons can be created by ed`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 y                                                       
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
@@ -240,28 +244,22 @@ public class RobotContainer {
   }
 
   public Command getTestCommand(){
-    // return new ShooterCommand(m_feeder, m_shooterSubsystem);
+    return new SequentialCommandGroup(
+      // Will make the intake go up and down.
+      new TestIntakeCommandGroup(m_intake),
 
-    // return new RotateDegrees(m_drivetrainSubsystem, m_visionSubsystem);
-    
-    return new InstantCommand(() -> m_hangSubsystem.setHangRightSpeed(0.1));
+      // Will make the feeder intake, followed by outtake
+      new TestFeederCommandGroup(m_feeder, 0.2, 0.8),
 
-    // return new SequentialCommandGroup(
-    //   new HangUpCommand(m_hangSubsystem, -0.1),
-    //   // new HangDownCommand(m_hangSubsystem, 0.1),
-    //   new DeployHangCommand(m_hangSubsystem, false)
-    // );
+      // Will move the hang up and down, followed by moving the static hang go forward and backwards
+      // new TestHangCommandGroup(m_hangSubsystem, 0.1),
 
-    // return new SequentialCommandGroup(
-    //   // Will make the intake go up and down.
-    //   new TestIntakeCommandGroup(m_intake),
-
-    //   // Will make the feeder intake, followed by outtake
-    //   new TestFeederCommandGroup(m_feeder, 0.2, 0.8),
-
-    //   // Will move the hang up and down, followed by moving the static hang go forward and backwards
-    //   new TestHangCommandGroup(m_hangSubsystem, 0.1)
-    // );
+      // Will move all the drivetrain motors
+      new TestDrivetrainCommandGroup(m_drivetrainSubsystem, 1, 1, 0.3), 
+      
+      // Will move the shooter forward and shooter pistons according to the vision distance
+      new TestShooterCommandGroup(m_shooterSubsystem, m_visionSubsystem)
+    );
   }
 
   /**

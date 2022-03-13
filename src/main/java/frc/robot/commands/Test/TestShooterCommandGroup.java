@@ -12,7 +12,8 @@ public class TestShooterCommandGroup extends SequentialCommandGroup {
     public TestShooterCommandGroup(ShooterSubsystem shooter, VisionSubsystem vision) {
         try {
             addCommands(
-                    new ShootCommand(shooter, ShooterZone.TEST).withTimeout(2));
+                    new ShootCommand(shooter, ShooterZone.TEST).withTimeout(1),
+                    new ShootCommand(shooter, ShooterZone.ZONE_1).withTimeout(1));
             SmartDashboard.putString("Shooter Motors and Solenoid", "Success");
         } catch (Exception e) {
             SmartDashboard.putString("Shooter Motors and Solenoid", "Failed");

@@ -50,6 +50,7 @@ import frc.robot.commands.Test.TestDrivetrainCommandGroup;
 import frc.robot.commands.Test.TestFeederCommandGroup;
 import frc.robot.commands.Test.TestHangCommandGroup;
 import frc.robot.commands.Test.TestIntakeCommandGroup;
+import frc.robot.commands.Test.TestLEDCommandGroup;
 import frc.robot.commands.Test.TestShooterCommandGroup;
 import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -59,6 +60,7 @@ import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PhotoelectricSystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
+import frc.robot.subsystems.LED.LED_STATE;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 import frc.robot.subsystems.VisionSubsystem;
@@ -79,12 +81,13 @@ public class RobotContainer {
 
   private final DrivetrainSubsystem m_drivetrainSubsystem;
   private final VisionSubsystem m_visionSubsystem;
-  private final PhotoelectricSystem m_photoelectricSystem;
+  // private final PhotoelectricSystem m_photoelectricSystem;
   private final ColorSensorSystem m_ColorSensorSystem;
   private final ShooterSubsystem m_shooterSubsystem;
   private final FeederSubsystem m_feeder;
   private final IntakeSubsystem m_intake;
   private final HangSubsystem m_hangSubsystem;
+  // private final LED m_led;
 
   public static final double pi = Math.PI;
   private final XboxController m_controller = new XboxController(0);
@@ -121,13 +124,14 @@ public class RobotContainer {
     //     new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(new Pose2d()))
     // ).schedule();
     m_drivetrainSubsystem = new DrivetrainSubsystem();
-    m_photoelectricSystem = new PhotoelectricSystem();
+    // m_photoelectricSystem = new PhotoelectricSystem();
     m_visionSubsystem = new VisionSubsystem();
     m_ColorSensorSystem = new ColorSensorSystem();
     m_shooterSubsystem = new ShooterSubsystem();
     m_feeder = new FeederSubsystem();
     m_intake = new IntakeSubsystem();
     m_hangSubsystem = new HangSubsystem();
+    // m_led = new LED();
 
     m_drivetrainSubsystem.zeroGyroscope();
     m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
@@ -143,12 +147,12 @@ public class RobotContainer {
     driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
     driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
 
-    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-            m_drivetrainSubsystem,
-            () -> modifyAxis(m_controller.getLeftX())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getLeftY())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    ));
+    // m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+    //         m_drivetrainSubsystem,
+    //         () -> modifyAxis(m_controller.getLeftX())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+    //         () -> -modifyAxis(m_controller.getLeftY())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+    //         () -> modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    // ));
     // m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
     //         m_drivetrainSubsystem,
     //         () -> modifyAxis(driverVertical.getX())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
@@ -264,15 +268,18 @@ public class RobotContainer {
   public Command getTestCommand(){
     return new SequentialCommandGroup(
       // Will make the intake go up and down.
+      // new TestLEDCommandGroup(m_led, LED_STATE.ENABLED)
       new TestIntakeCommandGroup(m_intake),
 
       // Will make the feeder intake, followed by outtake
       new TestFeederCommandGroup(m_feeder, 0.2, 0.8),
 
       // Will move the hang up and down, followed by moving the static hang go forward and backwards
-      // new TestHangCommandGroup(m_hangSubsystem, 0.1),
+      new TestHangCommandGroup(m_hangSubsystem, 0.1),
+      
 
-      // Will move all the drivetrain motors
+      // Will move all the drivetrain 
+      
       new TestDrivetrainCommandGroup(m_drivetrainSubsystem, 1, 1, 0.3), 
       
       // Will move the shooter forward and shooter pistons according to the vision distance

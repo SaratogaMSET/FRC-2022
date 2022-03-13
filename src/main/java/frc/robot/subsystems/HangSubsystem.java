@@ -25,8 +25,8 @@ public class HangSubsystem extends SubsystemBase {
     public boolean maxHeightLeft;
     public boolean maxHeightRight;
 
-    public static final boolean POSITION_FORWARD = true;
-    public static final boolean POSITION_NORMAL = false;
+    public static final boolean POSITION_FORWARD = false;
+    public static final boolean POSITION_NORMAL = true;
 
     public HangSubsystem() {
         rightHangMotor = new TalonFX(Constants.HangConstants.HANG_RIGHT_MOTOR);

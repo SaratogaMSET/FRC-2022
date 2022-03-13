@@ -21,24 +21,39 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class PhotoelectricSystem extends SubsystemBase {
 
-  private static AnalogInput analog = new AnalogInput(Constants.Photoelectric.SENSOR);
-  private static DigitalInput dig = new DigitalInput(Constants.Photoelectric.SENSOR);
+  //private static AnalogInput analog = new AnalogInput(Constants.Photoelectric.SENSOR);
+  private static DigitalInput digLeft;
+  private static DigitalInput digRight;
+
   private static int lineval = 500; 
   private static int thresh = 100;
 
   public PhotoelectricSystem() { //init
-
+    digLeft = new DigitalInput(Constants.Photoelectric.SENSOR_LEFT);
+    digRight = new DigitalInput(Constants.Photoelectric.SENSOR_RIGHT);
   }
 
   public static enum PhotoelectricState {
     LINE, NOT_LINE
   }
 
-  public PhotoelectricState updateVisionState(){
+  public PhotoelectricState updatePhotoStateLeft(){
     SmartDashboard.putNumber("PhotoTest: ", 1);
-    int a = analog.getValue();
-    boolean d = dig.get();
-    SmartDashboard.putNumber("photoelectric", a);
+    //int a = analog.getValue();
+    boolean d = digLeft.get();
+    //SmartDashboard.putNumber("photoelectric", a);
+    SmartDashboard.putBoolean("d", d);
+    if(!d){
+      SmartDashboard.putBoolean("Over shadow line: ", true);
+      return PhotoelectricState.LINE;
+    }
+    SmartDashboard.putBoolean("Over shadow line: ", false);
+    return PhotoelectricState.NOT_LINE;
+  }
+
+  public PhotoelectricState updatePhotoStateRight(){
+    //SmartDashboard.putNumber("PhotoTest: ", 1);
+    boolean d = digRight.get();
     SmartDashboard.putBoolean("d", d);
     if(!d){
       SmartDashboard.putBoolean("Over shadow line: ", true);
@@ -51,7 +66,8 @@ public class PhotoelectricSystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Test: ", 1);
-    updateVisionState();
+    updatePhotoStateLeft();
+    updatePhotoStateRight();
     // This method will be called once per scheduler run
   }
 

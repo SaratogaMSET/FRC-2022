@@ -39,6 +39,7 @@ import frc.robot.commands.Test.TestDrivetrainCommandGroup;
 import frc.robot.commands.Test.TestFeederCommandGroup;
 import frc.robot.commands.Test.TestIntakeCommandGroup;
 import frc.robot.commands.Test.TestShooterCommandGroup;
+import frc.robot.commands.Hang.HangAutoAlign;
 import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
@@ -68,7 +69,7 @@ public class RobotContainer {
 
   private final DrivetrainSubsystem m_drivetrainSubsystem;
   private final VisionSubsystem m_visionSubsystem;
-  // private final PhotoelectricSystem m_photoelectricSystem;
+  private final PhotoelectricSystem m_photoelectricSystem;
   private final ColorSensorSystem m_ColorSensorSystem;
   private final ShooterSubsystem m_shooterSubsystem;
   private final FeederSubsystem m_feeder;
@@ -113,6 +114,7 @@ public class RobotContainer {
     m_feeder = new FeederSubsystem();
     m_intake = new IntakeSubsystem();
     m_hangSubsystem = new HangSubsystem();
+    m_photoelectricSystem = new PhotoelectricSystem(); 
     // m_led = new LED();
 
     m_drivetrainSubsystem.zeroGyroscope();
@@ -181,6 +183,11 @@ public class RobotContainer {
         )
       )
     );
+
+    // Hang auto align
+    // new Button(m_controller::getAButton).whenPressed(
+    //   new HangAutoAlign(m_photoelectricSystem, m_drivetrainSubsystem)
+    // );
 
     // Back button zeros the gyroscope
     new Button(m_controller::getLeftBumper).whenPressed(

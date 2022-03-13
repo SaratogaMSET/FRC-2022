@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -28,9 +29,9 @@ public class ShooterSubsystem extends SubsystemBase {
     TWOFIVE, FOURZERO
   };
 
-  private LazyTalonFX shooterMotor1;
-  private LazyTalonFX shooterMotor2;
-  private Solenoid shooterSolenoid;
+  public LazyTalonFX shooterMotor1;
+  public LazyTalonFX shooterMotor2;
+  public Solenoid shooterSolenoid;
 
   private ShuffleboardTab tab = Shuffleboard.getTab("Teleop");
   private NetworkTableEntry shooterPercentRPMEntry = tab.add("Shooter Percent RPM", 0).withWidget(BuiltInWidgets.kGraph).getEntry();
@@ -48,12 +49,12 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setRPM(double rpm) {
-    // double p = pid.calculate(shooterMotor1.getSelectedSensorVelocity()/Constants.ShooterConstants.kFalcon500FreeSpeed, rpm);
-    // shooterMotor1.set(ControlMode.PercentOutput, p);
-    // shooterMotor2.set(ControlMode.PercentOutput, -p);
 
-    shooterMotor1.set(ControlMode.PercentOutput, rpm);
-    shooterMotor2.set(ControlMode.PercentOutput, -rpm);
+    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.66189, 0.14002, 0.0092594);
+    double actual_rpm = feedforward.calculate(rpm);
+
+    shooterMotor1.set(ControlMode.PercentOutput, actual_rpm);
+    shooterMotor2.set(ControlMode.PercentOutput, -actual_rpm);
   }
 
   public void resetSensors() {
@@ -189,7 +190,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
 // /* Code for manually testing */
-// package frc.robot.subsystems;
 // import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 // import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -200,22 +200,27 @@ public class ShooterSubsystem extends SubsystemBase {
 // import frc.robot.util.drivers.LazyTalonFX;
 // public class ShooterSubsystem extends SubsystemBase {
  
-//         public WPI_TalonFX shooterMotor; //change to LazyTalonFX for safety
-//         public WPI_TalonFX shooterMotor2; //change to LazyTalonFX for safety
- 
-//         public ShooterSubsystem() {
-//                 shooterMotor = new WPI_TalonFX(Constants.ShooterConstants.SHOOTER_MOTOR); //change to LazyTalonFX for safety
-//                 shooterMotor2 = new WPI_TalonFX(Constants.ShooterConstants.LEADSCREW); //change to LazyTalonFX for safety
-//         }
-//         @Override
-//         public void periodic() {
-//                 SmartDashboard.putNumber("Sensor Vel:", shooterMotor.getSelectedSensorVelocity());
-//                 // Shuffleboard.
-//         }
-//         public void run(double d) {
-//                 shooterMotor.set(TalonFXControlMode.PercentOutput,d);
-//                 shooterMotor2.set(TalonFXControlMode.PercentOutput,-d);
-//         }
+//   public LazyTalonFX shooterMotor1; //change to LazyTalonFX for safety
+//   public LazyTalonFX shooterMotor2; //change to LazyTalonFX for safety
+
+//   public ShooterSubsystem() {
+//     shooterMotor1 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR1);
+//     shooterMotor2 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR2);
+//   }
+//   @Override
+//   public void periodic() {
+//           SmartDashboard.putNumber("Sensor Vel:", shooterMotor1.getSelectedSensorVelocity());
+//           // Shuffleboard.
+//   }
+//   public void setRPM(double rpm) {
+
+//     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.66189, 0.14002, 0.0092594);
+//     double actual_rpm = feedforward.calculate(rpm);
+
+
+//     shooterMotor1.set(ControlMode.PercentOutput, actual_rpm);
+//     shooterMotor2.set(ControlMode.PercentOutput, -actual_rpm);
+//   }
 
 // }
  

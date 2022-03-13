@@ -141,18 +141,12 @@ public class RobotContainer {
     driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
     driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
 
-    // m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-    //         m_drivetrainSubsystem,
-    //         () -> modifyAxis(m_controller.getLeftX())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    //         () -> -modifyAxis(m_controller.getLeftY())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    //         () -> modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    // ));
-    // m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-    //         m_drivetrainSubsystem,
-    //         () -> modifyAxis(driverVertical.getX())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    //         () -> modifyAxis(driverVertical.getY())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    //         () -> -modifyAxis(driverHorizontal.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    // ));
+    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+            m_drivetrainSubsystem,
+            () -> modifyAxis(m_controller.getLeftX())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_controller.getLeftY())/2 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    ));
     
     m_compressor = new Compressor(2, PneumaticsModuleType.REVPH);
     // m_compressor.disable();
@@ -180,16 +174,16 @@ public class RobotContainer {
     );
 
     new Button(m_controller::getYButton).whileActiveOnce(
-      // new SequentialCommandGroup(
-      //   new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+      new SequentialCommandGroup(
+        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
         new ParallelCommandGroup(
-          // new ShootCommand(m_shooterSubsystem, ShooterZone.TEST),
+          new ShootCommand(m_shooterSubsystem, ShooterZone.TEST),
           new SequentialCommandGroup(
             new WaitCommand(3),
             new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.1)
           )
         )
-      // )
+      )
     );
 
     // Start button changes the shooter angle

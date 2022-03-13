@@ -4,21 +4,16 @@
 
 package frc.robot;
 
-import java.util.List;
-
 import com.pathplanner.lib.PathPlanner;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -37,16 +32,10 @@ import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.Drivetrain.DefaultDriveCommand;
 import frc.robot.commands.Drivetrain.SwerveControllerStrafe;
 import frc.robot.commands.Drivetrain.ZeroGyroCommand;
-import frc.robot.commands.Hang.DeployHangCommand;
-import frc.robot.commands.Hang.HangDownCommand;
-import frc.robot.commands.Hang.HangUpCommand;
 import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.commands.Shooter.AimForShootCommand;
 import frc.robot.commands.Shooter.ShootCommand;
-import frc.robot.commands.Test.TestFeederCommandGroup;
-import frc.robot.commands.Test.TestHangCommandGroup;
-import frc.robot.commands.Test.TestIntakeCommandGroup;
 import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;

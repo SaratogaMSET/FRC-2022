@@ -1,10 +1,11 @@
 package frc.robot.commands.Shooter;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class ChangeShooterSpeedCommand extends CommandBase {
-    private static final double INCREMENT = 0.05;
+    private static final double INCREMENT = 0.01;
     
     public static final boolean INCREASE = true;
     public static final boolean DECREASE = false;
@@ -28,6 +29,8 @@ public class ChangeShooterSpeedCommand extends CommandBase {
             newRPM -= INCREMENT;
         }
         m_shooter.setRPM(newRPM);
+
+        SmartDashboard.putNumber("RPM manual setpoint", newRPM);
     }
 
     // Returns true when the command should end.

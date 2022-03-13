@@ -51,8 +51,9 @@ import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PhotoelectricSystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
+import frc.robot.subsystems.ShooterSubsystem;
+// import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 import frc.robot.subsystems.VisionSubsystem;
 
 /**
@@ -179,7 +180,7 @@ public class RobotContainer {
       // new SequentialCommandGroup(
       //   new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
         new ParallelCommandGroup(
-          new ShootCommand(m_shooterSubsystem, ShooterZone.TEST),
+          // new ShootCommand(m_shooterSubsystem, ShooterZone.TEST),
           new SequentialCommandGroup(
             new WaitCommand(3),
             new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.1)
@@ -256,25 +257,27 @@ public class RobotContainer {
   }
 
   public Command getTestCommand(){
-    return new SequentialCommandGroup(
-      // Will make the intake go up and down.
-      // new TestLEDCommandGroup(m_led, LED_STATE.ENABLED)
-      new TestIntakeCommandGroup(m_intake),
+    return new ShootCommand(m_shooterSubsystem, ShooterZone.TEST);
 
-      // Will make the feeder intake, followed by outtake
-      new TestFeederCommandGroup(m_feeder, 0.2, 0.8),
+    // return new SequentialCommandGroup(
+    //   // Will make the intake go up and down.
+    //   // new TestLEDCommandGroup(m_led, LED_STATE.ENABLED)
+    //   new TestIntakeCommandGroup(m_intake),
 
-      // Will move the hang up and down, followed by moving the static hang go forward and backwards
-      new TestHangCommandGroup(m_hangSubsystem, 0.1),
+    //   // Will make the feeder intake, followed by outtake
+    //   new TestFeederCommandGroup(m_feeder, 0.2, 0.8),
+
+    //   // Will move the hang up and down, followed by moving the static hang go forward and backwards
+    //   new TestHangCommandGroup(m_hangSubsystem, 0.1),
       
 
-      // Will move all the drivetrain 
+    //   // Will move all the drivetrain 
       
-      new TestDrivetrainCommandGroup(m_drivetrainSubsystem, 1, 1, 0.3), 
+    //   new TestDrivetrainCommandGroup(m_drivetrainSubsystem, 1, 1, 0.3), 
       
-      // Will move the shooter forward and shooter pistons according to the vision distance
-      new TestShooterCommandGroup(m_shooterSubsystem, m_visionSubsystem)
-    );
+    //   // Will move the shooter forward and shooter pistons according to the vision distance
+    //   new TestShooterCommandGroup(m_shooterSubsystem, m_visionSubsystem)
+    // );
   }
 
   /**

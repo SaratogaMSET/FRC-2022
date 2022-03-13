@@ -190,7 +190,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
 // /* Code for manually testing */
-// package frc.robot.subsystems;
 // import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 // import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -201,22 +200,27 @@ public class ShooterSubsystem extends SubsystemBase {
 // import frc.robot.util.drivers.LazyTalonFX;
 // public class ShooterSubsystem extends SubsystemBase {
  
-//         public WPI_TalonFX shooterMotor; //change to LazyTalonFX for safety
-//         public WPI_TalonFX shooterMotor2; //change to LazyTalonFX for safety
- 
-//         public ShooterSubsystem() {
-//                 shooterMotor = new WPI_TalonFX(Constants.ShooterConstants.SHOOTER_MOTOR); //change to LazyTalonFX for safety
-//                 shooterMotor2 = new WPI_TalonFX(Constants.ShooterConstants.LEADSCREW); //change to LazyTalonFX for safety
-//         }
-//         @Override
-//         public void periodic() {
-//                 SmartDashboard.putNumber("Sensor Vel:", shooterMotor.getSelectedSensorVelocity());
-//                 // Shuffleboard.
-//         }
-//         public void run(double d) {
-//                 shooterMotor.set(TalonFXControlMode.PercentOutput,d);
-//                 shooterMotor2.set(TalonFXControlMode.PercentOutput,-d);
-//         }
+//   public LazyTalonFX shooterMotor1; //change to LazyTalonFX for safety
+//   public LazyTalonFX shooterMotor2; //change to LazyTalonFX for safety
+
+//   public ShooterSubsystem() {
+//     shooterMotor1 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR1);
+//     shooterMotor2 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR2);
+//   }
+//   @Override
+//   public void periodic() {
+//           SmartDashboard.putNumber("Sensor Vel:", shooterMotor1.getSelectedSensorVelocity());
+//           // Shuffleboard.
+//   }
+//   public void setRPM(double rpm) {
+
+//     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.66189, 0.14002, 0.0092594);
+//     double actual_rpm = feedforward.calculate(rpm);
+
+
+//     shooterMotor1.set(ControlMode.PercentOutput, actual_rpm);
+//     shooterMotor2.set(ControlMode.PercentOutput, -actual_rpm);
+//   }
 
 // }
  

@@ -53,8 +53,10 @@ public class ShooterSubsystem extends SubsystemBase {
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.66189, 0.14002, 0.0092594);
     double actual_rpm = feedforward.calculate(rpm);
 
-    shooterMotor1.set(ControlMode.PercentOutput, actual_rpm);
-    shooterMotor2.set(ControlMode.PercentOutput, -actual_rpm);
+    SmartDashboard.putNumber("Velocity Setpoint", actual_rpm);
+
+    shooterMotor1.set(ControlMode.PercentOutput, rpm);
+    shooterMotor2.set(ControlMode.PercentOutput, -rpm);
   }
 
   public void resetSensors() {

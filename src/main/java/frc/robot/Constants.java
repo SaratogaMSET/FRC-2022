@@ -55,8 +55,8 @@ public final class Constants {
         public static final double kIYController = 0.000;
         public static final double kPThetaControllerTrajectory = 0;
 
-        public static final double kPThetaController = 0.075; //.07655
-        public static final double kIThetaController = 0.0000;
+        public static final double kPThetaController = 0.076; //.07655
+        public static final double kIThetaController = 0.0200;
     }
 
     public static class Vision{
@@ -116,7 +116,7 @@ public final class Constants {
             ZONE_4 (0.5, true),
             ZONE_5 (0.7, true),
             ZONE_6 (0.9, true),
-            TEST (0.85, true);
+            TEST (0.77, true);
             
             private double percentRPM;
             private boolean hoodAngle; //final?

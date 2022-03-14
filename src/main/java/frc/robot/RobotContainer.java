@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.fasterxml.jackson.databind.util.ByteBufferBackedOutputStream;
 import com.pathplanner.lib.PathPlanner;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
@@ -39,7 +40,9 @@ import frc.robot.commands.Test.TestDrivetrainCommandGroup;
 import frc.robot.commands.Test.TestFeederCommandGroup;
 import frc.robot.commands.Test.TestIntakeCommandGroup;
 import frc.robot.commands.Test.TestShooterCommandGroup;
+import frc.robot.commands.Hang.HangAutoAlign;
 import frc.robot.subsystems.ColorSensorSystem;
+import frc.robot.subsystems.Multi2c;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
@@ -69,7 +72,8 @@ public class RobotContainer {
 
   private final DrivetrainSubsystem m_drivetrainSubsystem;
   private final VisionSubsystem m_visionSubsystem;
-  // private final PhotoelectricSystem m_photoelectricSystem;
+  private final Multi2c m_breakout;
+  private final PhotoelectricSystem m_photoelectricSystem;
   private final ColorSensorSystem m_ColorSensorSystem;
   private final LEDSubsystem m_LedSubsystem;
   private final ShooterSubsystem m_shooterSubsystem;
@@ -112,10 +116,12 @@ public class RobotContainer {
     m_visionSubsystem = new VisionSubsystem();
     m_LedSubsystem = new LEDSubsystem();
     m_ColorSensorSystem = new ColorSensorSystem();
+    m_breakout = new Multi2c();
     m_shooterSubsystem = new ShooterSubsystem();
     m_feeder = new FeederSubsystem();
     m_intake = new IntakeSubsystem();
     m_hangSubsystem = new HangSubsystem();
+    m_photoelectricSystem = new PhotoelectricSystem(); 
     // m_led = new LED();
 
     new Thread(() -> {
@@ -176,6 +182,7 @@ public class RobotContainer {
       new RunFeederCommand(m_feeder, FeederState.OUTTAKE, 0.2, 0.8)
     );
 
+    new Button(m_controller::getAButton).whileActiveContinuous(new ShootCommand(m_shooterSubsystem, m_visionSubsystem));
     new Button(m_controller::getYButton).whileActiveOnce(
       new SequentialCommandGroup(
         new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
@@ -188,6 +195,11 @@ public class RobotContainer {
         )
       )
     );
+
+    // Hang auto align
+    // new Button(m_controller::getAButton).whenPressed(
+    //   new HangAutoAlign(m_photoelectricSystem, m_drivetrainSubsystem)
+    // );
 
     // Back button zeros the gyroscope
     new Button(m_controller::getLeftBumper).whenPressed(
@@ -259,7 +271,7 @@ public class RobotContainer {
   }
 
   public Command getTestCommand(){
-    return new ShootCommand(m_shooterSubsystem, ShooterZone.TEST);
+    return new ShootCommand(m_shooterSubsystem, m_visionSubsystem);
 
     // return new SequentialCommandGroup(
     //   // Will make the intake go up and down.

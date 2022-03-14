@@ -9,6 +9,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -39,9 +40,9 @@ import frc.robot.commands.Shooter.ShootCommand;
 import frc.robot.commands.Test.TestDrivetrainCommandGroup;
 import frc.robot.commands.Test.TestFeederCommandGroup;
 import frc.robot.commands.Test.TestIntakeCommandGroup;
-import frc.robot.commands.Test.TestShooterCommandGroup;
+
 import frc.robot.commands.Hang.HangAutoAlign;
-import frc.robot.subsystems.ColorSensorSystem;
+// import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.Multi2c;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
@@ -74,7 +75,7 @@ public class RobotContainer {
   private final VisionSubsystem m_visionSubsystem;
   private final Multi2c m_breakout;
   private final PhotoelectricSystem m_photoelectricSystem;
-  private final ColorSensorSystem m_ColorSensorSystem;
+  // private final ColorSensorSystem m_ColorSensorSystem;
   private final LEDSubsystem m_LedSubsystem;
   private final ShooterSubsystem m_shooterSubsystem;
   private final FeederSubsystem m_feeder;
@@ -115,7 +116,7 @@ public class RobotContainer {
     // m_photoelectricSystem = new PhotoelectricSystem();
     m_visionSubsystem = new VisionSubsystem();
     m_LedSubsystem = new LEDSubsystem();
-    m_ColorSensorSystem = new ColorSensorSystem();
+    // m_ColorSensorSystem = new ColorSensorSystem();
     m_breakout = new Multi2c();
     m_shooterSubsystem = new ShooterSubsystem();
     m_feeder = new FeederSubsystem();
@@ -305,22 +306,24 @@ public class RobotContainer {
     m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     return new SequentialCommandGroup(
       new WaitCommand(1),
-      // new ZeroGyroCommand(m_drivetrainSubsystem),
+      new ZeroGyroCommand(m_drivetrainSubsystem),
+       new WaitCommand(1),
+     //  new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
       new ParallelRaceGroup(
         new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(2),
         // new DeployIntakeCommand(m_intake, IntakeState.DOWN),
         new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
-      ),
-      new SequentialCommandGroup(
-        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
-        new ParallelCommandGroup(
-          new ShootCommand(m_shooterSubsystem, m_visionSubsystem),
-          new SequentialCommandGroup(
-            new WaitCommand(1.5),
-            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.1).withTimeout(3)
-          )
-        )
-      )
-    );
+      )//,
+      // new SequentialCommandGroup(
+      //   new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+      //   new ParallelCommandGroup(
+      //     new ShootCommand(m_shooterSubsystem, m_visionSubsystem),
+      //     new SequentialCommandGroup(
+      //       new WaitCommand(1.5),
+      //       new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.1).withTimeout(3)
+      //     )
+      //   )
+      // )
+     );
   }
 }

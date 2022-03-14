@@ -22,7 +22,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public static final PIDController pid = new PIDController(0.2, 0.03, 0);
 
   public static enum ShooterZone {
-    MOVING, ZONE_1, ZONE_2, ZONE_3, ZONE_4, ZONE_5, ZONE_6, TEST
+    MOVING, ZONE_1, ZONE_2, ZONE_3, ZONE_4, ZONE_5, ZONE_6, TEST, ZONE_7
   };
 
   public static enum ShooterAngle {
@@ -82,6 +82,12 @@ public class ShooterSubsystem extends SubsystemBase {
         return Constants.ShooterConstants.DistanceConstants.ZONE_3.getPercentOutput();
       case ZONE_4:
         return Constants.ShooterConstants.DistanceConstants.ZONE_4.getPercentOutput();
+        case ZONE_5:
+        return Constants.ShooterConstants.DistanceConstants.ZONE_5.getPercentOutput();
+      case ZONE_6:
+        return Constants.ShooterConstants.DistanceConstants.ZONE_6.getPercentOutput();
+      case ZONE_7:
+        return Constants.ShooterConstants.DistanceConstants.ZONE_7.getPercentOutput();
 
       case TEST:
         return Constants.ShooterConstants.DistanceConstants.TEST.getPercentOutput();
@@ -110,6 +116,15 @@ public class ShooterSubsystem extends SubsystemBase {
     if (distance < Constants.Vision.Distance.ZONE_4) {
       return ShooterZone.ZONE_4;
     }
+    if (distance < Constants.Vision.Distance.ZONE_5) {
+      return ShooterZone.ZONE_5;
+    }
+    if (distance < Constants.Vision.Distance.ZONE_6) {
+      return ShooterZone.ZONE_6;
+    }
+    if (distance < Constants.Vision.Distance.ZONE_7) {
+      return ShooterZone.ZONE_7;
+    }
     return ShooterZone.ZONE_1;
   }
 
@@ -123,6 +138,12 @@ public class ShooterSubsystem extends SubsystemBase {
         return Constants.ShooterConstants.DistanceConstants.ZONE_3.getHoodAngle();
       case ZONE_4:
         return Constants.ShooterConstants.DistanceConstants.ZONE_4.getHoodAngle();
+      case ZONE_5:
+        return Constants.ShooterConstants.DistanceConstants.ZONE_5.getHoodAngle();
+      case ZONE_6:
+        return Constants.ShooterConstants.DistanceConstants.ZONE_6.getHoodAngle();
+      case ZONE_7:
+        return Constants.ShooterConstants.DistanceConstants.ZONE_7.getHoodAngle();
 
       case TEST:
         return Constants.ShooterConstants.DistanceConstants.TEST.getHoodAngle();

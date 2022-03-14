@@ -45,6 +45,7 @@ import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
 import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PhotoelectricSystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
 import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
@@ -70,6 +71,7 @@ public class RobotContainer {
   private final VisionSubsystem m_visionSubsystem;
   // private final PhotoelectricSystem m_photoelectricSystem;
   private final ColorSensorSystem m_ColorSensorSystem;
+  private final LEDSubsystem m_LedSubsystem;
   private final ShooterSubsystem m_shooterSubsystem;
   private final FeederSubsystem m_feeder;
   private final IntakeSubsystem m_intake;
@@ -108,6 +110,7 @@ public class RobotContainer {
     m_drivetrainSubsystem = new DrivetrainSubsystem();
     // m_photoelectricSystem = new PhotoelectricSystem();
     m_visionSubsystem = new VisionSubsystem();
+    m_LedSubsystem = new LEDSubsystem();
     m_ColorSensorSystem = new ColorSensorSystem();
     m_shooterSubsystem = new ShooterSubsystem();
     m_feeder = new FeederSubsystem();
@@ -115,9 +118,14 @@ public class RobotContainer {
     m_hangSubsystem = new HangSubsystem();
     // m_led = new LED();
 
-    m_drivetrainSubsystem.zeroGyroscope();
-    m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-    m_drivetrainSubsystem.resetOdometry(new Pose2d());
+    new Thread(() -> {
+      try {
+          Thread.sleep(500);
+          m_drivetrainSubsystem.zeroGyroscope();
+          // m_drivetrainSubsystem.resetOdometry(new Pose2d());
+      } catch (Exception e) {
+      }
+    }).start();
 
     m_autoSwitcher.addOption(kAutoR1, kAutoR1);
     m_autoSwitcher.addOption(kAutoR2, kAutoR2);
@@ -144,7 +152,7 @@ public class RobotContainer {
     ).schedule();
     
     m_compressor = new Compressor(2, PneumaticsModuleType.REVPH);
-    m_compressor.disable();
+    // m_compressor.disable();
 
     // Configure the button bindings
     configureButtonBindings();
@@ -158,10 +166,10 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     new Button(m_controller::getRightBumper).whileActiveOnce(
-      // new ParallelCommandGroup(
-      //   new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+      new ParallelCommandGroup(
+        // new DeployIntakeCommand(m_intake, IntakeState.DOWN),
         new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.15, 0.8)
-      // )
+      )
     );
     new Button(m_controller::getBButton).whileActiveOnce(
       // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
@@ -172,10 +180,10 @@ public class RobotContainer {
       new SequentialCommandGroup(
         new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
         new ParallelCommandGroup(
-          new ShootCommand(m_shooterSubsystem, ShooterZone.TEST),
+          new ShootCommand(m_shooterSubsystem, m_visionSubsystem),
           new SequentialCommandGroup(
-            new WaitCommand(2),
-            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.1)
+            new WaitCommand(1.8),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.15)
           )
         )
       )
@@ -217,6 +225,8 @@ public class RobotContainer {
     RobotState.intakeState = m_intake.getIntakeState();
     RobotState.feederState = m_feeder.getFeederState();
     RobotState.visionState = m_visionSubsystem.getVisionState();
+    
+    m_LedSubsystem.setStatus(m_feeder.intakeGate.get(), m_feeder.shooterGate.get());
 
     SmartDashboard.putNumber("VISION: Distance", m_visionSubsystem.getDistanceFromTarget());
     SmartDashboard.putNumber("VISION: Angle", m_visionSubsystem.getRawAngle());
@@ -240,7 +250,7 @@ public class RobotContainer {
 
   private static double modifyAxis(double value) {
     // Deadband
-    value = deadband(value, 0.05);
+    value = deadband(value, 0.01);
 
     // Square the axis
     value = Math.copySign(value * value, value);
@@ -278,17 +288,21 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    
+
+    m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     return new SequentialCommandGroup(
-      new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
+      new WaitCommand(1),
+      // new ZeroGyroCommand(m_drivetrainSubsystem),
       new ParallelRaceGroup(
         new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(2),
-        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+        // new DeployIntakeCommand(m_intake, IntakeState.DOWN),
         new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
       ),
       new SequentialCommandGroup(
         new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
         new ParallelCommandGroup(
-          new ShootCommand(m_shooterSubsystem, ShooterZone.TEST),
+          new ShootCommand(m_shooterSubsystem, m_visionSubsystem),
           new SequentialCommandGroup(
             new WaitCommand(1.5),
             new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.1).withTimeout(3)

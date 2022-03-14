@@ -67,30 +67,23 @@ public final class Constants {
         public static final double AREA_VISIBLE = 1; //if area is large enough to be visible (ta)
         
         public static class Distance {
-            public static final int ZONE_1 = 117;
-            public static final int ZONE_2 = 215;
-            public static final int ZONE_3 = 285;
-            public static final int ZONE_4 = 330;
+            public static final int ZONE_1 = 99;
+            public static final int ZONE_2 = 105;
+            public static final int ZONE_3 = 160;
+            public static final int ZONE_4 = 217;
+            public static final int ZONE_5 = 246;
+            public static final int ZONE_6 = 256;
+            public static final int ZONE_7 = 279;
+
+            // public static final int ZONE_1 = 117;
+            // public static final int ZONE_2 = 215;
+            // public static final int ZONE_3 = 285;
+            // public static final int ZONE_4 = 330;
         }
  
 
         public static class Angle{
-            // diff zones
-            // limelight 2
-            // x (all in plus minus)
             public static final double ON_TARGET_X = 1;
-            /*
-            public static final double CLOSE_X = 6;
-            public static final double MEDIUM_X = 12;
-            public static final double OFF_X = 29.8; 
-            */
-            // y (all in plus minus)
-            /*
-            public static final double ON_TARGET_Y = 3;
-            public static final double CLOSE_Y = 6; 
-            public static final double MEDIUM_Y = 12;
-            public static final double OFF_Y = 24.85; 
-            */
         }
     }
 
@@ -106,10 +99,13 @@ public final class Constants {
         public static enum DistanceConstants {
             // ZONE_1 (3509/kFalcon500FreeSpeed, 60),
             ZONE_1 (0.6, false),
-            ZONE_2 (0.65, true),
-            ZONE_3 (0.75, true),
-            ZONE_4 (0.77, true),
-            TEST (0.57, true);
+            ZONE_2 (0.67, false),
+            ZONE_3 (0.55, true),
+            ZONE_4 (0.62, true),
+            ZONE_5 (0.66, true),
+            ZONE_6 (0.69, true),
+            ZONE_7 (0.728, true),
+            TEST (0.735, true);
             
             private double percentRPM;
             private boolean hoodAngle; //final?

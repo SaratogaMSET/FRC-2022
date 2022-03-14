@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.fasterxml.jackson.databind.util.ByteBufferBackedOutputStream;
 import com.pathplanner.lib.PathPlanner;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
@@ -41,6 +42,7 @@ import frc.robot.commands.Test.TestIntakeCommandGroup;
 import frc.robot.commands.Test.TestShooterCommandGroup;
 import frc.robot.commands.Hang.HangAutoAlign;
 import frc.robot.subsystems.ColorSensorSystem;
+import frc.robot.subsystems.Multi2c;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
@@ -69,6 +71,7 @@ public class RobotContainer {
 
   private final DrivetrainSubsystem m_drivetrainSubsystem;
   private final VisionSubsystem m_visionSubsystem;
+  private final Multi2c m_breakout;
   private final PhotoelectricSystem m_photoelectricSystem;
   private final ColorSensorSystem m_ColorSensorSystem;
   private final ShooterSubsystem m_shooterSubsystem;
@@ -110,6 +113,7 @@ public class RobotContainer {
     // m_photoelectricSystem = new PhotoelectricSystem();
     m_visionSubsystem = new VisionSubsystem();
     m_ColorSensorSystem = new ColorSensorSystem();
+    m_breakout = new Multi2c();
     m_shooterSubsystem = new ShooterSubsystem();
     m_feeder = new FeederSubsystem();
     m_intake = new IntakeSubsystem();

@@ -7,17 +7,29 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.ColorSensorSystem;
+import frc.robot.subsystems.Multi2c;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.ColorSensorV3.RawColor;
+import edu.wpi.first.wpilibj.util.Color;
 
 import java.lang.Math;
 
-public class ColorSensorSystem extends SubsystemBase {
-  private final ColorSensorV3 colorSensor;
+/*
+TODO:
+- Multiple color sensors: array of color sensors?
+- Read + eval multiple color sensors
+- Implement needed methods for reading from multiple color sensors (getColor, getR/G/B, etc.)
+- To read multiple values: iterate thru breakoutChannels?
+- TEST W/ I2C
+*/
 
-  private final I2C.Port i2cPort = I2C.Port.kOnboard; //Constants.Colorwheel.COLOR_SENSOR; 
+public class ColorSensorSystem extends SubsystemBase {
+  //private final ColorSensorV3 colorSensor;
+
+  //private final I2C.Port i2cPort = I2C.Port.kOnboard; //Constants.Colorwheel.COLOR_SENSOR; 
 
   //color sensor constants
   private double confidence;
@@ -28,9 +40,9 @@ public class ColorSensorSystem extends SubsystemBase {
   private final int BLACK = 0,
                     RED = 1,
                     BLUE = 2,
-                    PINK = 3,
-                    YELLOW = 4,
-                    GREEN = 5;
+                    //PINK = 3,
+                    YELLOW = 4;
+                    //GREEN = 5;
   private final int RED_COMPONENT = 0,
                     GREEN_COMPONENT = 1,
                     BLUE_COMPONENT = 2;
@@ -54,8 +66,55 @@ public class ColorSensorSystem extends SubsystemBase {
                         BLUE_CONST = 0.38,
                         YELLOW_CONST = 0.5;
 
+  /* MultI2C */
+  private Multi2c breakout;
+  private byte breakoutChannel;
+  private I2C.Port i2cPort = I2C.Port.kOnboard;
+  private ColorSensorV3 colorSensor;
+
   public ColorSensorSystem() { //init
     colorSensor = new ColorSensorV3(i2cPort);
+  }
+
+  public ColorSensorSystem(I2C.Port port, Multi2c breakout, byte breakoutChannel) {
+    i2cPort = port;
+    this.breakout = breakout;
+    this.breakoutChannel = breakoutChannel;
+
+    setActive();
+    colorSensor = new ColorSensorV3(port);
+  }
+
+  public void setActive() {
+    /* byte[] bChannel = {(byte)(1 << breakoutChannel)};
+    breakout.setEnabledBuses(bChannel); */
+    int[] channel = {breakoutChannel};
+    breakout.setEnabledBuses(channel); // FIXME
+  }
+
+  public RawColor getRawColor() {
+    setActive();
+    return colorSensor.getRawColor();
+  }
+
+  public Color getColor() {
+    setActive();
+    return colorSensor.getColor();
+  }
+
+  public int getRed() {
+    setActive();
+    return colorSensor.getRed();
+  }
+
+  public int getGreen() {
+    setActive();
+    return colorSensor.getGreen();
+  }
+
+  public int getBlue() {
+    setActive();
+    return colorSensor.getBlue();
   }
 
   private void compareColor(){
@@ -64,17 +123,17 @@ public class ColorSensorSystem extends SubsystemBase {
 
     colorString(confidence, conf_percent);
 
-    // Output raw RGB values from color sensor onto SmartDashboard
-    int currColorR = colorSensor.getRed(), 
-        currColorG = colorSensor.getGreen(), 
-        currColorB = colorSensor.getBlue();
+    // Output raw RGB values from color sensor(s) onto SmartDashboard
+    int currColorR = getRed(), 
+        currColorG = getGreen(), 
+        currColorB = getBlue();
     SmartDashboard.putNumber("Raw r: ", currColorR);
     SmartDashboard.putNumber("Raw g: ", currColorG);
     SmartDashboard.putNumber("Raw b: ", currColorB);
 
-    double  percentR = colorSensor.getColor().red,
-            percentG = colorSensor.getColor().green,
-            percentB = colorSensor.getColor().blue;
+    double  percentR = getColor().red,
+            percentG = getColor().green,
+            percentB = getColor().blue;
     SmartDashboard.putNumber("Percent r: ", percentR);
     SmartDashboard.putNumber("Percent g: ", percentG);
     SmartDashboard.putNumber("Percent b: ", percentB);
@@ -82,9 +141,9 @@ public class ColorSensorSystem extends SubsystemBase {
 
   private String colorString(double conf, double conf_percent) {    
     double[] sensorRGB = new double[]{
-      (double) colorSensor.getRed(),
-      (double) colorSensor.getGreen(),
-      (double) colorSensor.getBlue()
+      (double) getRed(),
+      (double) getGreen(),
+      (double) getBlue()
     };
 
     int i, j;
@@ -117,9 +176,9 @@ public class ColorSensorSystem extends SubsystemBase {
     } else { // Percentage checks
 
       double[] sensorRGBPercent = new double[]{
-        colorSensor.getColor().red,
-        colorSensor.getColor().green,
-        colorSensor.getColor().blue,
+        getColor().red,
+        getColor().green,
+        getColor().blue,
       };      
       
       if (sensorRGBPercent[RED_COMPONENT] >= RED_CONST) {

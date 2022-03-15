@@ -11,7 +11,7 @@ import frc.robot.subsystems.VisionSubsystem;
 
 public class ShootCommand extends CommandBase {
     private final ShooterSubsystem m_shooter;
-    private VisionSubsystem m_vision;
+    private VisionSubsystem m_vision = null;
 
     private ShooterZone m_zone = ShooterZone.ZONE_1;
 
@@ -57,6 +57,7 @@ public class ShootCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         m_shooter.setRPM(0);
+        m_shooter.setAngle(false);
     }
 
     // Returns true when the command should end.

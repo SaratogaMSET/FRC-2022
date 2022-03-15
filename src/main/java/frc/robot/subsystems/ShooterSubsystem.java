@@ -22,7 +22,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public static final PIDController pid = new PIDController(0.2, 0.03, 0);
 
   public static enum ShooterZone {
-    MOVING, ZONE_1, ZONE_2, ZONE_3, ZONE_4, ZONE_5, ZONE_6, TEST, ZONE_7
+    MOVING, ZONE_1, ZONE_2, ZONE_3, ZONE_4, ZONE_5, ZONE_6, ZONE_7, TEST, EMERGENCY
   };
 
   public static enum ShooterAngle {
@@ -54,7 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
     double actual_rpm = feedforward.calculate(rpm);
 
     SmartDashboard.putNumber("Velocity Setpoint", actual_rpm);
-
+    
     shooterMotor1.set(ControlMode.PercentOutput, rpm);
     shooterMotor2.set(ControlMode.PercentOutput, -rpm);
   }
@@ -88,6 +88,8 @@ public class ShooterSubsystem extends SubsystemBase {
         return Constants.ShooterConstants.DistanceConstants.ZONE_6.getPercentOutput();
       case ZONE_7:
         return Constants.ShooterConstants.DistanceConstants.ZONE_7.getPercentOutput();
+      case EMERGENCY:
+        return Constants.ShooterConstants.DistanceConstants.EMERGENCY.getPercentOutput();
 
       case TEST:
         return Constants.ShooterConstants.DistanceConstants.TEST.getPercentOutput();
@@ -125,7 +127,7 @@ public class ShooterSubsystem extends SubsystemBase {
     if (distance < Constants.Vision.Distance.ZONE_7) {
       return ShooterZone.ZONE_7;
     }
-    return ShooterZone.ZONE_1;
+    return ShooterZone.EMERGENCY;
   }
 
   public boolean getShooterAngle(ShooterZone state) {
@@ -144,27 +146,13 @@ public class ShooterSubsystem extends SubsystemBase {
         return Constants.ShooterConstants.DistanceConstants.ZONE_6.getHoodAngle();
       case ZONE_7:
         return Constants.ShooterConstants.DistanceConstants.ZONE_7.getHoodAngle();
+      case EMERGENCY:
+        return Constants.ShooterConstants.DistanceConstants.EMERGENCY.getHoodAngle();
 
       case TEST:
         return Constants.ShooterConstants.DistanceConstants.TEST.getHoodAngle();
       default:
         return Constants.ShooterConstants.DistanceConstants.ZONE_1.getHoodAngle();
-    }
-  }
-
-  public double getDesiredShooterRPM(ShooterZone state) {
-    switch(state) {
-      case ZONE_1:
-        return Constants.ShooterConstants.DistanceConstants.ZONE_1.getPercentOutput();
-      case ZONE_2:
-        return Constants.ShooterConstants.DistanceConstants.ZONE_2.getPercentOutput();
-      case ZONE_3:
-        return Constants.ShooterConstants.DistanceConstants.ZONE_3.getPercentOutput();
-      case ZONE_4:
-        return Constants.ShooterConstants.DistanceConstants.ZONE_4.getPercentOutput();
-
-      default:
-        return 0;
     }
   }
 

@@ -42,6 +42,8 @@ import frc.robot.commands.Test.TestFeederCommandGroup;
 import frc.robot.commands.Test.TestIntakeCommandGroup;
 
 import frc.robot.commands.Hang.HangAutoAlign;
+import frc.robot.commands.Hang.HangDownCommand;
+import frc.robot.commands.Hang.HangUpCommand;
 // import frc.robot.subsystems.ColorSensorSystem;
 import frc.robot.subsystems.Multi2c;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -84,9 +86,10 @@ public class RobotContainer {
   // private final LED m_led;
 
   public static final double pi = Math.PI;
-  private final XboxController m_controller = new XboxController(0);
+  private final XboxController m_driver = new XboxController(0);
+  private final XboxController m_gunner = new XboxController(1);
   private final Compressor m_compressor;
-  private final Joystick driverVertical, driverHorizontal;
+  // private final Joystick driverVertical, driverHorizontal;
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0 *
           SdsModuleConfigurations.MK4_L2.getDriveReduction() *
@@ -123,7 +126,6 @@ public class RobotContainer {
     m_intake = new IntakeSubsystem();
     m_hangSubsystem = new HangSubsystem();
     m_photoelectricSystem = new PhotoelectricSystem(); 
-    // m_led = new LED();
 
     new Thread(() -> {
       try {
@@ -138,17 +140,16 @@ public class RobotContainer {
     m_autoSwitcher.addOption(kAutoR2, kAutoR2);
     m_autoSwitcher.addOption(kAutoR3, kAutoR3);
 
-
     SmartDashboard.putData(m_autoSwitcher);
 
-    driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL); //send
-    driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
+    // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL);
+    // driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
 
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> modifyAxis(m_controller.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> modifyAxis(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(m_driver.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
     new SequentialCommandGroup(
@@ -172,19 +173,19 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new Button(m_controller::getRightBumper).whileActiveOnce(
+
+    // Driver Controls
+    new Button(m_driver::getRightBumper).whileActiveOnce(
       new ParallelCommandGroup(
-        // new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
         new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.15, 0.8)
       )
     );
-    new Button(m_controller::getBButton).whileActiveOnce(
-      // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
+    new Button(m_driver::getBButton).whileActiveOnce(
       new RunFeederCommand(m_feeder, FeederState.OUTTAKE, 0.2, 0.8)
     );
-
-    new Button(m_controller::getAButton).whileActiveContinuous(new ShootCommand(m_shooterSubsystem, m_visionSubsystem));
-    new Button(m_controller::getYButton).whileActiveOnce(
+        
+    new Button(m_driver::getYButton).whileActiveOnce(
       new SequentialCommandGroup(
         new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
         new ParallelCommandGroup(
@@ -197,41 +198,38 @@ public class RobotContainer {
       )
     );
 
-    // Hang auto align
-    // new Button(m_controller::getAButton).whenPressed(
-    //   new HangAutoAlign(m_photoelectricSystem, m_drivetrainSubsystem)
-    // );
-
     // Back button zeros the gyroscope
-    new Button(m_controller::getLeftBumper).whenPressed(
+    new Button(m_driver::getLeftBumper).whenPressed(
       new ZeroGyroCommand(m_drivetrainSubsystem)
     );
 
-    // new Button(m_controller::getYButton).whenPressed(
-    //   new HangUpCommand(m_hangSubsystem, 0.5)
-    // );
+    
 
-    // new Button(m_controller::getAButton).whenPressed(
-    //   new HangDownCommand(m_hangSubsystem, 0.5)
-    // );
+    // Gunner Controls
+    new Button(m_gunner::getYButton).whenPressed(
+      new HangUpCommand(m_hangSubsystem, 0.5)
+    );
 
-    // new Button(m_controller::getBButton).whenPressed(
-    //   new DeployHangCommand(m_hangSubsystem, false)
-    // );
+    new Button(m_gunner::getAButton).whenPressed(
+      new HangDownCommand(m_hangSubsystem, 0.5)
+    );
 
-    // new Button(m_controller::getXButton).whenPressed(
-    //   new DeployHangCommand(m_hangSubsystem, true)
-    // );
-    // new Button(m_controller::getAButton).whenPressed(
-    //   // new DeployIntakeCommand(m_intake, IntakeState.DOWN)
-    //   // new InstantCommand(() -> m_hangSubsystem.setHangRightSpeed(-0.1))
-    //   new SequentialCommandGroup(
-    //     new HangDownCommand(m_hangSubsystem, 0.1),
-    //     new DeployHangCommand(m_hangSubsystem, true),
-    //     new HangUpCommand(m_hangSubsystem, 0.1),
-    //     new DeployHangCommand(m_hangSubsystem, false)
-    //   )
-    // );
+    new Button(m_gunner::getXButton).whileActiveOnce(
+      new ParallelCommandGroup(
+        new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY),
+        new SequentialCommandGroup(
+          new WaitCommand(1.8),
+          new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.15)
+        )
+      )
+    );
+
+    new Button(m_gunner::getRightBumper).whileActiveOnce(
+      new ParallelCommandGroup(
+        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+        new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.15, 0.8)
+      )
+    );
   }
 
   public void updateRobotState() {
@@ -272,27 +270,18 @@ public class RobotContainer {
   }
 
   public Command getTestCommand(){
-    return new ShootCommand(m_shooterSubsystem, m_visionSubsystem);
 
-    // return new SequentialCommandGroup(
-    //   // Will make the intake go up and down.
-    //   // new TestLEDCommandGroup(m_led, LED_STATE.ENABLED)
-    //   new TestIntakeCommandGroup(m_intake),
+    return new SequentialCommandGroup(
+      // Will make the intake go up and down.
+      // new TestLEDCommandGroup(m_led, LED_STATE.ENABLED)
+      new TestIntakeCommandGroup(m_intake),
 
-    //   // Will make the feeder intake, followed by outtake
-    //   new TestFeederCommandGroup(m_feeder, 0.2, 0.8),
+      // Will make the feeder intake, followed by outtake
+      new TestFeederCommandGroup(m_feeder, 0.2, 0.8),      
 
-    //   // Will move the hang up and down, followed by moving the static hang go forward and backwards
-    //   new TestHangCommandGroup(m_hangSubsystem, 0.1),
-      
-
-    //   // Will move all the drivetrain 
-      
-    //   new TestDrivetrainCommandGroup(m_drivetrainSubsystem, 1, 1, 0.3), 
-      
-    //   // Will move the shooter forward and shooter pistons according to the vision distance
-    //   new TestShooterCommandGroup(m_shooterSubsystem, m_visionSubsystem)
-    // );
+      // Will move all the drivetrain 
+      new TestDrivetrainCommandGroup(m_drivetrainSubsystem, 1, 1, 0.3)
+    );
   }
 
   /**

@@ -19,7 +19,7 @@ import frc.robot.util.drivers.LazyTalonFX;
 public class ShooterSubsystem extends SubsystemBase {
   public static final boolean SHOOTER_UP = true;
   public static final boolean SHOOTER_DOWN = false;
-  public static final PIDController pid = new PIDController(0.2, 0.03, 0);
+  // public static final PIDController pid = new PIDController(0.2, 0.03, 0);
 
   public static enum ShooterZone {
     MOVING, ZONE_1, ZONE_2, ZONE_3, ZONE_4, ZONE_5, ZONE_6, ZONE_7, TEST, EMERGENCY
@@ -31,7 +31,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public LazyTalonFX shooterMotor1;
   public LazyTalonFX shooterMotor2;
-  public Solenoid shooterSolenoid;
+  private Solenoid shooterSolenoid;
 
   private ShuffleboardTab tab = Shuffleboard.getTab("Teleop");
   private NetworkTableEntry shooterPercentRPMEntry = tab.add("Shooter Percent RPM", 0).withWidget(BuiltInWidgets.kGraph).getEntry();
@@ -50,13 +50,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setRPM(double rpm) {
 
-    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.66189, 0.14002, 0.0092594);
+    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(rpm, 0.14002, 0.0092594);
     double actual_rpm = feedforward.calculate(rpm);
 
     SmartDashboard.putNumber("Velocity Setpoint", actual_rpm);
     
-    shooterMotor1.set(ControlMode.PercentOutput, rpm);
-    shooterMotor2.set(ControlMode.PercentOutput, -rpm);
+    // shooterMotor1.set(ControlMode.PercentOutput, rpm);
+    // shooterMotor2.set(ControlMode.PercentOutput, -rpm);
+
+    shooterMotor1.set(ControlMode.PercentOutput, actual_rpm);
+    shooterMotor2.set(ControlMode.PercentOutput, -actual_rpm);
   }
 
   public void resetSensors() {
@@ -64,13 +67,13 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMotor2.setSelectedSensorPosition(0);
   }
 
-  public ShooterAngle getShooterAngle(){
-      if(shooterSolenoid.get()) {
-        return ShooterAngle.TWOFIVE;
-      } else {
-        return ShooterAngle.FOURZERO;
-      }
-  }
+  // public ShooterAngle getShooterAngle(){
+  //     if(shooterSolenoid.get()) {
+  //       return ShooterAngle.TWOFIVE;
+  //     } else {
+  //       return ShooterAngle.FOURZERO;
+  //     }
+  // }
 
   public double getShooterStateRPM(ShooterZone state) {
     switch(state) {

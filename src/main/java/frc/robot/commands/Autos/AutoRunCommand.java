@@ -35,7 +35,7 @@ public class AutoRunCommand extends CommandBase {
         pidValue = pid.calculate(diff, 0);
 
         SmartDashboard.putNumber("PID Value", pidValue);
-        m_drivetrainSubsystem.drive(new ChassisSpeeds(m_velocityX, m_velocityY, pidValue));
+        m_drivetrainSubsystem.drive(new ChassisSpeeds(m_velocityX, m_velocityY, 0));
     }
 
     @Override

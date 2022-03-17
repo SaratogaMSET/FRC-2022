@@ -55,7 +55,7 @@ public final class Constants {
         public static final double kIYController = 0.000;
         public static final double kPThetaControllerTrajectory = 0;
 
-        public static final double kPThetaController = 0.0745; //.07655
+        public static final double kPThetaController = 0.075; //.07655
         public static final double kIThetaController = 0.0200;
     }
 
@@ -100,9 +100,9 @@ public final class Constants {
             // ZONE_1 (3509/kFalcon500FreeSpeed, 60),
             ZONE_1 (0.6, false),
             ZONE_2 (0.67, false),
-            ZONE_3 (0.55, true),
-            ZONE_4 (0.64, true),
-            ZONE_5 (0.66, true),
+            ZONE_3 (0.54, true),
+            ZONE_4 (0.595, true),
+            ZONE_5 (0.63, true),
             ZONE_6 (0.69, true),
             ZONE_7 (0.728, true),
             EMERGENCY (0.5, false),
@@ -148,7 +148,9 @@ public final class Constants {
         public static final int LEFT_HANG_LIMIT_SWITCH = 5;
 
         public static final int HANG_SOLENOID = 0;
-        public static final int HANG_MAX_ENCODER_COUNTS = 130000;
+        public static final int HANG_MAX_ENCODER_COUNTS = 120000;
+
+        public static final int REST_ENCODER_COUNT = 5000;
     }
     
     public static class Photoelectric {

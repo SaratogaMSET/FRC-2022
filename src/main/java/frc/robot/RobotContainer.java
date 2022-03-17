@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.Autos.AutoRunCommand;
 import frc.robot.commands.Drivetrain.DefaultDriveCommand;
@@ -87,7 +88,7 @@ public class RobotContainer {
 
   public static final double pi = Math.PI;
   private final XboxController m_driver = new XboxController(0);
-  private final XboxController m_gunner = new XboxController(1);
+  private final Joystick m_gunner = new Joystick(1);
   private final Compressor m_compressor;
   // private final Joystick driverVertical, driverHorizontal;
 
@@ -187,7 +188,10 @@ public class RobotContainer {
         
     new Button(m_driver::getYButton).whileActiveOnce(
       new SequentialCommandGroup(
-        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+        new ParallelRaceGroup(
+          new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY),
+          new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem)
+        ),
         new ParallelCommandGroup(
           new ShootCommand(m_shooterSubsystem, m_visionSubsystem),
           new SequentialCommandGroup(
@@ -198,23 +202,29 @@ public class RobotContainer {
       )
     );
 
+    // new Button(m_driver::getYButton).whenPressed(
+    //   new HangUpCommand(m_hangSubsystem, 0.5)
+    // );
+
+    // new Button(m_driver::getAButton).whenPressed(
+    //   new HangDownCommand(m_hangSubsystem, 0.5)
+    // );
+
     // Back button zeros the gyroscope
     new Button(m_driver::getLeftBumper).whenPressed(
       new ZeroGyroCommand(m_drivetrainSubsystem)
     );
 
-    
-
     // Gunner Controls
-    new Button(m_gunner::getYButton).whenPressed(
+    new JoystickButton(m_gunner, 5).whenPressed(
       new HangUpCommand(m_hangSubsystem, 0.5)
     );
 
-    new Button(m_gunner::getAButton).whenPressed(
+    new JoystickButton(m_gunner, 3).whenPressed(
       new HangDownCommand(m_hangSubsystem, 0.5)
     );
 
-    new Button(m_gunner::getXButton).whileActiveOnce(
+    new JoystickButton(m_gunner, 2).whileActiveOnce(
       new ParallelCommandGroup(
         new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY),
         new SequentialCommandGroup(
@@ -224,7 +234,7 @@ public class RobotContainer {
       )
     );
 
-    new Button(m_gunner::getRightBumper).whileActiveOnce(
+    new JoystickButton(m_gunner, 1).whileActiveOnce(
       new ParallelCommandGroup(
         new DeployIntakeCommand(m_intake, IntakeState.DOWN),
         new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.15, 0.8)
@@ -241,8 +251,9 @@ public class RobotContainer {
 
     SmartDashboard.putNumber("VISION: Distance", m_visionSubsystem.getDistanceFromTarget());
     SmartDashboard.putNumber("VISION: Angle", m_visionSubsystem.getRawAngle());
-    SmartDashboard.putString("HANG: limit switch right ", m_hangSubsystem.hangRightLimitSwitch.get() + "");
-    SmartDashboard.putString("HANG: limit switch left", m_hangSubsystem.hangLeftLimitSwitch.get() + "");
+    SmartDashboard.putString("SHOOTER: Zone", m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()).toString());
+    SmartDashboard.putString("HANG: limit switch right ", m_hangSubsystem.triggeredRightSwitch + "");
+    SmartDashboard.putString("HANG: limit switch left", m_hangSubsystem.triggeredLeftSwitch + "");
     SmartDashboard.putString("HANG: encoder left ", m_hangSubsystem.encoderLeft.getSelectedSensorPosition() + "");
     SmartDashboard.putString("HANG: encoder right ", m_hangSubsystem.encoderRight.getSelectedSensorPosition() + "");
   }
@@ -297,22 +308,22 @@ public class RobotContainer {
       new WaitCommand(1),
       new ZeroGyroCommand(m_drivetrainSubsystem),
        new WaitCommand(1),
-     //  new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+      // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
       new ParallelRaceGroup(
         new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(2),
-        // new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
         new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
-      )//,
-      // new SequentialCommandGroup(
-      //   new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
-      //   new ParallelCommandGroup(
-      //     new ShootCommand(m_shooterSubsystem, m_visionSubsystem),
-      //     new SequentialCommandGroup(
-      //       new WaitCommand(1.5),
-      //       new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.1).withTimeout(3)
-      //     )
-      //   )
-      // )
+      ),
+      new SequentialCommandGroup(
+        // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+        new ParallelCommandGroup(
+          new ShootCommand(m_shooterSubsystem, m_visionSubsystem),
+          new SequentialCommandGroup(
+            new WaitCommand(1.5),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.1).withTimeout(3)
+          )
+        )
+      )
      );
   }
 }

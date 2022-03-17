@@ -41,16 +41,17 @@ public class ShootCommand extends CommandBase {
         }
         m_rpm = m_shooter.getShooterStateRPM(m_zone);
         m_shooterAngle = m_shooter.getShooterAngle(m_zone);
+
+        m_shooter.setAngle(m_shooterAngle);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        SmartDashboard.putString("Shooter Zone", m_zone.toString());
         SmartDashboard.putNumber("RPM Setpoint", m_rpm);
         SmartDashboard.putBoolean("Hood Setpoint", m_shooterAngle);
+
         m_shooter.setRPM(m_rpm);
-        m_shooter.setAngle(m_shooterAngle);
     }
 
     // Called once the command ends or is interrupted.

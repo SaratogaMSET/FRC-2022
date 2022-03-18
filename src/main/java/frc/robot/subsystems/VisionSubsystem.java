@@ -46,18 +46,9 @@ public class VisionSubsystem extends SubsystemBase {
     x = tx.getDouble(0.0);
     y = ty.getDouble(0.0);
     v = tv.getDouble(0.0);
-
-    SmartDashboard.putNumber("LimelightX", x);
-    SmartDashboard.putNumber("LimelightY", y);
-    SmartDashboard.putNumber("LimelightTargets", v);
-
-    getVisionState();
-    updateSmartDashboard();
-    //SmartDashboard.putString("testExecute", "TestExecute");
-    // This method will be called once per scheduler run
   }
 
-  public VisionState getVisionState(){
+  public VisionState updateVisionState(){
     if(v == 1) {
       return VisionState.TARGET_VISIBLE;
     }
@@ -77,18 +68,18 @@ public class VisionSubsystem extends SubsystemBase {
     // return 15;
   }
 
-  private void updateSmartDashboard() {
-    double temp_x = Math.abs(x);
-    if(a >= Constants.Vision.AREA_VISIBLE) {
-      if (temp_x <= Constants.Vision.Angle.ON_TARGET_X) {
-        SmartDashboard.putString("angle", "on target");
-      } else {
-        SmartDashboard.putString("angle", "visible");
-      }
-    } else {
-      SmartDashboard.putString("angle", "off");
-    }
-  } 
+  // private void updateSmartDashboard() {
+  //   double temp_x = Math.abs(x);
+  //   if(a >= Constants.Vision.AREA_VISIBLE) {
+  //     if (temp_x <= Constants.Vision.Angle.ON_TARGET_X) {
+  //       SmartDashboard.putString("angle", "on target");
+  //     } else {
+  //       SmartDashboard.putString("angle", "visible");
+  //     }
+  //   } else {
+  //     SmartDashboard.putString("angle", "off");
+  //   }
+  // } 
 
   @Override
   public void simulationPeriodic() {
@@ -98,5 +89,6 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     refresh();
+    updateVisionState();
   }
 }

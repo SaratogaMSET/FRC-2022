@@ -1,6 +1,7 @@
 package frc.robot.commands.Shooter;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -11,6 +12,7 @@ import frc.robot.subsystems.VisionSubsystem;
 
 public class ShootCommand extends CommandBase {
     private final ShooterSubsystem m_shooter;
+    private Compressor m_compressor;
     private VisionSubsystem m_vision = null;
 
     private ShooterZone m_zone = ShooterZone.ZONE_1;
@@ -19,14 +21,16 @@ public class ShootCommand extends CommandBase {
     private double m_rpm;
 
     /** Creates a new ShooterCommand. */
-    public ShootCommand(ShooterSubsystem shooter, ShooterZone zone) {
+    public ShootCommand(ShooterSubsystem shooter, ShooterZone zone, Compressor compressor) {
         m_shooter = shooter;
+        m_compressor = compressor;
         m_zone = zone;
         addRequirements(m_shooter);
     }
 
-    public ShootCommand(ShooterSubsystem shooter, VisionSubsystem vision) {
+    public ShootCommand(ShooterSubsystem shooter, VisionSubsystem vision, Compressor compressor) {
         m_shooter = shooter;
+        m_compressor = compressor;
         m_vision = vision;
         addRequirements(shooter);
         addRequirements(vision);
@@ -43,6 +47,8 @@ public class ShootCommand extends CommandBase {
         m_shooterAngle = m_shooter.getShooterAngle(m_zone);
 
         m_shooter.setAngle(m_shooterAngle);
+
+        m_compressor.disable();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -59,6 +65,7 @@ public class ShootCommand extends CommandBase {
     public void end(boolean interrupted) {
         m_shooter.setRPM(0);
         m_shooter.setAngle(false);
+        m_compressor.enableDigital();
     }
 
     // Returns true when the command should end.

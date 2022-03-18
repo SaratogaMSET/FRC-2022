@@ -6,7 +6,7 @@ package frc.robot.subsystems;
 
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.subsystems.VisionSubsystem.VisionState;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.I2C;
@@ -21,59 +21,40 @@ public class LEDSubsystem extends SubsystemBase {
 
   private static Spark m_blinkin1;
   private static Spark m_blinkin2;
-  
 
-  // private final AddressableLED m_led1;
-  // private final AddressableLEDBuffer m_ledBuffer1;
-
-  // private final AddressableLED m_led2;
-  // private final AddressableLEDBuffer m_ledBuffer2;
+  private static double sparkValue = 0;
+  // private static boolean blink = false;
 
   public LEDSubsystem() {
 
     m_blinkin1 = new Spark(0);
     m_blinkin2 = new Spark(1);
 
-    // m_led1 = new AddressableLED(0);
-    // m_ledBuffer1 = new AddressableLEDBuffer(15);
-    // m_led1.setLength(m_ledBuffer1.getLength());
-
-    // m_led2 = new AddressableLED(1);
-    // m_ledBuffer2 = new AddressableLEDBuffer(15);
-    // m_led2.setLength(m_ledBuffer2.getLength());
   }
 
-  public void setStatus(boolean intakeIRGate, boolean shooterIRGate){
+  public void setStatus(boolean intakeIRGate, boolean shooterIRGate, VisionState visionState){
     if(intakeIRGate == false && shooterIRGate == false){
-      setGreen();
+      sparkValue = 0.85; // BLUE
     }
     if(intakeIRGate == true && shooterIRGate == false){
-      setYellow();
+      sparkValue = 0.65; // YELLOW
     }
     if(intakeIRGate == false && shooterIRGate == true){
-      setYellow();
+      sparkValue = 0.65; // YELLOW
     }
     if(intakeIRGate == true && shooterIRGate == true){
-      setRed();
+      sparkValue = 0.61; // RED
     }
-  }
 
-  private void setGreen() {
-    m_blinkin1.set(0.77);
-    m_blinkin2.set(0.77);
-  }
-  private void setYellow() {
-    m_blinkin1.set(0.65);
-    m_blinkin2.set(0.65);
-  }
-  private void setRed() {
-    m_blinkin1.set(0.61);
-    m_blinkin2.set(0.61);
+    if(visionState == VisionState.TARGET_VISIBLE){
+      sparkValue = -0.83; // -0.55, -0.97
+    }
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    m_blinkin1.set(sparkValue);
+    m_blinkin2.set(sparkValue);
   }
 
   @Override

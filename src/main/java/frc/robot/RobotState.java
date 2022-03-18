@@ -20,6 +20,6 @@ public class RobotState {
         intakeState = IntakeState.UP;
         feederState = FeederState.IDLE;
         // shooterState = ShooterState.IDLE;
-        // visionState = VisionState.NO_TARGET;
+        visionState = VisionState.NO_TARGET;
     }
 }

@@ -188,15 +188,16 @@ public class RobotContainer {
         
     new Button(m_driver::getYButton).whileActiveOnce(
       new SequentialCommandGroup(
+        // new InstantCommand(() -> m_compressor.disable()),
         new ParallelRaceGroup(
-          new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY),
+          new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
           new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem)
         ),
         new ParallelCommandGroup(
-          new ShootCommand(m_shooterSubsystem, m_visionSubsystem),
+          new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
           new SequentialCommandGroup(
-            new WaitCommand(1.8),
-            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.15)
+            new WaitCommand(1.2),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.8)
           )
         )
       )
@@ -226,7 +227,7 @@ public class RobotContainer {
 
     new JoystickButton(m_gunner, 2).whileActiveOnce(
       new ParallelCommandGroup(
-        new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY),
+        new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
         new SequentialCommandGroup(
           new WaitCommand(1.8),
           new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.15)
@@ -245,9 +246,9 @@ public class RobotContainer {
   public void updateRobotState() {
     RobotState.intakeState = m_intake.getIntakeState();
     RobotState.feederState = m_feeder.getFeederState();
-    RobotState.visionState = m_visionSubsystem.getVisionState();
+    RobotState.visionState = m_visionSubsystem.updateVisionState();
     
-    m_LedSubsystem.setStatus(m_feeder.intakeGate.get(), m_feeder.shooterGate.get());
+    m_LedSubsystem.setStatus(m_feeder.intakeGate.get(), m_feeder.shooterGate.get(), RobotState.visionState);
 
     SmartDashboard.putNumber("VISION: Distance", m_visionSubsystem.getDistanceFromTarget());
     SmartDashboard.putNumber("VISION: Angle", m_visionSubsystem.getRawAngle());
@@ -307,20 +308,24 @@ public class RobotContainer {
     return new SequentialCommandGroup(
       new WaitCommand(1),
       new ZeroGyroCommand(m_drivetrainSubsystem),
+      new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
        new WaitCommand(1),
       // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
       new ParallelRaceGroup(
-        new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(2),
         new DeployIntakeCommand(m_intake, IntakeState.DOWN),
-        new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
+        new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
+        new SequentialCommandGroup(
+          new WaitCommand(0.5),
+          new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(2)
+        )
       ),
       new SequentialCommandGroup(
-        // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
         new ParallelCommandGroup(
-          new ShootCommand(m_shooterSubsystem, m_visionSubsystem),
+          new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor).withTimeout(5),
           new SequentialCommandGroup(
-            new WaitCommand(1.5),
-            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.1).withTimeout(3)
+            new WaitCommand(1.2),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(3)
           )
         )
       )

@@ -53,7 +53,7 @@ public class AimForShootCommand extends CommandBase {
             pidValue = pid.calculate(m_visionSubsystem.getRawAngle(), 0);
         }
         
-        VisionSubsystem.VisionState visionState = m_visionSubsystem.getVisionState();
+        VisionSubsystem.VisionState visionState = m_visionSubsystem.updateVisionState();
 
         // failsafe code to make sure it does not keep spinning
         if(visionState==VisionSubsystem.VisionState.NO_TARGET){
@@ -74,7 +74,7 @@ public class AimForShootCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (Math.abs(0 - m_visionSubsystem.getRawAngle()) < 5) {
+        if (Math.abs(0 - m_visionSubsystem.getRawAngle()) < 2) {
             return true;
         }
         return false;

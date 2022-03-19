@@ -70,7 +70,7 @@ public final class Constants {
             public static final int ZONE_1 = 99;
             public static final int ZONE_2 = 105;
             public static final int ZONE_3 = 160;
-            public static final int ZONE_4 = 217;
+            public static final int ZONE_4 = 205;
             public static final int ZONE_5 = 246;
             public static final int ZONE_6 = 256;
             public static final int ZONE_7 = 279;
@@ -100,9 +100,9 @@ public final class Constants {
             // ZONE_1 (3509/kFalcon500FreeSpeed, 60),
             ZONE_1 (0.6, false),
             ZONE_2 (0.67, false),
-            ZONE_3 (0.54, true),
-            ZONE_4 (0.595, true),
-            ZONE_5 (0.63, true),
+            ZONE_3 (.5, true),
+            ZONE_4 (.55 , true),
+            ZONE_5 (0.6, true),
             ZONE_6 (0.69, true),
             ZONE_7 (0.728, true),
             EMERGENCY (0.5, false),

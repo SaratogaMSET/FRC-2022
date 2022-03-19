@@ -40,8 +40,9 @@ import frc.robot.commands.Shooter.AimForShootCommand;
 import frc.robot.commands.Shooter.ShootCommand;
 import frc.robot.commands.Test.TestDrivetrainCommandGroup;
 import frc.robot.commands.Test.TestFeederCommandGroup;
+import frc.robot.commands.Test.TestHangCommandGroup;
 import frc.robot.commands.Test.TestIntakeCommandGroup;
-
+import frc.robot.commands.Test.TestShooterCommandGroup;
 import frc.robot.commands.Hang.HangAutoAlign;
 import frc.robot.commands.Hang.HangDownCommand;
 import frc.robot.commands.Hang.HangUpCommand;
@@ -212,6 +213,9 @@ public class RobotContainer {
     // );
 
     // Back button zeros the gyroscope
+    new Button(m_driver::getAButton).whenPressed(
+      new ZeroGyroCommand(m_drivetrainSubsystem)
+    );
     new Button(m_driver::getLeftBumper).whenPressed(
       new ZeroGyroCommand(m_drivetrainSubsystem)
     );
@@ -289,8 +293,11 @@ public class RobotContainer {
       new TestIntakeCommandGroup(m_intake),
 
       // Will make the feeder intake, followed by outtake
-      new TestFeederCommandGroup(m_feeder, 0.2, 0.8),      
+      new TestFeederCommandGroup(m_feeder, 0.2, 0.8),
 
+      new TestShooterCommandGroup(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
+
+      new TestHangCommandGroup(m_hangSubsystem, 0.1),
       // Will move all the drivetrain 
       new TestDrivetrainCommandGroup(m_drivetrainSubsystem, 1, 1, 0.3)
     );

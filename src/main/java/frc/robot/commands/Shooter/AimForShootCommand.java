@@ -74,7 +74,7 @@ public class AimForShootCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (Math.abs(0 - m_visionSubsystem.getRawAngle()) < 2) {
+        if (Math.abs(0 - m_visionSubsystem.getRawAngle()) < 3) {
             return true;
         }
         return false;

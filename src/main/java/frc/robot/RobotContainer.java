@@ -191,18 +191,44 @@ public class RobotContainer {
       new SequentialCommandGroup(
         // new InstantCommand(() -> m_compressor.disable()),
         new ParallelRaceGroup(
-          new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
+          new ShootCommand(m_shooterSubsystem, m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()), m_compressor),
           new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem)
         ),
         new ParallelCommandGroup(
           new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
           new SequentialCommandGroup(
-            new WaitCommand(1.2),
+            new WaitCommand(1.0),
             new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.8)
           )
         )
       )
     );
+
+    new Button(m_driver::getXButton).whileActiveOnce(
+      new SequentialCommandGroup(
+        // new InstantCommand(() -> m_compressor.disable()),
+        // new ParallelRaceGroup(
+        //   new ShootCommand(m_shooterSubsystem, m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()), m_compressor),
+        //   new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem)
+        // ),
+        new ParallelCommandGroup(
+          new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
+          new SequentialCommandGroup(
+            new WaitCommand(1.0),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.8)
+          )
+        )
+      )
+    );
+
+    // Back button zeros the gyroscope
+    new Button(m_driver::getAButton).whenPressed(
+      new ZeroGyroCommand(m_drivetrainSubsystem)
+    );
+    new Button(m_driver::getLeftBumper).whenPressed(
+      new ZeroGyroCommand(m_drivetrainSubsystem)
+    );
+
 
     // new Button(m_driver::getYButton).whenPressed(
     //   new HangUpCommand(m_hangSubsystem, 0.5)
@@ -212,13 +238,8 @@ public class RobotContainer {
     //   new HangDownCommand(m_hangSubsystem, 0.5)
     // );
 
-    // Back button zeros the gyroscope
-    new Button(m_driver::getAButton).whenPressed(
-      new ZeroGyroCommand(m_drivetrainSubsystem)
-    );
-    new Button(m_driver::getLeftBumper).whenPressed(
-      new ZeroGyroCommand(m_drivetrainSubsystem)
-    );
+
+
 
     // Gunner Controls
     new JoystickButton(m_gunner, 5).whenPressed(
@@ -230,11 +251,18 @@ public class RobotContainer {
     );
 
     new JoystickButton(m_gunner, 2).whileActiveOnce(
-      new ParallelCommandGroup(
-        new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
-        new SequentialCommandGroup(
-          new WaitCommand(1.8),
-          new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.15)
+      new SequentialCommandGroup(
+        // new InstantCommand(() -> m_compressor.disable()),
+        // new ParallelRaceGroup(
+        //   new ShootCommand(m_shooterSubsystem, m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()), m_compressor),
+        //   new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem)
+        // ),
+        new ParallelCommandGroup(
+          new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
+          new SequentialCommandGroup(
+            new WaitCommand(1.0),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.8)
+          )
         )
       )
     );

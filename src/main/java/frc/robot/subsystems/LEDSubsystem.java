@@ -46,9 +46,9 @@ public class LEDSubsystem extends SubsystemBase {
       sparkValue = 0.61; // RED
     }
 
-    if(visionState == VisionState.TARGET_VISIBLE){
-      sparkValue = -0.83; // -0.55, -0.97
-    }
+    // if(visionState == VisionState.TARGET_VISIBLE){
+    //   sparkValue = -0.83; // -0.55, -0.97
+    // }
   }
 
   @Override

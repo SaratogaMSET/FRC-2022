@@ -37,6 +37,7 @@ import frc.robot.commands.Drivetrain.ZeroGyroCommand;
 import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.commands.Shooter.AimForShootCommand;
+import frc.robot.commands.Shooter.ConstantAim;
 import frc.robot.commands.Shooter.ShootCommand;
 import frc.robot.commands.Test.TestDrivetrainCommandGroup;
 import frc.robot.commands.Test.TestFeederCommandGroup;
@@ -188,37 +189,20 @@ public class RobotContainer {
     );
         
     new Button(m_driver::getYButton).whileActiveOnce(
-      new SequentialCommandGroup(
-        // new InstantCommand(() -> m_compressor.disable()),
-        new ParallelRaceGroup(
-          new ShootCommand(m_shooterSubsystem, m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()), m_compressor),
-          new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem)
-        ),
-        new ParallelCommandGroup(
-          new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
-          new SequentialCommandGroup(
-            new WaitCommand(1.0),
-            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.8)
-          )
-        )
-      )
-    );
-
-    new Button(m_driver::getXButton).whileActiveOnce(
-      new SequentialCommandGroup(
+      // new SequentialCommandGroup(
         // new InstantCommand(() -> m_compressor.disable()),
         // new ParallelRaceGroup(
         //   new ShootCommand(m_shooterSubsystem, m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()), m_compressor),
         //   new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem)
         // ),
         new ParallelCommandGroup(
-          new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
+          new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
           new SequentialCommandGroup(
-            new WaitCommand(1.0),
+            new WaitCommand(0.5),
             new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.8)
           )
         )
-      )
+      // )
     );
 
     // Back button zeros the gyroscope
@@ -251,19 +235,21 @@ public class RobotContainer {
     );
 
     new JoystickButton(m_gunner, 2).whileActiveOnce(
-      new SequentialCommandGroup(
-        // new InstantCommand(() -> m_compressor.disable()),
-        // new ParallelRaceGroup(
-        //   new ShootCommand(m_shooterSubsystem, m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()), m_compressor),
-        //   new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem)
-        // ),
-        new ParallelCommandGroup(
-          new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
-          new SequentialCommandGroup(
-            new WaitCommand(1.0),
-            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.8)
-          )
+      new ParallelCommandGroup(
+        new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
+        new SequentialCommandGroup(
+          new WaitCommand(1.0),
+          new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.8)
         )
+      )
+    );
+
+    new JoystickButton(m_gunner, 4).whileActiveOnce(
+      new ConstantAim(
+        () -> modifyAxis(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxis(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        m_drivetrainSubsystem,
+        () -> m_visionSubsystem.getRawAngle()
       )
     );
 

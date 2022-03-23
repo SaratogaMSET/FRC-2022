@@ -55,7 +55,7 @@ public final class Constants {
         public static final double kIYController = 0.000;
         public static final double kPThetaControllerTrajectory = 0;
 
-        public static final double kPThetaController = 0.0765; //.07655
+        public static final double kPThetaController = 0.08; //.07655
         public static final double kIThetaController = 0.0210;
     }
 
@@ -105,7 +105,7 @@ public final class Constants {
             ZONE_5 (0.57, true),
             ZONE_6 (0.69, true),
             ZONE_7 (0.728, true),
-            EMERGENCY (0.25, false),
+            EMERGENCY (0.25, true),
             TEST (0.735, true);
             
             private double percentRPM;

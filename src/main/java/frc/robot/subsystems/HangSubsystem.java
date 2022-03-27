@@ -71,8 +71,8 @@ public class HangSubsystem extends SubsystemBase {
         return encoderLeft.getSelectedSensorPosition();
     }
 
-    public void deployHang(boolean position) {
-        hangSolenoid.set(position);
+    public void togglePiston () {
+        hangSolenoid.set(!hangSolenoid.get());
     }
 
     public boolean isHangDeployed() {

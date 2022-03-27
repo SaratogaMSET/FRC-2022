@@ -4,17 +4,12 @@
 
 package frc.robot;
 
-import com.fasterxml.jackson.databind.util.ByteBufferBackedOutputStream;
-import com.pathplanner.lib.PathPlanner;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -31,6 +26,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Drivetrain;
+import frc.robot.commands.downHang;
+import frc.robot.commands.upHang;
 import frc.robot.commands.Autos.AutoRunCommand;
 import frc.robot.commands.Drivetrain.DefaultDriveCommand;
 import frc.robot.commands.Drivetrain.ZeroGyroCommand;
@@ -41,24 +38,21 @@ import frc.robot.commands.Shooter.ConstantAim;
 import frc.robot.commands.Shooter.ShootCommand;
 import frc.robot.commands.Test.TestDrivetrainCommandGroup;
 import frc.robot.commands.Test.TestFeederCommandGroup;
-import frc.robot.commands.Test.TestHangCommandGroup;
+//import frc.robot.commands.Test.TestHangCommandGroup;
 import frc.robot.commands.Test.TestIntakeCommandGroup;
 import frc.robot.commands.Test.TestShooterCommandGroup;
-import frc.robot.commands.Hang.HangAutoAlign;
-import frc.robot.commands.Hang.HangDownCommand;
-import frc.robot.commands.Hang.HangUpCommand;
-// import frc.robot.subsystems.ColorSensorSystem;
-import frc.robot.subsystems.Multi2c;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
 import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.subsystems.PhotoelectricSystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
-import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
+import frc.robot.subsystems.LEDSubsystem;
+// import frc.robot.subsystems.ColorSensorSystem;
+import frc.robot.subsystems.Multi2c;
+import frc.robot.subsystems.PhotoelectricSystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 // import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -225,14 +219,30 @@ public class RobotContainer {
 
 
 
-    // Gunner Controls
-    new JoystickButton(m_gunner, 5).whenPressed(
-      new HangUpCommand(m_hangSubsystem, 0.5)
+    //Gunner Controls
+    // new JoystickButton(m_gunner, 5).whenPressed(
+    //   new HangUpCommand(m_hangSubsystem, 0.5)
+    // );
+
+    // new JoystickButton(m_gunner, 3).whenPressed(
+    //   new HangDownCommand(m_hangSubsystem, 0.5)
+    // );
+
+    new JoystickButton (m_gunner, 6)
+      .whenPressed (new upHang(m_hangSubsystem, 0.2, Constants.HangConstants.HANG_HALF_ENCODER_COUNTS)
     );
 
-    new JoystickButton(m_gunner, 3).whenPressed(
-      new HangDownCommand(m_hangSubsystem, 0.5)
+    new JoystickButton (m_gunner, 3)
+      .whenPressed (new downHang(m_hangSubsystem, 0.5)
     );
+
+    new JoystickButton (m_gunner, 5)
+      .whenPressed (new upHang(m_hangSubsystem, 0.2, Constants.HangConstants.HANG_MAX_ENCODER_COUNTS)
+    );
+
+    new JoystickButton (m_gunner, 4)
+      .whenPressed (new InstantCommand(() -> m_hangSubsystem.togglePiston()));
+
 
     new JoystickButton(m_gunner, 2).whileActiveOnce(
       new ParallelCommandGroup(
@@ -311,7 +321,7 @@ public class RobotContainer {
 
       new TestShooterCommandGroup(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
 
-      new TestHangCommandGroup(m_hangSubsystem, 0.1),
+      //new TestHangCommandGroup(m_hangSubsystem, 0.1),
       // Will move all the drivetrain 
       new TestDrivetrainCommandGroup(m_drivetrainSubsystem, 1, 1, 0.3)
     );

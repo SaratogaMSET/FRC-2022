@@ -148,7 +148,8 @@ public final class Constants {
         public static final int LEFT_HANG_LIMIT_SWITCH = 5;
 
         public static final int HANG_SOLENOID = 0;
-        public static final int HANG_MAX_ENCODER_COUNTS = 120000;
+        public static final int HANG_MAX_ENCODER_COUNTS = 140000;
+        public static final int HANG_HALF_ENCODER_COUNTS = 60000;
 
         public static final int REST_ENCODER_COUNT = 5000;
     }

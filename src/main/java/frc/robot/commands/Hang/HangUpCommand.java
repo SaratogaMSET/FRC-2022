@@ -28,7 +28,7 @@ public class HangUpCommand extends CommandBase {
             m_hangSubsystem.setHangRightSpeed(hangSpeed); 
         }
 
-        //left
+        // left
         if (m_hangSubsystem.getLeftEncoderValue() > Constants.HangConstants.HANG_MAX_ENCODER_COUNTS) {
             m_hangSubsystem.maxHeightLeft = true;
             m_hangSubsystem.setHangLeftSpeed(0); //not necessary

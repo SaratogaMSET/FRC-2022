@@ -51,6 +51,15 @@ public class HangDownCommand extends CommandBase {
         m_hangSubsystem.maxHeightLeft = false;
         m_hangSubsystem.halfHeightLeft = false;
         m_hangSubsystem.halfHeightLeft = false;
+
+
+        // if(m_hangSubsystem.hangRightLimitSwitch.get()){
+        //     m_hangSubsystem.rightResetEncoders();
+        // }
+
+        // if(m_hangSubsystem.hangLeftLimitSwitch.get()){
+        //     m_hangSubsystem.leftResetEncoders();
+        // }
     }
 
     // Returns true when the command should end.

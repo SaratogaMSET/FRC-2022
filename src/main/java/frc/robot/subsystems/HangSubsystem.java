@@ -24,7 +24,7 @@ public class HangSubsystem extends SubsystemBase {
     public boolean triggeredRightSwitch = true;
     public boolean triggeredLeftSoftStop = true;
     public boolean triggeredRightSoftStop = true;
-    
+
     public boolean maxHeightLeft;
     public boolean maxHeightRight;
     public boolean halfHeightLeft;
@@ -76,6 +76,7 @@ public class HangSubsystem extends SubsystemBase {
 
     public void deployHang() {
         hangPosition = !hangPosition;
+        hangSolenoid.set(hangPosition);
     }
 
     public boolean isHangDeployed() {
@@ -98,8 +99,6 @@ public class HangSubsystem extends SubsystemBase {
     
     @Override
     public void periodic() {
-
-        hangSolenoid.set(hangPosition);
 
         if(hangRightLimitSwitch.get()){
             rightResetEncoders();

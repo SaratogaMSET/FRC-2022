@@ -6,7 +6,6 @@ import frc.robot.subsystems.HangSubsystem;
 public class DeployHangCommand extends CommandBase {
     
     private final HangSubsystem m_hangSubsystem;
-    private boolean m_position;
 
     public DeployHangCommand(HangSubsystem hang) {
         m_hangSubsystem = hang;

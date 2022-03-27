@@ -56,7 +56,8 @@ public class HangDownCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (m_hangSubsystem.triggeredLeftSwitch && m_hangSubsystem.triggeredRightSwitch) {
+        if (m_hangSubsystem.triggeredLeftSwitch && m_hangSubsystem.triggeredRightSwitch
+            && m_hangSubsystem.triggeredLeftSoftStop && m_hangSubsystem.triggeredRightSoftStop) {
             return true;
         }
         return false;

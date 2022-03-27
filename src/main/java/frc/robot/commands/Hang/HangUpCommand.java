@@ -38,6 +38,8 @@ public class HangUpCommand extends CommandBase {
 
         m_hangSubsystem.triggeredRightSwitch = false;
         m_hangSubsystem.triggeredLeftSwitch = false;
+        m_hangSubsystem.triggeredRightSoftStop = false;
+        m_hangSubsystem.triggeredLeftSoftStop = false;
     }
 
     // Returns true when the command should end.

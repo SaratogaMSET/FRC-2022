@@ -1,6 +1,7 @@
 package frc.robot.commands.Hang;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.HangSubsystem;
 
 /**
@@ -20,16 +21,30 @@ public class HangDownCommand extends CommandBase {
     public void execute() {
         if (m_hangSubsystem.hangRightLimitSwitch.get() || m_hangSubsystem.triggeredRightSwitch) {
             m_hangSubsystem.triggeredRightSwitch = true;
-            m_hangSubsystem.setHangRightSpeed(0);
-        } else if (!m_hangSubsystem.triggeredRightSwitch) {
-            m_hangSubsystem.setHangRightSpeed(hangSpeed);
+            // m_hangSubsystem.setHangRightSpeed(0);
         }
+        if(m_hangSubsystem.getRightEncoderValue() < Constants.HangConstants.HANG_ENCODER_SOFT_STOP) {
+            m_hangSubsystem.triggeredRightSoftStop = true;
+        }
+        if (m_hangSubsystem.triggeredRightSwitch || m_hangSubsystem.triggeredRightSoftStop) {
+            m_hangSubsystem.setHangRightSpeed(hangSpeed);
+        } else {
+            m_hangSubsystem.setHangRightSpeed(0);
+        }
+
+
 
         if (m_hangSubsystem.hangLeftLimitSwitch.get() || m_hangSubsystem.triggeredLeftSwitch) {
             m_hangSubsystem.triggeredLeftSwitch = true;
-            m_hangSubsystem.setHangLeftSpeed(0);
-        } else if (!m_hangSubsystem.triggeredLeftSwitch) {
+            // m_hangSubsystem.setHangLeftSpeed(0);
+        }
+        if (m_hangSubsystem.getLeftEncoderValue() < Constants.HangConstants.HANG_ENCODER_SOFT_STOP) {
+            m_hangSubsystem.triggeredLeftSoftStop = true;
+        }
+        if (m_hangSubsystem.triggeredLeftSwitch || m_hangSubsystem.triggeredLeftSoftStop) {
             m_hangSubsystem.setHangLeftSpeed(hangSpeed);
+        } else {
+            m_hangSubsystem.setHangLeftSpeed(0);
         }
 
         m_hangSubsystem.maxHeightRight = false;

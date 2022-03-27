@@ -22,6 +22,9 @@ public class HangSubsystem extends SubsystemBase {
 
     public boolean triggeredLeftSwitch = true;
     public boolean triggeredRightSwitch = true;
+    public boolean triggeredLeftSoftStop = true;
+    public boolean triggeredRightSoftStop = true;
+    
     public boolean maxHeightLeft;
     public boolean maxHeightRight;
     public boolean halfHeightLeft;

@@ -106,7 +106,7 @@ public final class Constants {
             ZONE_6 (0.69, true),
             ZONE_7 (0.728, true),
             EMERGENCY (0.25, true),
-            TEST (0.735, true);
+            TEST (0.49, true);
             
             private double percentRPM;
             private boolean hoodAngle; //final?
@@ -148,7 +148,8 @@ public final class Constants {
         public static final int LEFT_HANG_LIMIT_SWITCH = 5;
 
         public static final int HANG_SOLENOID = 0;
-        public static final int HANG_MAX_ENCODER_COUNTS = 120000;
+        public static final int HANG_MAX_ENCODER_COUNTS = 142000;
+        public static final int HANG_HALF_ENCODER_COUNTS = HANG_MAX_ENCODER_COUNTS/2;
 
         public static final int REST_ENCODER_COUNT = 5000;
     }

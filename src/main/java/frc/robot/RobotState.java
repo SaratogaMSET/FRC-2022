@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.subsystems.FeederSubsystem.FeederState;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
+import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 import frc.robot.subsystems.VisionSubsystem.VisionState;
 
 /** Add your docs here. */
@@ -13,13 +14,13 @@ public class RobotState {
     public static IntakeState intakeState;
     public static FeederState feederState;
     public static VisionState visionState;
-    // public static ShooterState shooterState;
+    public static ShooterZone shooterState;
     
 
     public RobotState() {
         intakeState = IntakeState.UP;
         feederState = FeederState.IDLE;
-        // shooterState = ShooterState.IDLE;
+        shooterState = ShooterZone.EMERGENCY;
         visionState = VisionState.NO_TARGET;
     }
 }

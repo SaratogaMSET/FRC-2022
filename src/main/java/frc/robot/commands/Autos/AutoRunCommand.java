@@ -2,7 +2,6 @@ package frc.robot.commands.Autos;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -34,7 +33,7 @@ public class AutoRunCommand extends CommandBase {
         double diff = currentAngle-m_initialAngle;
         pidValue = pid.calculate(diff, 0);
 
-        SmartDashboard.putNumber("PID Value", pidValue);
+        // SmartDashboard.putNumber("PID Value", pidValue);
         m_drivetrainSubsystem.drive(new ChassisSpeeds(m_velocityX, m_velocityY, 0));
     }
 

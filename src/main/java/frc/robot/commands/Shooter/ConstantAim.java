@@ -4,23 +4,19 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 
 public class ConstantAim extends CommandBase {
     private final DrivetrainSubsystem m_drivetrainSubsystem;
     private final DoubleSupplier m_rawAngle;
     private final PIDController pid;
-    private DoubleSupplier x;
-    private DoubleSupplier y;
+
     public double pidValue = 0;
 
     private DoubleSupplier m_translationXSupplier;
     private DoubleSupplier m_translationYSupplier;
-    private DoubleSupplier m_rotationSupplier;
 
     private double m_translationXTrapezoidal = 0;
     private double m_translationYTrapezoidal = 0;
@@ -84,7 +80,7 @@ public class ConstantAim extends CommandBase {
             )
         );
 
-        SmartDashboard.putNumber("PID value", pidValue);
+        // SmartDashboard.putNumber("PID value", pidValue);
     }
 
     // Returns true when the command should end.

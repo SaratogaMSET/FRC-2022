@@ -15,6 +15,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -64,13 +69,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public double offset = 0;
 
   // These are our modules. We initialize them in the constructor.
-  private final SwerveModule m_frontLeftModule;
-  private final SwerveModule m_frontRightModule;
-  private final SwerveModule m_backLeftModule;
-  private final SwerveModule m_backRightModule;
+  public final SwerveModule m_frontLeftModule;
+  public final SwerveModule m_frontRightModule;
+  public final SwerveModule m_backLeftModule;
+  public final SwerveModule m_backRightModule;
   
   private SwerveModuleState[] currentState = new SwerveModuleState[4];
   private SwerveModuleState[] previousState = new SwerveModuleState[4];
+
+  BooleanLogEntry myBooleanLog;
+  DoubleLogEntry myDoubleLog;
+  StringLogEntry myStringLog;
 
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -127,6 +136,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             Drivetrain.BACK_RIGHT_MODULE_STEER_ENCODER,
             Drivetrain.BACK_RIGHT_MODULE_STEER_OFFSET
     );
+
   }
 
   /**
@@ -147,8 +157,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     double angle = m_navx.getFusedHeading() - offset;
     angle = angle + 90;
     angle = angle % 360;
-    SmartDashboard.putNumber("navX Angle", angle);
-    SmartDashboard.putNumber("navX Offset", offset);
+    // SmartDashboard.putNumber("navX Angle", angle);
+    // SmartDashboard.putNumber("navX Offset", offset);
     return Math.toRadians(angle);
   }
 
@@ -170,6 +180,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_backLeftModule.set(setState[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, setState[2].angle.getRadians());
     m_backRightModule.set(setState[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, setState[3].angle.getRadians());
 
+    // DataLogManager.start();
+
+    // // Set up custom log entries
+    // DataLog log = DataLogManager.getLog();
+    // myBooleanLog = new BooleanLogEntry(log, "/my/boolean");
+    // myDoubleLog = new DoubleLogEntry(log, "/my/double");
+    // myStringLog = new StringLogEntry(log, "/my/string");
+
     odometer.update(
       getRotation2d(),
       new SwerveModuleState(m_frontLeftModule.getDriveVelocity(), new Rotation2d(m_frontLeftModule.getSteerAngle())),
@@ -178,19 +196,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
       new SwerveModuleState(m_backRightModule.getDriveVelocity(), new Rotation2d(m_backRightModule.getSteerAngle()))
     );
   }
-
-  // public double getModuleState(int module){
-  //   if(module == 0){
-  //     return m_frontLeftModule.getSteerAngle();
-  //   }else if(module == 1){
-  //     return m_frontRightModule.getSteerAngle();
-  //   }else if(module == 2){
-  //     return m_backLeftModule.getSteerAngle();
-  //   }else{
-  //     return m_backRightModule.getSteerAngle();
-  //   }
-  // }
-
 
   @Override
   public void periodic() {

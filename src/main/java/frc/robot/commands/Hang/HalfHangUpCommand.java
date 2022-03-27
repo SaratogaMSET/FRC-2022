@@ -7,11 +7,11 @@ import frc.robot.subsystems.HangSubsystem;
 /**
  * This command is used to move the hang arms up (to reach to a rung and latch on to it)
  */
-public class HangUpCommand extends CommandBase {
+public class HalfHangUpCommand extends CommandBase {
     private final HangSubsystem m_hangSubsystem;
     private double hangSpeed;
 
-    public HangUpCommand(HangSubsystem hang, double speed) {
+    public HalfHangUpCommand(HangSubsystem hang, double speed) {
         hangSpeed = speed;
         m_hangSubsystem = hang;
         addRequirements(m_hangSubsystem);
@@ -21,16 +21,16 @@ public class HangUpCommand extends CommandBase {
     public void execute() {
 
         //right
-        if (m_hangSubsystem.getRightEncoderValue() > Constants.HangConstants.HANG_MAX_ENCODER_COUNTS) {
-            m_hangSubsystem.maxHeightRight = true;
+        if (m_hangSubsystem.getRightEncoderValue() > Constants.HangConstants.HANG_HALF_ENCODER_COUNTS) {
+            m_hangSubsystem.halfHeightRight = true;
             m_hangSubsystem.setHangRightSpeed(0); //not necessary
         } else {
             m_hangSubsystem.setHangRightSpeed(hangSpeed); 
         }
 
         //left
-        if (m_hangSubsystem.getLeftEncoderValue() > Constants.HangConstants.HANG_MAX_ENCODER_COUNTS) {
-            m_hangSubsystem.maxHeightLeft = true;
+        if (m_hangSubsystem.getLeftEncoderValue() > Constants.HangConstants.HANG_HALF_ENCODER_COUNTS) {
+            m_hangSubsystem.halfHeightLeft = true;
             m_hangSubsystem.setHangLeftSpeed(0); //not necessary
         } else {
             m_hangSubsystem.setHangLeftSpeed(hangSpeed);
@@ -43,7 +43,7 @@ public class HangUpCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (m_hangSubsystem.maxHeightRight && m_hangSubsystem.maxHeightLeft) {
+        if (m_hangSubsystem.halfHeightRight && m_hangSubsystem.halfHeightLeft) {
             return true;
         }
 

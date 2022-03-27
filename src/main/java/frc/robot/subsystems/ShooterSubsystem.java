@@ -2,14 +2,9 @@ package frc.robot.subsystems;
  
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -33,10 +28,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public LazyTalonFX shooterMotor2;
   private Solenoid shooterSolenoid;
 
-  private ShuffleboardTab tab = Shuffleboard.getTab("Teleop");
-  private NetworkTableEntry shooterPercentRPMEntry = tab.add("Shooter Percent RPM", 0).withWidget(BuiltInWidgets.kGraph).getEntry();
-  private NetworkTableEntry shooterPercentOutputEntry = tab.add("Shooter Percent Output", 0).withWidget(BuiltInWidgets.kGraph).getEntry();
-  private NetworkTableEntry shooterHoodEntry = tab.add("Shooter Hood Position", 0).getEntry();
+  // private ShuffleboardTab tab = Shuffleboard.getTab("Teleop");
+  // private NetworkTableEntry shooterPercentRPMEntry = tab.add("Shooter Percent RPM", 0).withWidget(BuiltInWidgets.kGraph).getEntry();
+  // private NetworkTableEntry shooterPercentOutputEntry = tab.add("Shooter Percent Output", 0).withWidget(BuiltInWidgets.kGraph).getEntry();
+  // private NetworkTableEntry shooterHoodEntry = tab.add("Shooter Hood Position", 0).getEntry();
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -53,7 +48,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(rpm, 0.14002, 0.0092594);
     double actual_rpm = feedforward.calculate(rpm);
 
-    SmartDashboard.putNumber("Velocity Setpoint", actual_rpm);
+    // SmartDashboard.putNumber("Velocity Setpoint", actual_rpm);
     
     // shooterMotor1.set(ControlMode.PercentOutput, rpm);
     // shooterMotor2.set(ControlMode.PercentOutput, -rpm);
@@ -163,8 +158,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Sensor Curr Out:", shooterMotor1.getStatorCurrent());
     SmartDashboard.putNumber("Sensor Vel:", shooterMotor1.getSelectedSensorVelocity());
-    shooterPercentRPMEntry.setDouble(shooterMotor1.getSelectedSensorVelocity() * Constants.ShooterConstants.kFalconSensorUnitsToRPM / Constants.ShooterConstants.kFalcon500FreeSpeed);
-    shooterPercentOutputEntry.setDouble(shooterMotor1.getMotorOutputPercent());
-    shooterHoodEntry.setDouble(shooterMotor2.getSelectedSensorPosition());
+  //   shooterPercentRPMEntry.setDouble(shooterMotor1.getSelectedSensorVelocity() * Constants.ShooterConstants.kFalconSensorUnitsToRPM / Constants.ShooterConstants.kFalcon500FreeSpeed);
+  //   shooterPercentOutputEntry.setDouble(shooterMotor1.getMotorOutputPercent());
+  //   shooterHoodEntry.setDouble(shooterMotor2.getSelectedSensorPosition());
   }
 }

@@ -5,11 +5,9 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -26,11 +24,15 @@ public class HangSubsystem extends SubsystemBase {
     public boolean triggeredRightSwitch = true;
     public boolean maxHeightLeft;
     public boolean maxHeightRight;
+    public boolean halfHeightLeft;
+    public boolean halfHeightRight;
+
+    public boolean hangPosition = false;
 
     public static final boolean POSITION_FORWARD = false;
     public static final boolean POSITION_NORMAL = true;
 
-    private final PIDController pid;
+    // private final PIDController pid;
 
     public HangSubsystem() {
         rightHangMotor = new TalonFX(Constants.HangConstants.HANG_RIGHT_MOTOR);
@@ -45,8 +47,6 @@ public class HangSubsystem extends SubsystemBase {
         hangLeftLimitSwitch = new DigitalInput(Constants.HangConstants.LEFT_HANG_LIMIT_SWITCH);
     
         hangSolenoid = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.HangConstants.HANG_SOLENOID);
-
-        pid = new PIDController(.000005, 0.0, 0);
     }
 
     public void setHangLeftSpeed(double speed) {
@@ -71,8 +71,8 @@ public class HangSubsystem extends SubsystemBase {
         return encoderLeft.getSelectedSensorPosition();
     }
 
-    public void deployHang(boolean position) {
-        hangSolenoid.set(position);
+    public void deployHang() {
+        hangPosition = !hangPosition;
     }
 
     public boolean isHangDeployed() {
@@ -95,32 +95,8 @@ public class HangSubsystem extends SubsystemBase {
     
     @Override
     public void periodic() {
-        // if(triggeredLeftSwitch){
-        //     double pidValueLeft = 0;
-        //     if (Math.abs(pid.calculate(getLeftEncoderValue(), Constants.HangConstants.REST_ENCODER_COUNT)) > .5) {
-        //         pidValueLeft = 0.0 * pid.calculate(getLeftEncoderValue(), Constants.HangConstants.REST_ENCODER_COUNT)/Math.abs(pid.calculate(getLeftEncoderValue(), Constants.HangConstants.REST_ENCODER_COUNT));
-        //     } else {
-        //         pidValueLeft = pid.calculate(getLeftEncoderValue(), Constants.HangConstants.REST_ENCODER_COUNT);
-        //     }
 
-        //     setHangLeftSpeed(pidValueLeft);
-        //     SmartDashboard.putNumber("LeftHangPID", pidValueLeft);
-        // }
-
-
-        // if(triggeredRightSwitch){
-        //     double pidValueRight = 0;
-            
-        //     if (Math.abs(pid.calculate(getRightEncoderValue(), -Constants.HangConstants.REST_ENCODER_COUNT)) > .5) {
-        //         pidValueRight = 0.0 * pid.calculate(getRightEncoderValue(), -Constants.HangConstants.REST_ENCODER_COUNT)/Math.abs(pid.calculate(getRightEncoderValue(), -Constants.HangConstants.REST_ENCODER_COUNT));
-        //     } else {
-        //         pidValueRight = pid.calculate(getRightEncoderValue(), -Constants.HangConstants.REST_ENCODER_COUNT);
-        //     }
-
-        //     setHangRightSpeed(-pidValueRight);
-        //     SmartDashboard.putNumber("RightHangPID", -pidValueRight);
-        // }
-
+        hangSolenoid.set(hangPosition);
 
         if(hangRightLimitSwitch.get()){
             rightResetEncoders();

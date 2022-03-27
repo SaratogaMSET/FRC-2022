@@ -1,12 +1,8 @@
 package frc.robot.commands.Shooter;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
 import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -54,8 +50,8 @@ public class ShootCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        SmartDashboard.putNumber("RPM Setpoint", m_rpm);
-        SmartDashboard.putBoolean("Hood Setpoint", m_shooterAngle);
+        // SmartDashboard.putNumber("RPM Setpoint", m_rpm);
+        // SmartDashboard.putBoolean("Hood Setpoint", m_shooterAngle);
 
         m_shooter.setRPM(m_rpm);
     }

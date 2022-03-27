@@ -5,19 +5,9 @@
 package frc.robot.subsystems;
 
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import com.revrobotics.AnalogInput;
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
-
-import com.revrobotics.ColorSensorV3;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class PhotoelectricSystem extends SubsystemBase {
 
@@ -25,8 +15,8 @@ public class PhotoelectricSystem extends SubsystemBase {
   private static DigitalInput digLeft;
   private static DigitalInput digRight;
 
-  private static int lineval = 500; 
-  private static int thresh = 100;
+  // private static int lineval = 500; 
+  // private static int thresh = 100;
 
   public PhotoelectricSystem() { //init
     digLeft = new DigitalInput(Constants.Photoelectric.SENSOR_LEFT);
@@ -38,34 +28,34 @@ public class PhotoelectricSystem extends SubsystemBase {
   }
 
   public PhotoelectricState updatePhotoStateLeft(){
-    SmartDashboard.putNumber("PhotoTest: ", 1);
+    // SmartDashboard.putNumber("PhotoTest: ", 1);
     //int a = analog.getValue();
     boolean d = digLeft.get();
     //SmartDashboard.putNumber("photoelectric", a);
-    SmartDashboard.putBoolean("d", d);
+    // SmartDashboard.putBoolean("d", d);
     if(!d){
-      SmartDashboard.putBoolean("Over shadow line: ", true);
+      // SmartDashboard.putBoolean("Over shadow line: ", true);
       return PhotoelectricState.LINE;
     }
-    SmartDashboard.putBoolean("Over shadow line: ", false);
+    // SmartDashboard.putBoolean("Over shadow line: ", false);
     return PhotoelectricState.NOT_LINE;
   }
 
   public PhotoelectricState updatePhotoStateRight(){
     //SmartDashboard.putNumber("PhotoTest: ", 1);
     boolean d = digRight.get();
-    SmartDashboard.putBoolean("d", d);
+    // SmartDashboard.putBoolean("d", d);
     if(!d){
-      SmartDashboard.putBoolean("Over shadow line: ", true);
+      // SmartDashboard.putBoolean("Over shadow line: ", true);
       return PhotoelectricState.LINE;
     }
-    SmartDashboard.putBoolean("Over shadow line: ", false);
+    // SmartDashboard.putBoolean("Over shadow line: ", false);
     return PhotoelectricState.NOT_LINE;
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Test: ", 1);
+    // SmartDashboard.putNumber("Test: ", 1);
     updatePhotoStateLeft();
     updatePhotoStateRight();
     // This method will be called once per scheduler run

@@ -1,6 +1,5 @@
 package frc.robot.commands.Hang;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.HangSubsystem;
 
@@ -35,6 +34,8 @@ public class HangDownCommand extends CommandBase {
 
         m_hangSubsystem.maxHeightRight = false;
         m_hangSubsystem.maxHeightLeft = false;
+        m_hangSubsystem.halfHeightLeft = false;
+        m_hangSubsystem.halfHeightLeft = false;
     }
 
     // Returns true when the command should end.

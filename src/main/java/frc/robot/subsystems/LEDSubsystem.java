@@ -5,17 +5,9 @@
 package frc.robot.subsystems;
 
 
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.VisionSubsystem.VisionState;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import com.revrobotics.ColorSensorV3;
-
-import java.lang.Math;
 
 public class LEDSubsystem extends SubsystemBase {
 

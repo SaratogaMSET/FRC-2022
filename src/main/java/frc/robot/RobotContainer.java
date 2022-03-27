@@ -4,17 +4,12 @@
 
 package frc.robot;
 
-import com.fasterxml.jackson.databind.util.ByteBufferBackedOutputStream;
-import com.pathplanner.lib.PathPlanner;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -33,7 +28,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.Autos.AutoRunCommand;
 import frc.robot.commands.Drivetrain.DefaultDriveCommand;
+import frc.robot.commands.Drivetrain.SetXConfigCommand;
 import frc.robot.commands.Drivetrain.ZeroGyroCommand;
+import frc.robot.commands.Hang.DeployHangCommand;
+import frc.robot.commands.Hang.HalfHangUpCommand;
+import frc.robot.commands.Hang.HangDownCommand;
+import frc.robot.commands.Hang.HangUpCommand;
 import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.commands.Shooter.AimForShootCommand;
@@ -44,22 +44,15 @@ import frc.robot.commands.Test.TestFeederCommandGroup;
 import frc.robot.commands.Test.TestHangCommandGroup;
 import frc.robot.commands.Test.TestIntakeCommandGroup;
 import frc.robot.commands.Test.TestShooterCommandGroup;
-import frc.robot.commands.Hang.HangAutoAlign;
-import frc.robot.commands.Hang.HangDownCommand;
-import frc.robot.commands.Hang.HangUpCommand;
-// import frc.robot.subsystems.ColorSensorSystem;
-import frc.robot.subsystems.Multi2c;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
 import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.subsystems.PhotoelectricSystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
-import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-// import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
+import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 import frc.robot.subsystems.VisionSubsystem;
 
 /**
@@ -78,16 +71,13 @@ public class RobotContainer {
 
   private final DrivetrainSubsystem m_drivetrainSubsystem;
   private final VisionSubsystem m_visionSubsystem;
-  private final Multi2c m_breakout;
-  private final PhotoelectricSystem m_photoelectricSystem;
-  // private final ColorSensorSystem m_ColorSensorSystem;
   private final LEDSubsystem m_LedSubsystem;
   private final ShooterSubsystem m_shooterSubsystem;
   private final FeederSubsystem m_feeder;
   private final IntakeSubsystem m_intake;
   private final HangSubsystem m_hangSubsystem;
-  // private final LED m_led;
 
+  private final RobotState m_robotState;
   public static final double pi = Math.PI;
   private final XboxController m_driver = new XboxController(0);
   private final Joystick m_gunner = new Joystick(1);
@@ -119,16 +109,13 @@ public class RobotContainer {
 
     
     m_drivetrainSubsystem = new DrivetrainSubsystem();
-    // m_photoelectricSystem = new PhotoelectricSystem();
     m_visionSubsystem = new VisionSubsystem();
     m_LedSubsystem = new LEDSubsystem();
-    // m_ColorSensorSystem = new ColorSensorSystem();
-    m_breakout = new Multi2c();
     m_shooterSubsystem = new ShooterSubsystem();
     m_feeder = new FeederSubsystem();
     m_intake = new IntakeSubsystem();
     m_hangSubsystem = new HangSubsystem();
-    m_photoelectricSystem = new PhotoelectricSystem(); 
+    m_robotState = new RobotState();
 
     new Thread(() -> {
       try {
@@ -189,20 +176,14 @@ public class RobotContainer {
     );
         
     new Button(m_driver::getYButton).whileActiveOnce(
-      // new SequentialCommandGroup(
-        // new InstantCommand(() -> m_compressor.disable()),
-        // new ParallelRaceGroup(
-        //   new ShootCommand(m_shooterSubsystem, m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()), m_compressor),
-        //   new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem)
-        // ),
-        new ParallelCommandGroup(
-          new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
-          new SequentialCommandGroup(
-            new WaitCommand(0.5),
-            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.8)
-          )
+      new ParallelCommandGroup(
+        // new SetXConfigCommand(m_drivetrainSubsystem),
+        new ShootCommand(m_shooterSubsystem, ShooterZone.TEST, m_compressor),
+        new SequentialCommandGroup(
+          new WaitCommand(0.5),
+          new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.8)
         )
-      // )
+      )
     );
 
     // Back button zeros the gyroscope
@@ -230,8 +211,16 @@ public class RobotContainer {
       new HangUpCommand(m_hangSubsystem, 0.5)
     );
 
+    new JoystickButton(m_gunner, 6).whenPressed(
+      new HalfHangUpCommand(m_hangSubsystem, 0.3)
+    );
+
     new JoystickButton(m_gunner, 3).whenPressed(
-      new HangDownCommand(m_hangSubsystem, 0.5)
+      new HangDownCommand(m_hangSubsystem, 0.45)
+    );
+
+    new JoystickButton(m_gunner, 4).whenPressed(
+      new DeployHangCommand(m_hangSubsystem)
     );
 
     new JoystickButton(m_gunner, 2).whileActiveOnce(
@@ -265,12 +254,15 @@ public class RobotContainer {
     RobotState.intakeState = m_intake.getIntakeState();
     RobotState.feederState = m_feeder.getFeederState();
     RobotState.visionState = m_visionSubsystem.updateVisionState();
+    RobotState.shooterState = m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget());
     
     m_LedSubsystem.setStatus(m_feeder.intakeGate.get(), m_feeder.shooterGate.get(), RobotState.visionState);
 
     SmartDashboard.putNumber("VISION: Distance", m_visionSubsystem.getDistanceFromTarget());
     SmartDashboard.putNumber("VISION: Angle", m_visionSubsystem.getRawAngle());
-    SmartDashboard.putString("SHOOTER: Zone", m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()).toString());
+    SmartDashboard.putString("SHOOTER: Zone", RobotState.shooterState.toString());
+    SmartDashboard.putBoolean("FEEDER: Intake gate", m_feeder.intakeGate.get());
+    SmartDashboard.putBoolean("FEEDER: Shooter gate", m_feeder.shooterGate.get());
     SmartDashboard.putString("HANG: limit switch right ", m_hangSubsystem.triggeredRightSwitch + "");
     SmartDashboard.putString("HANG: limit switch left", m_hangSubsystem.triggeredLeftSwitch + "");
     SmartDashboard.putString("HANG: encoder left ", m_hangSubsystem.encoderLeft.getSelectedSensorPosition() + "");

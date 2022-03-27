@@ -1,6 +1,5 @@
 package frc.robot.commands.IntakeFeeder;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
@@ -30,11 +29,8 @@ public class RunFeederCommand extends CommandBase {
         } else if (direction == FeederState.IDLE) {
             feeder.stopFeeder();
         }
-
-        SmartDashboard.putBoolean("Intake gate", feeder.intakeGate.get());
-        SmartDashboard.putBoolean("Shooter gate", feeder.shooterGate.get());
-        SmartDashboard.putNumber("Intake feeder speed", feeder.intakeFeederMotor.getMotorOutputPercent());
-        SmartDashboard.putNumber("Shooter feeder speed", feeder.shooterFeederMotor.getMotorOutputPercent());
+        // SmartDashboard.putNumber("Intake feeder speed", feeder.intakeFeederMotor.getMotorOutputPercent());
+        // SmartDashboard.putNumber("Shooter feeder speed", feeder.shooterFeederMotor.getMotorOutputPercent());
     }
 
     @Override

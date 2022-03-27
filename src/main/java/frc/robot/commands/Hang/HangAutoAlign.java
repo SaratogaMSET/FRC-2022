@@ -1,9 +1,6 @@
 package frc.robot.commands.Hang;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.subsystems.HangSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.PhotoelectricSystem;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;

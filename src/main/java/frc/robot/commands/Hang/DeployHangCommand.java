@@ -1,6 +1,5 @@
 package frc.robot.commands.Hang;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.HangSubsystem;
 
@@ -9,8 +8,7 @@ public class DeployHangCommand extends CommandBase {
     private final HangSubsystem m_hangSubsystem;
     private boolean m_position;
 
-    public DeployHangCommand(HangSubsystem hang, boolean position) {
-        m_position = position;
+    public DeployHangCommand(HangSubsystem hang) {
         m_hangSubsystem = hang;
         addRequirements(m_hangSubsystem);
     }
@@ -18,9 +16,8 @@ public class DeployHangCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void execute() {
-        m_hangSubsystem.deployHang(m_position);
-
-        SmartDashboard.putBoolean("Hang deployed ", m_hangSubsystem.isHangDeployed());
+        m_hangSubsystem.deployHang();
+        // SmartDashboard.putBoolean("Hang deployed ", m_hangSubsystem.isHangDeployed());
     }
 
     @Override

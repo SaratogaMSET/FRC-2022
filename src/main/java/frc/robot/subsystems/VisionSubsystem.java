@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 // import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
@@ -16,8 +15,8 @@ public class VisionSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   // private final I2C.Port i2cPort = I2C.Port.kOnboard; //Constants.Colorwheel.COLOR_SENSOR; 
   private NetworkTable table;
-  private NetworkTableEntry ta, tx, ty, tv;
-  private static double a, x, y, v;
+  private NetworkTableEntry tx, ty, tv;
+  private static double x, y, v;
 
   public VisionSubsystem() {
     table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -37,12 +36,12 @@ public class VisionSubsystem extends SubsystemBase {
 
     table.getEntry("pipeline").setNumber(0);
 
-    ta = table.getEntry("ta"); // area of target visible
+    // ta = table.getEntry("ta"); // area of target visible
     tx = table.getEntry("tx"); // horizontal offset
     ty = table.getEntry("ty"); // vertical offset
     tv = table.getEntry("tv"); // valid target? (0 or 1)
 
-    a = ta.getDouble(0.0);
+    // a = ta.getDouble(0.0);
     x = tx.getDouble(0.0);
     y = ty.getDouble(0.0);
     v = tv.getDouble(0.0);

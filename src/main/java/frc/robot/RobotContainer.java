@@ -208,15 +208,15 @@ public class RobotContainer {
 
     // Gunner Controls
     new JoystickButton(m_gunner, 5).whenPressed(
-      new HangUpCommand(m_hangSubsystem, 0.7)
+      new HangUpCommand(m_hangSubsystem, 0.85)
     );
 
     new JoystickButton(m_gunner, 6).whenPressed(
-      new HalfHangUpCommand(m_hangSubsystem, 0.7)
+      new HalfHangUpCommand(m_hangSubsystem, 0.85)
     );
 
     new JoystickButton(m_gunner, 3).whenPressed(
-      new HangDownCommand(m_hangSubsystem, 0.7)
+      new HangDownCommand(m_hangSubsystem, 0.85)
     );
 
     new JoystickButton(m_gunner, 4).whenPressed(
@@ -267,8 +267,8 @@ public class RobotContainer {
     SmartDashboard.putString("SHOOTER: Zone", RobotState.shooterState.toString());
     SmartDashboard.putBoolean("FEEDER: Intake gate", m_feeder.intakeGate.get());
     SmartDashboard.putBoolean("FEEDER: Shooter gate", m_feeder.shooterGate.get());
-    SmartDashboard.putString("HANG: limit switch right ", m_hangSubsystem.triggeredRightSwitch + "");
-    SmartDashboard.putString("HANG: limit switch left", m_hangSubsystem.triggeredLeftSwitch + "");
+    SmartDashboard.putString("HANG: limit switch right ", m_hangSubsystem.hangRightLimitSwitch.get() + "");
+    SmartDashboard.putString("HANG: limit switch left", m_hangSubsystem.hangLeftLimitSwitch.get() + "");
     SmartDashboard.putString("HANG: encoder left ", m_hangSubsystem.getLeftEncoderValue() + "");
     SmartDashboard.putString("HANG: encoder right ", m_hangSubsystem.getRightEncoderValue() + "");
   }

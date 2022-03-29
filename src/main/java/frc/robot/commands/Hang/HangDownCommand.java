@@ -26,7 +26,8 @@ public class HangDownCommand extends CommandBase {
         if(m_hangSubsystem.getRightEncoderValue() < Constants.HangConstants.HANG_ENCODER_SOFT_STOP) {
             m_hangSubsystem.triggeredRightSoftStop = true;
         }
-        if (m_hangSubsystem.triggeredRightSwitch && m_hangSubsystem.triggeredRightSoftStop) {
+        // if (m_hangSubsystem.triggeredRightSoftStop) {
+        if (m_hangSubsystem.triggeredRightSwitch && m_hangSubsystem.hangRightLimitSwitch.get()) {
             m_hangSubsystem.setHangRightSpeed(0);
         } else {
             m_hangSubsystem.setHangRightSpeed(hangSpeed);
@@ -41,7 +42,8 @@ public class HangDownCommand extends CommandBase {
         if (m_hangSubsystem.getLeftEncoderValue() < Constants.HangConstants.HANG_ENCODER_SOFT_STOP) {
             m_hangSubsystem.triggeredLeftSoftStop = true;
         }
-        if (m_hangSubsystem.triggeredLeftSwitch && m_hangSubsystem.triggeredLeftSoftStop) {
+        // if (m_hangSubsystem.triggeredLeftSoftStop) {
+        if (m_hangSubsystem.triggeredLeftSwitch && m_hangSubsystem.hangLeftLimitSwitch.get()) {
             m_hangSubsystem.setHangLeftSpeed(0);
         } else {
             m_hangSubsystem.setHangLeftSpeed(hangSpeed);
@@ -65,8 +67,9 @@ public class HangDownCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (m_hangSubsystem.triggeredLeftSwitch && m_hangSubsystem.triggeredRightSwitch
-            && m_hangSubsystem.triggeredLeftSoftStop && m_hangSubsystem.triggeredRightSoftStop) {
+        if (m_hangSubsystem.hangLeftLimitSwitch.get() && m_hangSubsystem.hangRightLimitSwitch.get()
+        && m_hangSubsystem.triggeredLeftSoftStop && m_hangSubsystem.triggeredRightSoftStop) {
+        // if (m_hangSubsystem.triggeredLeftSoftStop && m_hangSubsystem.triggeredRightSoftStop) {
             return true;
         }
         return false;

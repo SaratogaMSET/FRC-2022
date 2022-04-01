@@ -1,7 +1,9 @@
 package frc.robot.commands.Shooter;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.Vision.Distance;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 import frc.robot.subsystems.VisionSubsystem;
@@ -35,11 +37,13 @@ public class ShootCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        m_rpm = m_shooter.getShooterStateRPM(m_zone, 0);
         if (m_vision != null) {
             double distance = m_vision.getDistanceFromTarget();
             m_zone = m_shooter.getShooterZone(distance);
+            m_rpm = m_shooter.getShooterStateRPM(m_zone, distance);
         }
-        m_rpm = m_shooter.getShooterStateRPM(m_zone);
+        // m_rpm = m_shooter.getShooterStateRPM(m_zone, distance);
         m_shooterAngle = m_shooter.getShooterAngle(m_zone);
 
         m_shooter.setAngle(m_shooterAngle);
@@ -50,7 +54,7 @@ public class ShootCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        // SmartDashboard.putNumber("RPM Setpoint", m_rpm);
+        SmartDashboard.putNumber("RPM Setpoint", m_rpm);
         // SmartDashboard.putBoolean("Hood Setpoint", m_shooterAngle);
 
         m_shooter.setRPM(m_rpm);

@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.Autos.AutoRunCommand;
+import frc.robot.commands.Autos.TurnAngle;
 import frc.robot.commands.Drivetrain.DefaultDriveCommand;
 import frc.robot.commands.Drivetrain.SetXConfigCommand;
 import frc.robot.commands.Drivetrain.ZeroGyroCommand;
@@ -178,10 +179,10 @@ public class RobotContainer {
     new Button(m_driver::getYButton).whileActiveOnce(
       new ParallelCommandGroup(
         // new SetXConfigCommand(m_drivetrainSubsystem),
-        new ShootCommand(m_shooterSubsystem, ShooterZone.TEST, m_compressor),
+        new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
         new SequentialCommandGroup(
           new WaitCommand(0.5),
-          new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.8)
+          new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.6)
         )
       )
     );
@@ -225,15 +226,16 @@ public class RobotContainer {
 
     new JoystickButton(m_gunner, 2).whileActiveOnce(
       new ParallelCommandGroup(
+        new SetXConfigCommand(m_drivetrainSubsystem),
         new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
         new SequentialCommandGroup(
-          new WaitCommand(1.0),
-          new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.8)
+          new WaitCommand(0.7),
+          new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.7)
         )
       )
     );
 
-    new JoystickButton(m_gunner, 4).whileActiveOnce(
+    new JoystickButton(m_gunner, 1).whileActiveOnce(
       new ConstantAim(
         () -> modifyAxis(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
         () -> -modifyAxis(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
@@ -242,12 +244,12 @@ public class RobotContainer {
       )
     );
 
-    new JoystickButton(m_gunner, 1).whileActiveOnce(
-      new ParallelCommandGroup(
-        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
-        new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.15, 0.8)
-      )
-    );
+    // new JoystickButton(m_gunner, 1).whileActiveOnce(
+    //   new ParallelCommandGroup(
+    //     new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+    //     new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.15, 0.8)
+    //   )
+    // );
 
     // new JoystickButton(m_gunner, 7).whileActiveOnce(
     //   new HangUpCommand(m_hangSubsystem, 0.2)
@@ -261,7 +263,8 @@ public class RobotContainer {
     RobotState.shooterState = m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget());
     
     m_LedSubsystem.setStatus(m_feeder.intakeGate.get(), m_feeder.shooterGate.get(), RobotState.visionState);
-
+    
+    SmartDashboard.putNumber("navX Angle", m_drivetrainSubsystem.getNavHeading() * 180/Math.PI);
     SmartDashboard.putNumber("VISION: Distance", m_visionSubsystem.getDistanceFromTarget());
     SmartDashboard.putNumber("VISION: Angle", m_visionSubsystem.getRawAngle());
     SmartDashboard.putString("SHOOTER: Zone", RobotState.shooterState.toString());
@@ -271,6 +274,7 @@ public class RobotContainer {
     SmartDashboard.putString("HANG: limit switch left", m_hangSubsystem.hangLeftLimitSwitch.get() + "");
     SmartDashboard.putString("HANG: encoder left ", m_hangSubsystem.getLeftEncoderValue() + "");
     SmartDashboard.putString("HANG: encoder right ", m_hangSubsystem.getRightEncoderValue() + "");
+    SmartDashboard.putString("COMPRESSOR:", m_compressor.getPressure() + "");
   }
 
   private static double deadband(double value, double deadband) {
@@ -322,27 +326,55 @@ public class RobotContainer {
     
 
     m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+
+    // return new TurnAngle(m_drivetrainSubsystem, 30);
+
     return new SequentialCommandGroup(
-      new WaitCommand(1),
+      new WaitCommand(0.5),
       new ZeroGyroCommand(m_drivetrainSubsystem),
       new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
-       new WaitCommand(1),
+       new WaitCommand(0.5),
       // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
       new ParallelRaceGroup(
         new DeployIntakeCommand(m_intake, IntakeState.DOWN),
         new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
         new SequentialCommandGroup(
           new WaitCommand(0.5),
-          new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(2)
+          new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.5)
+          // new AutoRunCommand(m_drivetrainSubsystem, 0, 0, 1).withTimeout(5),
+          // new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.5)
         )
       ),
       new SequentialCommandGroup(
         new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
         new ParallelCommandGroup(
-          new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor).withTimeout(5),
+          new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor).withTimeout(3.5),
           new SequentialCommandGroup(
             new WaitCommand(1.2),
-            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(3)
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(2)
+          )
+        )
+      ),
+
+      new SequentialCommandGroup(
+        new WaitCommand(0.5),
+        // new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.5),
+        new AutoRunCommand(m_drivetrainSubsystem, 0, 0, 1.5).withTimeout(1.7),
+        new ParallelRaceGroup(
+          new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+          new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
+          new AutoRunCommand(m_drivetrainSubsystem, -1.2, 0, 0.05).withTimeout(2.7)
+        ),
+        new AutoRunCommand(m_drivetrainSubsystem, 0, 0, -1).withTimeout(1.8)
+      ),
+
+      new SequentialCommandGroup(
+        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+        new ParallelCommandGroup(
+          new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor).withTimeout(3.5),
+          new SequentialCommandGroup(
+            new WaitCommand(1.2),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(2)
           )
         )
       )

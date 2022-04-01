@@ -17,7 +17,7 @@ public class ShooterSubsystem extends SubsystemBase {
   // public static final PIDController pid = new PIDController(0.2, 0.03, 0);
 
   public static enum ShooterZone {
-    MOVING, ZONE_1, ZONE_2, ZONE_3, ZONE_4, ZONE_5, ZONE_6, ZONE_7, TEST, EMERGENCY
+    MOVING, ZONE_1, ZONE_2, ZONE_3, ZONE_4, ZONE_5, ZONE_6, ZONE_7, TEST, EMERGENCY, LIRP_1, LIRP_2, LIRP_3
   };
 
   public static enum ShooterAngle {
@@ -62,15 +62,11 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMotor2.setSelectedSensorPosition(0);
   }
 
-  // public ShooterAngle getShooterAngle(){
-  //     if(shooterSolenoid.get()) {
-  //       return ShooterAngle.TWOFIVE;
-  //     } else {
-  //       return ShooterAngle.FOURZERO;
-  //     }
-  // }
+  public double getShooterStateRPM(ShooterZone state, double distance) {
+    double deltaRPM;
+    double distanceFromSetpoint;
+    double ratio;
 
-  public double getShooterStateRPM(ShooterZone state) {
     switch(state) {
       case ZONE_1:
         return Constants.ShooterConstants.DistanceConstants.ZONE_1.getPercentOutput();
@@ -88,11 +84,22 @@ public class ShooterSubsystem extends SubsystemBase {
         return Constants.ShooterConstants.DistanceConstants.ZONE_7.getPercentOutput();
       case EMERGENCY:
         return Constants.ShooterConstants.DistanceConstants.EMERGENCY.getPercentOutput();
-
       case TEST:
         return Constants.ShooterConstants.DistanceConstants.TEST.getPercentOutput();
+      case LIRP_1:
+        return Constants.ShooterConstants.DistanceConstants.LIRP_1.getPercentOutput();
+      case LIRP_2:
+        deltaRPM = Constants.ShooterConstants.DistanceConstants.LIRP_2.getPercentOutput() - Constants.ShooterConstants.DistanceConstants.LIRP_1.getPercentOutput();
+        distanceFromSetpoint = distance - Constants.Vision.Distance.LIRP_1;
+        ratio = distanceFromSetpoint/(Constants.Vision.Distance.LIRP_2-Constants.Vision.Distance.LIRP_1);
+        return deltaRPM * ratio + Constants.ShooterConstants.DistanceConstants.LIRP_1.getPercentOutput();
+      case LIRP_3:
+        deltaRPM = Constants.ShooterConstants.DistanceConstants.LIRP_3.getPercentOutput() - Constants.ShooterConstants.DistanceConstants.LIRP_2.getPercentOutput();
+        distanceFromSetpoint = distance - Constants.Vision.Distance.LIRP_2;
+        ratio = distanceFromSetpoint/(Constants.Vision.Distance.LIRP_3-Constants.Vision.Distance.LIRP_2);
+        return deltaRPM * ratio + Constants.ShooterConstants.DistanceConstants.LIRP_2.getPercentOutput();
       default:
-        return Constants.ShooterConstants.DistanceConstants.ZONE_1.getPercentOutput();
+        return Constants.ShooterConstants.DistanceConstants.EMERGENCY.getPercentOutput();
     }
   }
 
@@ -104,27 +111,36 @@ public class ShooterSubsystem extends SubsystemBase {
     if(distance <= 0.0) {
       return ShooterZone.EMERGENCY;
     }
-    if (distance < Constants.Vision.Distance.ZONE_1) {
-      return ShooterZone.ZONE_1;
+    if (distance < Constants.Vision.Distance.LIRP_1) {
+      return ShooterZone.LIRP_1;
     } 
-    if (distance < Constants.Vision.Distance.ZONE_2) {
-      return ShooterZone.ZONE_2;
+    if (distance < Constants.Vision.Distance.LIRP_2) {
+      return ShooterZone.LIRP_2;
     } 
-    if (distance < Constants.Vision.Distance.ZONE_3) {
-      return ShooterZone.ZONE_3;
+    if (distance < Constants.Vision.Distance.LIRP_3) {
+      return ShooterZone.LIRP_3;
     } 
-    if (distance < Constants.Vision.Distance.ZONE_4) {
-      return ShooterZone.ZONE_4;
-    }
-    if (distance < Constants.Vision.Distance.ZONE_5) {
-      return ShooterZone.ZONE_5;
-    }
-    if (distance < Constants.Vision.Distance.ZONE_6) {
-      return ShooterZone.ZONE_6;
-    }
-    if (distance < Constants.Vision.Distance.ZONE_7) {
-      return ShooterZone.ZONE_7;
-    }
+    // if (distance < Constants.Vision.Distance.ZONE_1) {
+    //   return ShooterZone.ZONE_1;
+    // } 
+    // if (distance < Constants.Vision.Distance.ZONE_2) {
+    //   return ShooterZone.ZONE_2;
+    // } 
+    // if (distance < Constants.Vision.Distance.ZONE_3) {
+    //   return ShooterZone.ZONE_3;
+    // } 
+    // if (distance < Constants.Vision.Distance.ZONE_4) {
+    //   return ShooterZone.ZONE_4;
+    // }
+    // if (distance < Constants.Vision.Distance.ZONE_5) {
+    //   return ShooterZone.ZONE_5;
+    // }
+    // if (distance < Constants.Vision.Distance.ZONE_6) {
+    //   return ShooterZone.ZONE_6;
+    // }
+    // if (distance < Constants.Vision.Distance.ZONE_7) {
+    //   return ShooterZone.ZONE_7;
+    // }
     return ShooterZone.EMERGENCY;
   }
 

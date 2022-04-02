@@ -104,7 +104,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setAngle(boolean desiredAngle) {
-    shooterSolenoid.set(desiredAngle);
+    shooterSolenoid.set(!desiredAngle);
   }
 
   public ShooterZone getShooterZone(double distance) {

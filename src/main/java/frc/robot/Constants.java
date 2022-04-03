@@ -112,7 +112,7 @@ public final class Constants {
             TEST (0.49, true),
             
             LIRP_1 (0.44, true),
-            LIRP_2 (0.5, true),
+            LIRP_2 (0.49, true),
             LIRP_3 (0.67, true);
 
             private double percentRPM;
@@ -156,7 +156,7 @@ public final class Constants {
 
         public static final int HANG_SOLENOID = 0;
 
-        public static final int HANG_MAX_ENCODER_COUNTS = 280000; //277000
+        public static final int HANG_MAX_ENCODER_COUNTS = 290000; //290000
         public static final int HANG_HALF_ENCODER_COUNTS = HANG_MAX_ENCODER_COUNTS/2;
         public static final int HANG_ENCODER_SOFT_STOP = 20000;
     }

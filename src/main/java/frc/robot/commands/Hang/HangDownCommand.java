@@ -10,9 +10,11 @@ import frc.robot.subsystems.HangSubsystem;
 public class HangDownCommand extends CommandBase {
     private final HangSubsystem m_hangSubsystem;
     private double hangSpeed;
+    private double originalSpeed;
 
     public HangDownCommand(HangSubsystem hang, double speed) {
         hangSpeed = -speed;
+        originalSpeed = hangSpeed;
         m_hangSubsystem = hang;
         addRequirements(m_hangSubsystem);
     }
@@ -23,8 +25,10 @@ public class HangDownCommand extends CommandBase {
             m_hangSubsystem.triggeredRightSwitch = true;
             // m_hangSubsystem.setHangRightSpeed(0);
         }
-        if(m_hangSubsystem.getRightEncoderValue() < Constants.HangConstants.HANG_ENCODER_SOFT_STOP) {
-            m_hangSubsystem.triggeredRightSoftStop = true;
+        if (m_hangSubsystem.getLeftEncoderValue() < Constants.HangConstants.HANG_HALF_ENCODER_COUNTS) {
+            hangSpeed = originalSpeed/2;
+        } else {
+            hangSpeed = originalSpeed;
         }
         // if (m_hangSubsystem.triggeredRightSoftStop) {
         if (m_hangSubsystem.triggeredRightSwitch && m_hangSubsystem.hangRightLimitSwitch.get()) {
@@ -39,8 +43,10 @@ public class HangDownCommand extends CommandBase {
             m_hangSubsystem.triggeredLeftSwitch = true;
             // m_hangSubsystem.setHangLeftSpeed(0);
         }
-        if (m_hangSubsystem.getLeftEncoderValue() < Constants.HangConstants.HANG_ENCODER_SOFT_STOP) {
-            m_hangSubsystem.triggeredLeftSoftStop = true;
+        if (m_hangSubsystem.getLeftEncoderValue() < Constants.HangConstants.HANG_HALF_ENCODER_COUNTS) {
+            hangSpeed = originalSpeed/2;
+        } else {
+            hangSpeed = originalSpeed;
         }
         // if (m_hangSubsystem.triggeredLeftSoftStop) {
         if (m_hangSubsystem.triggeredLeftSwitch && m_hangSubsystem.hangLeftLimitSwitch.get()) {
@@ -67,8 +73,7 @@ public class HangDownCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (m_hangSubsystem.hangLeftLimitSwitch.get() && m_hangSubsystem.hangRightLimitSwitch.get()
-        && m_hangSubsystem.triggeredLeftSoftStop && m_hangSubsystem.triggeredRightSoftStop) {
+        if (m_hangSubsystem.hangLeftLimitSwitch.get() && m_hangSubsystem.hangRightLimitSwitch.get()) {
         // if (m_hangSubsystem.triggeredLeftSoftStop && m_hangSubsystem.triggeredRightSoftStop) {
             return true;
         }
@@ -79,5 +84,8 @@ public class HangDownCommand extends CommandBase {
     public void end(boolean interrupted) {
         m_hangSubsystem.setHangLeftSpeed(0);
         m_hangSubsystem.setHangRightSpeed(0);
+
+        m_hangSubsystem.rightResetEncoders();
+        m_hangSubsystem.leftResetEncoders();
     }
 }

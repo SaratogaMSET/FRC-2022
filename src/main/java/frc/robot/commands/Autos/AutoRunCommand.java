@@ -2,6 +2,7 @@ package frc.robot.commands.Autos;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -20,21 +21,30 @@ public class AutoRunCommand extends CommandBase {
         this.m_velocityX = velocityX;
         this.m_velocityY = velocityY;
         this.m_DeltaTheta = deltaTheta;
-        this.m_initialAngle = m_drivetrainSubsystem.getNavHeading();
+        
 
-        pid = new PIDController(Constants.Drivetrain.kPThetaController+0.0225, Constants.Drivetrain.kIThetaController, 0);
+        pid = new PIDController(Constants.Drivetrain.kPThetaController, Constants.Drivetrain.kIThetaController, 0);
         //+0.02
         addRequirements(drivetrainSubsystem);
+    }
+
+    @Override
+    public void initialize() {
+        this.m_initialAngle = m_drivetrainSubsystem.getNavHeading();
     }
 
     @Override
     public void execute() {
         double currentAngle = m_drivetrainSubsystem.getNavHeading();
         double diff = currentAngle-m_initialAngle;
-        pidValue = pid.calculate(diff, 0);
+        pidValue = pid.calculate(diff, 0) * 50;
 
-        // SmartDashboard.putNumber("PID Value", pidValue);
-        m_drivetrainSubsystem.drive(new ChassisSpeeds(m_velocityX, m_velocityY, m_DeltaTheta));
+        SmartDashboard.putNumber("PID Value", pidValue);
+        SmartDashboard.putNumber("Diff", diff * 180/3.1415);
+        if(m_DeltaTheta == 0)
+            m_drivetrainSubsystem.drive(new ChassisSpeeds(m_velocityX, m_velocityY, pidValue));
+        else
+            m_drivetrainSubsystem.drive(new ChassisSpeeds(m_velocityX, m_velocityY, m_DeltaTheta));
     }
 
     @Override

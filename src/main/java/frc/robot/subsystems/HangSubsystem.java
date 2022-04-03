@@ -100,12 +100,12 @@ public class HangSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if(hangRightLimitSwitch.get()){
-            rightResetEncoders();
-        }
+        // if(hangRightLimitSwitch.get()){
+        //     rightResetEncoders();
+        // }
 
-        if(hangLeftLimitSwitch.get()){
-            leftResetEncoders();
-        }
+        // if(hangLeftLimitSwitch.get()){
+        //     leftResetEncoders();
+        // }
     }
 }

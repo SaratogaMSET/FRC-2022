@@ -21,11 +21,10 @@ public class HangDownCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void execute() {
-        if (m_hangSubsystem.hangRightLimitSwitch.get() || m_hangSubsystem.triggeredRightSwitch) {
-            m_hangSubsystem.triggeredRightSwitch = true;
-            // m_hangSubsystem.setHangRightSpeed(0);
+        if (m_hangSubsystem.getRightEncoderValue() < Constants.HangConstants.HANG_ENCODER_SOFT_STOP) {
+            m_hangSubsystem.triggeredRightSoftStop = true;
         }
-        if (m_hangSubsystem.getLeftEncoderValue() < Constants.HangConstants.HANG_HALF_ENCODER_COUNTS) {
+        if (m_hangSubsystem.getRightEncoderValue() < Constants.HangConstants.HANG_HALF_ENCODER_COUNTS) {
             hangSpeed = originalSpeed/2;
         } else {
             hangSpeed = originalSpeed;
@@ -39,9 +38,8 @@ public class HangDownCommand extends CommandBase {
 
 
 
-        if (m_hangSubsystem.hangLeftLimitSwitch.get() || m_hangSubsystem.triggeredLeftSwitch) {
-            m_hangSubsystem.triggeredLeftSwitch = true;
-            // m_hangSubsystem.setHangLeftSpeed(0);
+        if (m_hangSubsystem.getLeftEncoderValue() < Constants.HangConstants.HANG_ENCODER_SOFT_STOP) {
+            m_hangSubsystem.triggeredLeftSoftStop = true;
         }
         if (m_hangSubsystem.getLeftEncoderValue() < Constants.HangConstants.HANG_HALF_ENCODER_COUNTS) {
             hangSpeed = originalSpeed/2;
@@ -73,7 +71,7 @@ public class HangDownCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (m_hangSubsystem.hangLeftLimitSwitch.get() && m_hangSubsystem.hangRightLimitSwitch.get()) {
+        if (m_hangSubsystem.hangLeftLimitSwitch.get() && m_hangSubsystem.hangRightLimitSwitch.get() && m_hangSubsystem.triggeredLeftSoftStop && m_hangSubsystem.triggeredRightSoftStop) {
         // if (m_hangSubsystem.triggeredLeftSoftStop && m_hangSubsystem.triggeredRightSoftStop) {
             return true;
         }

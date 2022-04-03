@@ -55,8 +55,8 @@ public final class Constants {
         public static final double kIYController = 0.000;
         public static final double kPThetaControllerTrajectory = 0;
 
-        public static final double kPThetaController = 0.09; //.07655
-        public static final double kIThetaController = 0.030;
+        public static final double kPThetaController = 0.08; //.07655
+        public static final double kIThetaController = 0.050;
     }
 
     public static class Vision{
@@ -112,7 +112,7 @@ public final class Constants {
             TEST (0.49, true),
             
             LIRP_1 (0.44, true),
-            LIRP_2 (0.49, true),
+            LIRP_2 (0.48, true),
             LIRP_3 (0.67, true);
 
             private double percentRPM;

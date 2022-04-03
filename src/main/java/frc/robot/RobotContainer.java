@@ -333,15 +333,15 @@ public class RobotContainer {
 
     m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
 
-    // return new SequentialCommandGroup(
-    //   new WaitCommand(0.5),
-    //   new ZeroGyroCommand(m_drivetrainSubsystem),
-    //   new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
-    //   new WaitCommand(0.5),
-    //   new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(3)
-    // );
+    return new SequentialCommandGroup(
+      new WaitCommand(0.5),
+      new ZeroGyroCommand(m_drivetrainSubsystem),
+      new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+      new WaitCommand(0.5),
+      new TurnAngle(m_drivetrainSubsystem, 30).withTimeout(3)
+    );
 
-    // /*
+    /*
     return new SequentialCommandGroup(
       new WaitCommand(0.5),
       new ZeroGyroCommand(m_drivetrainSubsystem),
@@ -353,9 +353,8 @@ public class RobotContainer {
         new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
         new SequentialCommandGroup(
           new WaitCommand(0.5),
-          new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.5)
-          // new AutoRunCommand(m_drivetrainSubsystem, 0, 0, 1).withTimeout(5),
-          // new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.5)
+          new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.0),
+          new WaitCommand(0.5)
         )
       ),
       new SequentialCommandGroup(
@@ -372,13 +371,13 @@ public class RobotContainer {
       new SequentialCommandGroup(
         new WaitCommand(0.5),
         // new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.5),
-        new AutoRunCommand(m_drivetrainSubsystem, 0, 0, 1.95).withTimeout(1.3),
+        new AutoRunCommand(m_drivetrainSubsystem, 0, 0, 2.2).withTimeout(1.2),
         new ParallelRaceGroup(
           new DeployIntakeCommand(m_intake, IntakeState.DOWN),
           new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
           new AutoRunCommand(m_drivetrainSubsystem, -1.2, 0, 0).withTimeout(2.7)
         ),
-        new AutoRunCommand(m_drivetrainSubsystem, 0, 0, -1).withTimeout(1.8)
+        new AutoRunCommand(m_drivetrainSubsystem, 0, 0, -1.95).withTimeout(0.7)
       ),
 
       new SequentialCommandGroup(
@@ -393,6 +392,6 @@ public class RobotContainer {
       )
      );
 
-    //  */
+     */
   }
 }

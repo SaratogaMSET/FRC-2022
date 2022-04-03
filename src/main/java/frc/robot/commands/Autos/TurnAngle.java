@@ -30,8 +30,8 @@ public class TurnAngle extends CommandBase {
     @Override
     public void execute() {
         double currentAngle = m_drivetrainSubsystem.getNavHeading();
-        double diff = (currentAngle-m_initialAngle) * 180/Math.PI;
-        pidValue = pid.calculate(diff, m_DeltaTheta);
+        double diff = (currentAngle-m_initialAngle);
+        pidValue = pid.calculate(diff, m_DeltaTheta * Math.PI/180);
 
         // SmartDashboard.putNumber("PID Value", pidValue);
         m_drivetrainSubsystem.drive(new ChassisSpeeds(0, 0, m_DeltaTheta));

@@ -39,7 +39,8 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMotor2 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR2);
 
     shooterSolenoid = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.ShooterConstants.SHOOTER_SOLENOID); //CHANGE VALUES
-  
+    shooterSolenoid.set(false);
+
     resetSensors();
   }
 

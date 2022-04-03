@@ -64,7 +64,7 @@ public class ShootCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         m_shooter.setRPM(0);
-        m_shooter.setAngle(false);
+        m_shooter.setAngle(true);
         m_compressor.enableDigital();
     }
 

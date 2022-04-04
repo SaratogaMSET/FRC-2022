@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.deser.SettableBeanProperty.Delegating;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -31,14 +32,24 @@ public class TurnAngle extends CommandBase {
     public void execute() {
         double currentAngle = m_drivetrainSubsystem.getNavHeading();
         double diff = (currentAngle-m_initialAngle);
-        pidValue = pid.calculate(diff, m_DeltaTheta * Math.PI/180);
-
-        // SmartDashboard.putNumber("PID Value", pidValue);
-        m_drivetrainSubsystem.drive(new ChassisSpeeds(0, 0, m_DeltaTheta));
+        pidValue = pid.calculate(diff, m_DeltaTheta * Math.PI/180) * 10;
+        
+        SmartDashboard.putNumber("Diff", diff);
+        SmartDashboard.putNumber("PID Setpoint", m_DeltaTheta * Math.PI/180);
+        SmartDashboard.putNumber("PID Value", pidValue);
+        m_drivetrainSubsystem.drive(new ChassisSpeeds(0, 0, pidValue));
     }
 
     @Override
     public void end(boolean interrupted) {
         m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    }
+
+    @Override
+    public boolean isFinished() {
+        if(pidValue < 0.5){
+            return true;
+        }
+        return false;
     }
 }

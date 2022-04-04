@@ -333,26 +333,27 @@ public class RobotContainer {
 
     m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
 
-    return new SequentialCommandGroup(
-      new WaitCommand(0.5),
-      new ZeroGyroCommand(m_drivetrainSubsystem),
-      new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
-      new WaitCommand(0.5),
-      new TurnAngle(m_drivetrainSubsystem, 30).withTimeout(3)
-    );
+    // return new SequentialCommandGroup(
+    //   new WaitCommand(0.5),
+    //   new ZeroGyroCommand(m_drivetrainSubsystem),
+    //   new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+    //   new WaitCommand(0.1),
+    //   new TurnAngle(m_drivetrainSubsystem, 100).withTimeout(3)
+    // );
 
-    /*
+    // /*
     return new SequentialCommandGroup(
       new WaitCommand(0.5),
       new ZeroGyroCommand(m_drivetrainSubsystem),
       new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
-       new WaitCommand(0.5),
+      //  new WaitCommand(0.5),
       // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
       new ParallelRaceGroup(
         new DeployIntakeCommand(m_intake, IntakeState.DOWN),
         new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
         new SequentialCommandGroup(
           new WaitCommand(0.5),
+          new ZeroGyroCommand(m_drivetrainSubsystem),
           new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.0),
           new WaitCommand(0.5)
         )
@@ -369,15 +370,21 @@ public class RobotContainer {
       ),
 
       new SequentialCommandGroup(
+        new ZeroGyroCommand(m_drivetrainSubsystem),
+        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
         new WaitCommand(0.5),
+        new TurnAngle(m_drivetrainSubsystem, 80),
         // new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.5),
-        new AutoRunCommand(m_drivetrainSubsystem, 0, 0, 2.2).withTimeout(1.2),
+        // new AutoRunCommand(m_drivetrainSubsystem, 0, 0, 2.2).withTimeout(1.2),
+
+        new ZeroGyroCommand(m_drivetrainSubsystem),
         new ParallelRaceGroup(
           new DeployIntakeCommand(m_intake, IntakeState.DOWN),
           new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
           new AutoRunCommand(m_drivetrainSubsystem, -1.2, 0, 0).withTimeout(2.7)
         ),
-        new AutoRunCommand(m_drivetrainSubsystem, 0, 0, -1.95).withTimeout(0.7)
+        new ZeroGyroCommand(m_drivetrainSubsystem),
+        new TurnAngle(m_drivetrainSubsystem, -50)
       ),
 
       new SequentialCommandGroup(
@@ -392,6 +399,6 @@ public class RobotContainer {
       )
      );
 
-     */
+    //  */
   }
 }

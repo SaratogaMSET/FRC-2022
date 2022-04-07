@@ -11,11 +11,19 @@ public class HangDownCommand extends CommandBase {
     private final HangSubsystem m_hangSubsystem;
     private double hangSpeed;
     private double originalSpeed;
+    private boolean softStop = false;
 
     public HangDownCommand(HangSubsystem hang, double speed) {
         hangSpeed = -speed;
         originalSpeed = hangSpeed;
         m_hangSubsystem = hang;
+        addRequirements(m_hangSubsystem);
+    }
+    public HangDownCommand(HangSubsystem hang, double speed, boolean b) {
+        hangSpeed = -speed;
+        originalSpeed = hangSpeed;
+        m_hangSubsystem = hang;
+        softStop = b;
         addRequirements(m_hangSubsystem);
     }
     // Called when the command is initially scheduled.
@@ -75,6 +83,9 @@ public class HangDownCommand extends CommandBase {
         // if (m_hangSubsystem.triggeredLeftSoftStop && m_hangSubsystem.triggeredRightSoftStop) {
             return true;
         }
+        if(softStop && m_hangSubsystem.triggeredLeftSoftStop && m_hangSubsystem.triggeredRightSoftStop){
+            return true;
+        }
         return false;
     }
 
@@ -83,7 +94,9 @@ public class HangDownCommand extends CommandBase {
         m_hangSubsystem.setHangLeftSpeed(0);
         m_hangSubsystem.setHangRightSpeed(0);
 
-        m_hangSubsystem.rightResetEncoders();
-        m_hangSubsystem.leftResetEncoders();
+        if(softStop == false){
+            m_hangSubsystem.rightResetEncoders();
+            m_hangSubsystem.leftResetEncoders();
+        }
     }
 }

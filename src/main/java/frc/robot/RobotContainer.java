@@ -226,9 +226,27 @@ public class RobotContainer {
       )
     );
 
+    new JoystickButton(m_gunner, 12).whenPressed(
+      new HangDownCommand(m_hangSubsystem, 0.85, true)
+    );
+
     new JoystickButton(m_gunner, 4).whenPressed(
       new DeployHangCommand(m_hangSubsystem)
     );
+
+    // Arms up, engage pistons, pull the robot up
+    // new JoystickButton(m_gunner, 9).whenPressed(
+    //   new SequentialCommandGroup(
+    //     new HangUpCommand(m_hangSubsystem, 1),
+    //     new WaitCommand(3),
+    //     new DeployHangCommand(m_hangSubsystem),
+    //     new WaitCommand(3),
+    //     new HangDownCommand(m_hangSubsystem, 0.85),
+    //     new WaitCommand(0.7),
+    //     new InstantCommand(() -> m_hangSubsystem.rightResetEncoders()),
+    //     new InstantCommand(() -> m_hangSubsystem.leftResetEncoders())
+    //   )
+    // );
 
     new JoystickButton(m_gunner, 2).whileActiveOnce(
       new ParallelCommandGroup(
@@ -245,6 +263,7 @@ public class RobotContainer {
       new ConstantAim(
         () -> modifyAxis(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
         () -> -modifyAxis(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> modifyAxis(m_driver.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
         m_drivetrainSubsystem,
         () -> m_visionSubsystem.getRawAngle()
       )
@@ -338,12 +357,12 @@ public class RobotContainer {
     //   new ZeroGyroCommand(m_drivetrainSubsystem),
     //   new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
     //   new WaitCommand(0.1),
-    //   new TurnAngle(m_drivetrainSubsystem, 100).withTimeout(3)
+    //   new TurnAngle(m_drivetrainSubsystem, -50)
     // );
 
     // /*
     return new SequentialCommandGroup(
-      new WaitCommand(0.5),
+      new WaitCommand(0.2),
       new ZeroGyroCommand(m_drivetrainSubsystem),
       new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
       //  new WaitCommand(0.5),
@@ -352,7 +371,7 @@ public class RobotContainer {
         new DeployIntakeCommand(m_intake, IntakeState.DOWN),
         new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
         new SequentialCommandGroup(
-          new WaitCommand(0.5),
+          new WaitCommand(0.2),
           new ZeroGyroCommand(m_drivetrainSubsystem),
           new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.0),
           new WaitCommand(0.5)
@@ -363,17 +382,18 @@ public class RobotContainer {
         new ParallelRaceGroup(
           new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
           new SequentialCommandGroup(
-            new WaitCommand(1.2),
-            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.5)
+            new WaitCommand(0.5),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)
           )
         )
       ),
 
       new SequentialCommandGroup(
+        new WaitCommand(0.2),
         new ZeroGyroCommand(m_drivetrainSubsystem),
         new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
-        new WaitCommand(0.5),
-        new TurnAngle(m_drivetrainSubsystem, 80),
+        // new WaitCommand(0.2),
+        new TurnAngle(m_drivetrainSubsystem, 90),
         // new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.5),
         // new AutoRunCommand(m_drivetrainSubsystem, 0, 0, 2.2).withTimeout(1.2),
 
@@ -381,20 +401,53 @@ public class RobotContainer {
         new ParallelRaceGroup(
           new DeployIntakeCommand(m_intake, IntakeState.DOWN),
           new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
-          new AutoRunCommand(m_drivetrainSubsystem, -1.2, 0, 0).withTimeout(2.7)
+          new SequentialCommandGroup(
+            new AutoRunCommand(m_drivetrainSubsystem, -2, 0, 0).withTimeout(1.5),
+            new WaitCommand(0.5)
+          )
+          
         ),
+        // new WaitCommand(0.5),
         new ZeroGyroCommand(m_drivetrainSubsystem),
         new TurnAngle(m_drivetrainSubsystem, -50)
+        // new ZeroGyroCommand(m_drivetrainSubsystem),
+        // new TurnAngle(m_drivetrainSubsystem, 100),
+        // new ZeroGyroCommand(m_drivetrainSubsystem),
+        // new TurnAngle(m_drivetrainSubsystem, 100)
       ),
 
       new SequentialCommandGroup(
-        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+        new ParallelRaceGroup(
+          new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+          // new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+          new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8)
+        ),
         new ParallelRaceGroup(
           new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
           new SequentialCommandGroup(
-            new WaitCommand(1.2),
-            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.5)
+            new WaitCommand(0.5),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(.5)
           )
+        )
+      ),
+      new ParallelRaceGroup(
+        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+        new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
+        new SequentialCommandGroup(
+          new WaitCommand(0.2),
+          new ZeroGyroCommand(m_drivetrainSubsystem),
+          new AutoRunCommand(m_drivetrainSubsystem, -2.6, 1.31, 0).withTimeout(1.35),
+          new WaitCommand(1)
+        )
+      ),
+      new ZeroGyroCommand(m_drivetrainSubsystem),
+      new ParallelCommandGroup(
+        new ShootCommand(m_shooterSubsystem, ShooterZone.ZONE_4, m_compressor),
+        new SequentialCommandGroup(
+          new AutoRunCommand(m_drivetrainSubsystem, 3, 0, 0).withTimeout(1.3),
+          new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+          // new WaitCommand(0.2),
+          new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)
         )
       )
      );

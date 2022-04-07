@@ -56,7 +56,7 @@ public final class Constants {
         public static final double kPThetaControllerTrajectory = 0;
 
         public static final double kPThetaController = 0.08; //.07655
-        public static final double kIThetaController = 0.050;
+        public static final double kIThetaController = 0.052;
     }
 
     public static class Vision{
@@ -156,9 +156,9 @@ public final class Constants {
 
         public static final int HANG_SOLENOID = 0;
 
-        public static final int HANG_MAX_ENCODER_COUNTS = 290000; //290000
+        public static final int HANG_MAX_ENCODER_COUNTS = 245000; //290000
         public static final int HANG_HALF_ENCODER_COUNTS = HANG_MAX_ENCODER_COUNTS/2;
-        public static final int HANG_ENCODER_SOFT_STOP = 20000;
+        public static final int HANG_ENCODER_SOFT_STOP = 60000;
     }
     
     public static class Photoelectric {

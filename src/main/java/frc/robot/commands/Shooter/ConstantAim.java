@@ -18,6 +18,8 @@ public class ConstantAim extends CommandBase {
     private DoubleSupplier m_translationXSupplier;
     private DoubleSupplier m_translationYSupplier;
 
+    private DoubleSupplier m_rot;
+
     private double m_translationXTrapezoidal = 0;
     private double m_translationYTrapezoidal = 0;
 
@@ -27,11 +29,13 @@ public class ConstantAim extends CommandBase {
     // public CANCoder frontRightCanCoder = new CANCoder(Constants.Drivetrain.FRONT_RIGHT_MODULE_STEER_ENCODER);
     // public CANCoder frontLeftCanCoder = new CANCoder(Constants.Drivetrain.FRONT_LEFT_MODULE_STEER_ENCODER);
 
-    public ConstantAim(DoubleSupplier x, DoubleSupplier y, DrivetrainSubsystem drivetrainSubsystem, DoubleSupplier rawAngle) {
+    public ConstantAim(DoubleSupplier x, DoubleSupplier y, DoubleSupplier rot, DrivetrainSubsystem drivetrainSubsystem, DoubleSupplier rawAngle) {
         this.m_drivetrainSubsystem = drivetrainSubsystem;
         this.m_rawAngle = rawAngle;
         this.m_translationXSupplier = x;
         this.m_translationYSupplier = y;
+
+        this.m_rot = rot;
 
         pid = new PIDController(Constants.Drivetrain.kPThetaController, Constants.Drivetrain.kIThetaController, 0);
 
@@ -76,7 +80,7 @@ public class ConstantAim extends CommandBase {
             new ChassisSpeeds(
                 resultX,
                 resultY,
-                pidValue
+                m_rot.getAsDouble() + pidValue
             )
         );
 

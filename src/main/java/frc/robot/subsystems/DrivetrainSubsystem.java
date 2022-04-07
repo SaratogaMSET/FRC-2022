@@ -144,7 +144,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * 'forwards' direction.
    */
   public void zeroGyroscope() {
-        offset = m_navx.getFusedHeading();
+        // offset = m_navx.getFusedHeading();
+        offset = m_navx.getYaw() + 180;
         resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
         
   }
@@ -154,11 +155,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public double getNavHeading(){
-    double angle = m_navx.getFusedHeading() - offset;
-    angle = angle + 90;
+    // double angle = m_navx.getFusedHeading() - offset;
+    double angle = m_navx.getYaw() + 180 - offset;
+    angle = angle + 90 + 360;
     angle = angle % 360;
     // SmartDashboard.putNumber("navX Angle", angle);
-    // SmartDashboard.putNumber("navX Offset", offset);
+    SmartDashboard.putNumber("navX Offset", offset);
     return Math.toRadians(angle);
   }
 

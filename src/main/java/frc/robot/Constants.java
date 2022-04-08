@@ -55,7 +55,7 @@ public final class Constants {
         public static final double kIYController = 0.000;
         public static final double kPThetaControllerTrajectory = 0;
 
-        public static final double kPThetaController = 0.08; //.07655
+        public static final double kPThetaController = 0.06; //.07655
         public static final double kIThetaController = 0.052;
     }
 
@@ -104,7 +104,7 @@ public final class Constants {
             ZONE_1 (0.43, true),
             ZONE_2 (0.44, true),
             ZONE_3 (.48, true),
-            ZONE_4 (.52 , true),
+            ZONE_4 (.51 , true),
             ZONE_5 (0.57, true),
             ZONE_6 (0.69, true),
             ZONE_7 (0.728, true),
@@ -156,7 +156,7 @@ public final class Constants {
 
         public static final int HANG_SOLENOID = 0;
 
-        public static final int HANG_MAX_ENCODER_COUNTS = 245000; //290000
+        public static final int HANG_MAX_ENCODER_COUNTS = 260000; //290000
         public static final int HANG_HALF_ENCODER_COUNTS = HANG_MAX_ENCODER_COUNTS/2;
         public static final int HANG_ENCODER_SOFT_STOP = 60000;
     }

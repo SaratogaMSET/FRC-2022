@@ -66,9 +66,8 @@ import frc.robot.subsystems.VisionSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final SendableChooser<String> m_autoSwitcher = new SendableChooser<String>();
-  public static final String kAutoR1 = "1 Ball";
-  public static final String kAutoR2 = "2 Ball";
-  public static final String kAutoR3 = "Back Path";
+  public static final String twoBall = "2 Ball";
+  public static final String fiveBall = "5 Ball";
 
 
   private final DrivetrainSubsystem m_drivetrainSubsystem;
@@ -128,9 +127,8 @@ public class RobotContainer {
       }
     }).start();
 
-    m_autoSwitcher.addOption(kAutoR1, kAutoR1);
-    m_autoSwitcher.addOption(kAutoR2, kAutoR2);
-    m_autoSwitcher.addOption(kAutoR3, kAutoR3);
+    m_autoSwitcher.setDefaultOption(twoBall, twoBall);
+    m_autoSwitcher.addOption(fiveBall, fiveBall);
 
     SmartDashboard.putData(m_autoSwitcher);
 
@@ -342,14 +340,8 @@ public class RobotContainer {
     );
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    
 
+  public Command getFiveBallAuto(){
     m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
 
     // return new SequentialCommandGroup(
@@ -436,7 +428,7 @@ public class RobotContainer {
         new SequentialCommandGroup(
           new WaitCommand(0.2),
           new ZeroGyroCommand(m_drivetrainSubsystem),
-          new AutoRunCommand(m_drivetrainSubsystem, -2.6, 1.31, 0).withTimeout(1.35),
+          new AutoRunCommand(m_drivetrainSubsystem, -2.6, 1.23, 0).withTimeout(1.45),
           new WaitCommand(1)
         )
       ),
@@ -445,7 +437,8 @@ public class RobotContainer {
         new ShootCommand(m_shooterSubsystem, ShooterZone.ZONE_4, m_compressor),
         new SequentialCommandGroup(
           new AutoRunCommand(m_drivetrainSubsystem, 3, 0, 0).withTimeout(1.3),
-          new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+          new ZeroGyroCommand(m_drivetrainSubsystem),
+          new TurnAngle(m_drivetrainSubsystem, 20),
           // new WaitCommand(0.2),
           new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)
         )
@@ -453,5 +446,57 @@ public class RobotContainer {
      );
 
     //  */
+  }
+
+  public Command getTwoBallAuto(){
+    // /*
+    return new SequentialCommandGroup(
+      new WaitCommand(0.2),
+      new ZeroGyroCommand(m_drivetrainSubsystem),
+      new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+      //  new WaitCommand(0.5),
+      // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+      new ParallelRaceGroup(
+        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+        new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
+        new SequentialCommandGroup(
+          new WaitCommand(0.2),
+          new ZeroGyroCommand(m_drivetrainSubsystem),
+          new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.0),
+          new WaitCommand(0.5)
+        )
+      ),
+      new SequentialCommandGroup(
+        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+        new ParallelRaceGroup(
+          new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+          new SequentialCommandGroup(
+            new WaitCommand(0.5),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)
+          )
+        )
+      )
+    );
+  }
+
+
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+
+    String auto = m_autoSwitcher.getSelected();
+
+    switch(auto){
+      case twoBall:
+        return getTwoBallAuto();
+      case fiveBall:
+        return getFiveBallAuto();
+      default:
+        return getTwoBallAuto();
+    }
+
   }
 }

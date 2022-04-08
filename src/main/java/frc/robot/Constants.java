@@ -55,8 +55,8 @@ public final class Constants {
         public static final double kIYController = 0.000;
         public static final double kPThetaControllerTrajectory = 0;
 
-        public static final double kPThetaController = 0.06; //.07655
-        public static final double kIThetaController = 0.052;
+        public static final double kPThetaController = 0.1; //.08
+        public static final double kIThetaController = 0.002; //.052
     }
 
     public static class Vision{

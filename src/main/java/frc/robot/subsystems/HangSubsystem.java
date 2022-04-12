@@ -50,6 +50,9 @@ public class HangSubsystem extends SubsystemBase {
         hangLeftLimitSwitch = new DigitalInput(Constants.HangConstants.LEFT_HANG_LIMIT_SWITCH);
     
         hangSolenoid = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.HangConstants.HANG_SOLENOID);
+
+        rightResetEncoders();
+        leftResetEncoders();
     }
 
     public void setHangLeftSpeed(double speed) {
@@ -61,10 +64,12 @@ public class HangSubsystem extends SubsystemBase {
 
 
     public void rightResetEncoders() {
-        encoderRight.setSelectedSensorPosition(0);
+        if(hangRightLimitSwitch.get())
+            encoderRight.setSelectedSensorPosition(0);
     }
     public void leftResetEncoders() {
-        encoderLeft.setSelectedSensorPosition(0);
+        if(hangLeftLimitSwitch.get())
+            encoderLeft.setSelectedSensorPosition(0);
     }
 
     public double getRightEncoderValue() {

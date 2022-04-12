@@ -6,8 +6,14 @@ import frc.robot.subsystems.HangSubsystem;
 public class DeployHangCommand extends CommandBase {
     
     private final HangSubsystem m_hangSubsystem;
+    // private boolean m_hangValue;
 
     public DeployHangCommand(HangSubsystem hang) {
+        m_hangSubsystem = hang;
+        addRequirements(m_hangSubsystem);
+    }
+
+    public DeployHangCommand(HangSubsystem hang, boolean value) {
         m_hangSubsystem = hang;
         addRequirements(m_hangSubsystem);
     }

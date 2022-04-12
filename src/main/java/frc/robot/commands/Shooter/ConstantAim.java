@@ -37,7 +37,7 @@ public class ConstantAim extends CommandBase {
 
         this.m_rot = rot;
 
-        pid = new PIDController(Constants.Drivetrain.kPThetaController, Constants.Drivetrain.kIThetaController, 0);
+        pid = new PIDController(Constants.Drivetrain.kPThetaAimLock, Constants.Drivetrain.kIThetaAimLock, 0);
 
         addRequirements(m_drivetrainSubsystem);
         // addRequirements(m_visionSubsystem);

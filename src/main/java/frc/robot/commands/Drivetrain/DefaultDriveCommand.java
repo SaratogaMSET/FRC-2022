@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -51,12 +52,18 @@ public class DefaultDriveCommand extends CommandBase {
         double resultX = Math.cos(roboAngle) * magnitude;
         double resultY = Math.sin(roboAngle) * magnitude;
 
-        double multiplier = Math.pow(Math.abs(m_rotationSupplier.getAsDouble()/9.1), 0.8);
-
-        // SmartDashboard.putNumber("m_translationXSupplier", m_translationXTrapezoidal);
-        // SmartDashboard.putNumber("m_translationYSupplier", m_translationYTrapezoidal);
-        // SmartDashboard.putNumber("m_rotationSupplier", m_rotationSupplier.getAsDouble());
+        // double multiplier = Math.pow(Math.abs(m_rotationSupplier.getAsDouble()/9.1), 0.8);
+        double rotation = m_rotationSupplier.getAsDouble();
+        SmartDashboard.putNumber("m_translationXSupplier", resultX);
+        SmartDashboard.putNumber("m_translationYSupplier", resultY);
+        SmartDashboard.putNumber("m_rotationSupplier", m_rotationSupplier.getAsDouble());
         
+        if(Math.abs(resultX) < 0.18){
+            resultX = 0;
+        }
+        if(Math.abs(rotation) < 0.6){
+            rotation = 0;
+        }
         // m_drivetrainSubsystem.drive(
         //     new ChassisSpeeds(
         //         m_translationXSupplier.getAsDouble(),
@@ -69,7 +76,7 @@ public class DefaultDriveCommand extends CommandBase {
             new ChassisSpeeds(
                 resultX,
                 resultY,
-                m_rotationSupplier.getAsDouble() * multiplier
+                rotation
             )
         );
     }

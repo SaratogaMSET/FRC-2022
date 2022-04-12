@@ -55,8 +55,11 @@ public final class Constants {
         public static final double kIYController = 0.000;
         public static final double kPThetaControllerTrajectory = 0;
 
-        public static final double kPThetaController = 0.1; //.08
-        public static final double kIThetaController = 0.002; //.052
+        public static final double kPThetaController = 0.06; //.07655
+        public static final double kIThetaController = 0.052;
+
+        public static final double kPThetaAimLock = 0.1; //.08
+        public static final double kIThetaAimLock = 0.002; //.052
     }
 
     public static class Vision{
@@ -111,9 +114,9 @@ public final class Constants {
             EMERGENCY (0.25, false),
             TEST (0.49, true),
             
-            LIRP_1 (0.44, true),
-            LIRP_2 (0.48, true),
-            LIRP_3 (0.67, true);
+            LIRP_1 (0.45, true),
+            LIRP_2 (0.49, true),
+            LIRP_3 (0.68, true);
 
             private double percentRPM;
             private boolean hoodAngle; //final?
@@ -156,9 +159,9 @@ public final class Constants {
 
         public static final int HANG_SOLENOID = 0;
 
-        public static final int HANG_MAX_ENCODER_COUNTS = 260000; //290000
+        public static final int HANG_MAX_ENCODER_COUNTS = 255000; //290000
         public static final int HANG_HALF_ENCODER_COUNTS = HANG_MAX_ENCODER_COUNTS/2;
-        public static final int HANG_ENCODER_SOFT_STOP = 60000;
+        public static final int HANG_ENCODER_SOFT_STOP = 15000;
     }
     
     public static class Photoelectric {

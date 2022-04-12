@@ -19,7 +19,7 @@ public class HangDownCommand extends CommandBase {
         m_hangSubsystem = hang;
         addRequirements(m_hangSubsystem);
     }
-    public HangDownCommand(HangSubsystem hang, double speed, boolean b) {
+    public  HangDownCommand(HangSubsystem hang, double speed, boolean b) {
         hangSpeed = -speed;
         originalSpeed = hangSpeed;
         m_hangSubsystem = hang;
@@ -33,12 +33,12 @@ public class HangDownCommand extends CommandBase {
             m_hangSubsystem.triggeredRightSoftStop = true;
         }
         if (m_hangSubsystem.getRightEncoderValue() < Constants.HangConstants.HANG_HALF_ENCODER_COUNTS) {
-            hangSpeed = originalSpeed/2;
+            hangSpeed = originalSpeed * 2/3;
         } else {
             hangSpeed = originalSpeed;
         }
         // if (m_hangSubsystem.triggeredRightSoftStop) {
-        if (m_hangSubsystem.triggeredRightSwitch && m_hangSubsystem.hangRightLimitSwitch.get()) {
+        if (m_hangSubsystem.triggeredRightSoftStop && m_hangSubsystem.hangRightLimitSwitch.get()) {
             m_hangSubsystem.setHangRightSpeed(0);
         } else {
             m_hangSubsystem.setHangRightSpeed(hangSpeed);
@@ -50,12 +50,12 @@ public class HangDownCommand extends CommandBase {
             m_hangSubsystem.triggeredLeftSoftStop = true;
         }
         if (m_hangSubsystem.getLeftEncoderValue() < Constants.HangConstants.HANG_HALF_ENCODER_COUNTS) {
-            hangSpeed = originalSpeed/2;
+            hangSpeed = originalSpeed * 2/3;
         } else {
             hangSpeed = originalSpeed;
         }
         // if (m_hangSubsystem.triggeredLeftSoftStop) {
-        if (m_hangSubsystem.triggeredLeftSwitch && m_hangSubsystem.hangLeftLimitSwitch.get()) {
+        if (m_hangSubsystem.triggeredLeftSoftStop && m_hangSubsystem.hangLeftLimitSwitch.get()) {
             m_hangSubsystem.setHangLeftSpeed(0);
         } else {
             m_hangSubsystem.setHangLeftSpeed(hangSpeed);

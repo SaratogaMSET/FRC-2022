@@ -54,9 +54,9 @@ public class DefaultDriveCommand extends CommandBase {
 
         // double multiplier = Math.pow(Math.abs(m_rotationSupplier.getAsDouble()/9.1), 0.8);
         double rotation = m_rotationSupplier.getAsDouble();
-        SmartDashboard.putNumber("m_translationXSupplier", resultX);
-        SmartDashboard.putNumber("m_translationYSupplier", resultY);
-        SmartDashboard.putNumber("m_rotationSupplier", m_rotationSupplier.getAsDouble());
+        // SmartDashboard.putNumber("m_translationXSupplier", resultX);
+        // SmartDashboard.putNumber("m_translationYSupplier", resultY);
+        // SmartDashboard.putNumber("m_rotationSupplier", m_rotationSupplier.getAsDouble());
         
         if(Math.abs(resultX) < 0.18){
             resultX = 0;

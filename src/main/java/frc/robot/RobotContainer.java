@@ -231,7 +231,7 @@ public class RobotContainer {
     );
 
     new JoystickButton(m_gunner, 12).whileActiveOnce(
-      new HangDownCommand(m_hangSubsystem, 0.75)
+      new HangDownCommand(m_hangSubsystem, 0.75, true)
     );
 
     new JoystickButton(m_gunner, 10).whileActiveOnce(
@@ -268,13 +268,24 @@ public class RobotContainer {
     );
 
     new JoystickButton(m_gunner, 1).whileActiveOnce(
-      new ConstantAim(
-        () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> modifyAxis(m_driver.getRightX()/2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-        m_drivetrainSubsystem,
-        () -> m_visionSubsystem.getRawAngle()
-      )
+      // new ParallelCommandGroup(
+      //   new InstantCommand(() -> m_shooterSubsystem.setRPM(
+      //     m_shooterSubsystem.getShooterStateRPM(
+      //       m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()), m_visionSubsystem.getDistanceFromTarget()
+      //     )
+      //   )),
+        new ConstantAim(
+          () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+          () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+          () -> modifyAxis(m_driver.getRightX()/2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+          m_drivetrainSubsystem,
+          () -> m_visionSubsystem.getRawAngle()
+        )
+      // )
+    );
+
+    new JoystickButton(m_gunner, 1).whenReleased(
+      new InstantCommand(() -> m_shooterSubsystem.setRPM(0))
     );
 
     // new JoystickButton(m_gunner, 1).whileActiveOnce(
@@ -480,7 +491,7 @@ public class RobotContainer {
   public Command getTwoBallAuto(){
     // /*
     return new SequentialCommandGroup(
-      new WaitCommand(0.2),
+      new WaitCommand(0.2), //0.2
       new ZeroGyroCommand(m_drivetrainSubsystem),
       new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
       //  new WaitCommand(0.5),

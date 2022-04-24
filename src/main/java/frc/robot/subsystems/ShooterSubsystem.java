@@ -110,7 +110,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public ShooterZone getShooterZone(double distance) {
     if(distance <= 0.0) {
-      return ShooterZone.EMERGENCY;
+      return ShooterZone.ZONE_4;
     }
     if (distance < Constants.Vision.Distance.LIRP_1) {
       return ShooterZone.LIRP_1;

@@ -21,7 +21,7 @@ public class HangUpCommand extends CommandBase {
     public void execute() {
 
         //right
-        if (m_hangSubsystem.getRightEncoderValue() > Constants.HangConstants.HANG_MAX_ENCODER_COUNTS) {
+        if (m_hangSubsystem.getRightEncoderValue() > Constants.HangConstants.HANG_MAX_ENCODER_COUNTS+12000) {
             m_hangSubsystem.maxHeightRight = true;
             m_hangSubsystem.setHangRightSpeed(0); //not necessary
         } else {

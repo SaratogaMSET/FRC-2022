@@ -159,7 +159,7 @@ public final class Constants {
 
         public static final int HANG_SOLENOID = 0;
 
-        public static final int HANG_MAX_ENCODER_COUNTS = 255000; //290000
+        public static final int HANG_MAX_ENCODER_COUNTS = 270000; //290000
         public static final int HANG_HALF_ENCODER_COUNTS = HANG_MAX_ENCODER_COUNTS/2;
         public static final int HANG_ENCODER_SOFT_STOP = 15000;
     }

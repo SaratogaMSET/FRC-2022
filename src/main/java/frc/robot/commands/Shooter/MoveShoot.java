@@ -25,6 +25,7 @@ public class MoveShoot extends CommandBase {
     private final SimpleMotorFeedforward m_shooterFf;
     
     // FIXME maybe different feedforwards for different shooter zones?
+    // TODO tune
     private final double m_kS = 0;
     private final double m_kV = 0;
     private final double m_kA = 0;

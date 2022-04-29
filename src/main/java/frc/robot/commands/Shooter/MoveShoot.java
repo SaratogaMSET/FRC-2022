@@ -84,6 +84,23 @@ public class MoveShoot extends CommandBase {
 
     @Override
     public void execute() {
+        m_translationXTrapezoidal = (m_translationXSupplier.getAsDouble()-m_translationXTrapezoidal)/1 + m_translationXTrapezoidal;
+        m_translationYTrapezoidal = (m_translationYSupplier.getAsDouble()-m_translationYTrapezoidal)/1 + m_translationYTrapezoidal;
+
+        double magnitude = Math.hypot(m_translationXTrapezoidal, m_translationYTrapezoidal);
+
+        double joyAngle = Math.atan2(m_translationYTrapezoidal, m_translationXTrapezoidal);
+        double roboAngle = (m_dt.getNavHeading() + joyAngle);
+
+        // resultX = Math.cos(roboAngle) * magnitude;
+        resultY = Math.sin(roboAngle) * magnitude;
+
+        double distance = m_vision.getDistanceFromTarget();
+        m_zone = m_shooter.getShooterZone(distance);
+        // FIXME resultX or resultY for front/back movement? 
+        // Should we pass in resultX, resultY, or magnitude?
+        m_rpm = m_shooter.getShooterStateRPM(m_zone, distance) + m_shooterFf.calculate(resultY);
+
         SmartDashboard.putNumber("RPM Setpoint: ", m_rpm);
 
         m_shooter.setRPM(m_rpm);

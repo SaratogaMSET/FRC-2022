@@ -187,7 +187,8 @@ public class RobotContainer {
           m_compressor, 
           m_drivetrainSubsystem, 
           () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-          () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND),
+          () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND
+        ),
 
         new SequentialCommandGroup(
           new WaitCommand(0.5),

@@ -39,6 +39,8 @@ import frc.robot.commands.Hang.HangUpCommand;
 import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.commands.Shooter.AimForShootCommand;
+import frc.robot.commands.Shooter.MoveAim;
+import frc.robot.commands.Shooter.MoveShoot;
 import frc.robot.commands.Shooter.ConstantAim;
 import frc.robot.commands.Shooter.ShootCommand;
 import frc.robot.commands.Test.TestDrivetrainCommandGroup;
@@ -178,7 +180,15 @@ public class RobotContainer {
     new Button(m_driver::getYButton).whileActiveOnce(
       new ParallelCommandGroup(
         // new SetXConfigCommand(m_drivetrainSubsystem),
-        new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+        // new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+        new MoveShoot(
+          m_shooterSubsystem, 
+          m_visionSubsystem, 
+          m_compressor, 
+          m_drivetrainSubsystem, 
+          () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+          () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND),
+
         new SequentialCommandGroup(
           new WaitCommand(0.5),
           new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.6)
@@ -274,12 +284,19 @@ public class RobotContainer {
       //       m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()), m_visionSubsystem.getDistanceFromTarget()
       //     )
       //   )),
-        new ConstantAim(
+        /* new ConstantAim(
           () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
           () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
           () -> modifyAxis(m_driver.getRightX()/2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
           m_drivetrainSubsystem,
           () -> m_visionSubsystem.getRawAngle()
+        ) */
+        // TODO resolve button bindings for MoveAim vs ConstantAim
+        new MoveAim(
+          m_drivetrainSubsystem, 
+          m_visionSubsystem, 
+          () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+          () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND
         )
       // )
     );

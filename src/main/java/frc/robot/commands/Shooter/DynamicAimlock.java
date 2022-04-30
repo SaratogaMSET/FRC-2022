@@ -2,33 +2,48 @@ package frc.robot.commands.Shooter;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 
 // Lazy on-the-move shooting solution
-public class MoveShoot extends CommandBase {
+public class DynamicAimlock extends CommandBase {
+    private final DrivetrainSubsystem m_dt;
     private final ShooterSubsystem m_shooter;
-    private Compressor m_compressor;
-    private VisionSubsystem m_vision;
-    private DrivetrainSubsystem m_dt;
+    private final Compressor m_compressor;
+    private final VisionSubsystem m_vision;
+    private final PIDController m_pid;
+    private final SimpleMotorFeedforward m_dtFf;
+    private final SimpleMotorFeedforward m_shooterFf;
 
     private ShooterZone m_zone = ShooterZone.ZONE_1;
-
+    
     private double m_rpm;
 
-    private final SimpleMotorFeedforward m_shooterFf;
-    
-    // FIXME maybe different feedforwards for different shooter zones?
     // TODO tune
-    private final double m_kS = 0;
-    private final double m_kV = 0;
-    private final double m_kA = 0;
+    private final double m_kP = Constants.Drivetrain.kPThetaAimLock;
+    private final double m_kI = Constants.Drivetrain.kIThetaAimLock;
+    private final double m_kD = 0;
+
+    private final double m_dtKS = 0;
+    private final double m_dtKV = 0;
+    private final double m_dtKA = 0;
+
+    // FIXME maybe different feedforwards for different shooter zones?
+    private final double m_shooterKS = 0;
+    private final double m_shooterKV = 0;
+    private final double m_shooterKA = 0;
+
+    private double m_pidValue = 0;
+    private double m_rotation = 0;
 
     private DoubleSupplier m_translationXSupplier;
     private DoubleSupplier m_translationYSupplier;
@@ -36,29 +51,31 @@ public class MoveShoot extends CommandBase {
     private double m_translationXTrapezoidal = 0;
     private double m_translationYTrapezoidal = 0;
 
-    // private double resultX = 0;
+    private double resultX = 0;
     private double resultY = 0;
 
-    public MoveShoot(
-        ShooterSubsystem shooter, 
-        VisionSubsystem vision, 
+    public DynamicAimlock(
+        DrivetrainSubsystem drivetrain,
+        ShooterSubsystem shooter,
+        VisionSubsystem vision,
         Compressor compressor,
-        DrivetrainSubsystem dt,
-        DoubleSupplier xT,
-        DoubleSupplier yT
+        DoubleSupplier xTrans,
+        DoubleSupplier yTrans
     ) {
+        m_dt = drivetrain;
         m_shooter = shooter;
         m_vision = vision;
         m_compressor = compressor;
-        m_dt = dt;
+        m_translationXSupplier = xTrans;
+        m_translationYSupplier = yTrans;
 
-        m_translationXSupplier = xT;
-        m_translationYSupplier = yT;
+        m_pid = new PIDController(m_kP, m_kI, m_kD);
+        m_dtFf = new SimpleMotorFeedforward(m_dtKS, m_dtKV, m_dtKA);
+        m_shooterFf = new SimpleMotorFeedforward(m_shooterKS, m_shooterKV, m_shooterKA);
 
-        m_shooterFf = new SimpleMotorFeedforward(m_kS, m_kV, m_kA);
-
-        addRequirements(shooter);
-        addRequirements(vision);
+        addRequirements(m_dt);
+        addRequirements(m_shooter);
+        addRequirements(m_vision);
     }
 
     @Override
@@ -92,7 +109,7 @@ public class MoveShoot extends CommandBase {
         double joyAngle = Math.atan2(m_translationYTrapezoidal, m_translationXTrapezoidal);
         double roboAngle = (m_dt.getNavHeading() + joyAngle);
 
-        // resultX = Math.cos(roboAngle) * magnitude;
+        resultX = Math.cos(roboAngle) * magnitude;
         resultY = Math.sin(roboAngle) * magnitude;
 
         double distance = m_vision.getDistanceFromTarget();
@@ -104,17 +121,29 @@ public class MoveShoot extends CommandBase {
         SmartDashboard.putNumber("RPM Setpoint: ", m_rpm);
 
         m_shooter.setRPM(m_rpm);
+
+        m_pidValue = m_pid.calculate(m_vision.getRawAngle(), 0);
+        // FIXME resultX or resultY for horizontal movement? 
+        // Should we pass in resultX, resultY, or magnitude?
+        m_rotation = m_pidValue + m_dtFf.calculate(resultX);
+
+        m_dt.drive(
+            new ChassisSpeeds(
+                resultX,
+                resultY,
+                m_rotation
+            )
+        );
+    }
+
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        return false;
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_shooter.setRPM(0);
-        m_shooter.setAngle(true);
-        m_compressor.enableDigital();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
+        m_dt.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     }
 }

@@ -181,7 +181,7 @@ public class RobotContainer {
         // new SetXConfigCommand(m_drivetrainSubsystem),
         // new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
         new SequentialCommandGroup(
-          new WaitCommand(0.5),
+          // new WaitCommand(0.5),
           new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.6)
         )
       )

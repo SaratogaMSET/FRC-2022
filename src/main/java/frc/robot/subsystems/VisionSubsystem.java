@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -17,9 +20,11 @@ public class VisionSubsystem extends SubsystemBase {
   private NetworkTable table;
   private NetworkTableEntry tx, ty, tv;
   private static double x, y, v;
+  private Pose2d m_pose;
 
   public VisionSubsystem() {
     table = NetworkTableInstance.getDefault().getTable("limelight");
+    m_pose = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
 
     //SmartDashboard.putString("Test", "Test");
     //SmartDashboard.putString("Test2", "Test2");
@@ -45,6 +50,12 @@ public class VisionSubsystem extends SubsystemBase {
     x = tx.getDouble(0.0);
     y = ty.getDouble(0.0);
     v = tv.getDouble(0.0);
+
+    // Pose estimation
+    double[] camtran = table.getEntry("camtran").getDoubleArray(new double[]{});
+    Translation2d tranToGoal = new Translation2d(camtran[2], camtran[0] * -1); // potential FIXME
+    Rotation2d rotToGoal = new Rotation2d(camtran[4] * 1); // potential FIXME
+    m_pose = new Pose2d(tranToGoal, rotToGoal);
   }
 
   public VisionState updateVisionState(){
@@ -65,6 +76,10 @@ public class VisionSubsystem extends SubsystemBase {
   public double getRawAngle() {
     return -x;
     // return 15;
+  }
+
+  public Pose2d getCamPose() {
+    return m_pose;
   }
 
   // private void updateSmartDashboard() {

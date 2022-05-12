@@ -145,5 +145,6 @@ public class DynamicAimlock extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         m_dt.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+        m_shooter.setRPM(0);
     }
 }

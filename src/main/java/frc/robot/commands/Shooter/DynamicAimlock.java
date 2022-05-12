@@ -122,16 +122,16 @@ public class DynamicAimlock extends CommandBase {
 
         m_shooter.setRPM(m_rpm);
 
-        m_pidValue = m_pid.calculate(m_vision.getRawAngle(), 0);
         // FIXME resultX or resultY for horizontal movement? 
         // Should we pass in resultX, resultY, or magnitude?
         m_rotation = m_pidValue + m_dtFf.calculate(resultX);
+        m_pidValue = m_pid.calculate(m_vision.getRawAngle(), 0 + m_rotation);
 
         m_dt.drive(
             new ChassisSpeeds(
                 resultX,
                 resultY,
-                m_rotation
+                m_pidValue
             )
         );
     }

@@ -79,7 +79,6 @@ public class RobotContainer {
   private final IntakeSubsystem m_intake;
   private final HangSubsystem m_hangSubsystem;
 
-  private final RobotState m_robotState;
   public static final double pi = Math.PI;
   private final XboxController m_driver = new XboxController(0);
   private final Joystick m_gunner = new Joystick(1);
@@ -92,17 +91,6 @@ public class RobotContainer {
 
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
           Math.hypot(Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0);
-
-  private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
-      // Front left
-      new Translation2d(Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-      // Front right
-      new Translation2d(Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-      // Back left
-      new Translation2d(-Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-      // Back right
-      new Translation2d(-Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0)
-    );
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -117,7 +105,6 @@ public class RobotContainer {
     m_feeder = new FeederSubsystem();
     m_intake = new IntakeSubsystem();
     m_hangSubsystem = new HangSubsystem();
-    m_robotState = new RobotState();
 
     new Thread(() -> {
       try {

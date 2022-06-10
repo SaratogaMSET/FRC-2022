@@ -246,7 +246,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             if (m_vision.updateVisionState() == VisionState.TARGET_VISIBLE) {
                 odometer.addVisionMeasurement(
                     m_vision.getCamPose(), 
-                    Timer.getFPGATimestamp() // FIXME maybe?
+                    Timer.getFPGATimestamp() // FIXME we need to account for camera latency
                 );
             }
         }

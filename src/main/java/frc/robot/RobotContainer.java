@@ -92,10 +92,8 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
-    
-    m_drivetrainSubsystem = new DrivetrainSubsystem();
     m_visionSubsystem = new VisionSubsystem();
+    m_drivetrainSubsystem = new DrivetrainSubsystem(m_visionSubsystem);
     m_LedSubsystem = new LEDSubsystem();
     m_shooterSubsystem = new ShooterSubsystem();
     m_feeder = new FeederSubsystem();

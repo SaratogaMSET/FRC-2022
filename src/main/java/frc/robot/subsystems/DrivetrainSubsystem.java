@@ -10,6 +10,7 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -18,6 +19,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.datalog.StringLogEntry;
@@ -61,13 +64,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
     );
 
     // TODO tune UKF
+    private final Matrix<N3, N1> kStateStdDevs = new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.02, 0.02, 0.01);
+    private final Matrix<N1, N1> kLocalMeasurementStdDevs = new MatBuilder<>(Nat.N1(), Nat.N1()).fill(0.02);
+    private final Matrix<N3, N1> kVisionMeasurementStdDevs = new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.01);
+    
     private final SwerveDrivePoseEstimator odometer = new SwerveDrivePoseEstimator(
         new Rotation2d(0),
         new Pose2d(new Translation2d(0, 0), new Rotation2d(0)), 
         m_kinematics, 
-        new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.02, 0.02, 0.01),
-        new MatBuilder<>(Nat.N1(), Nat.N1()).fill(0.02),
-        new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.01)
+        kStateStdDevs,
+        kLocalMeasurementStdDevs,
+        kVisionMeasurementStdDevs
     );
 
     private final VisionSubsystem m_vision;

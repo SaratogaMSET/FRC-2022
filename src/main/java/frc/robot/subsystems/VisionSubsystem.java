@@ -12,11 +12,8 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-// import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 
 public class VisionSubsystem extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
-  // private final I2C.Port i2cPort = I2C.Port.kOnboard; //Constants.Colorwheel.COLOR_SENSOR; 
   private NetworkTable table;
   private NetworkTableEntry tx, ty, tv;
   private static double x, y, v;
@@ -25,9 +22,6 @@ public class VisionSubsystem extends SubsystemBase {
   public VisionSubsystem() {
     table = NetworkTableInstance.getDefault().getTable("limelight");
     m_pose = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
-
-    //SmartDashboard.putString("Test", "Test");
-    //SmartDashboard.putString("Test2", "Test2");
   }
 
   public static enum VisionState {

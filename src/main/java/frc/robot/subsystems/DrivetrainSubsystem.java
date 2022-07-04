@@ -66,11 +66,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // TODO tune UKF
     private final Matrix<N3, N1> kStateStdDevs = new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.02, 0.02, 0.01);
     private final Matrix<N1, N1> kLocalMeasurementStdDevs = new MatBuilder<>(Nat.N1(), Nat.N1()).fill(0.02);
-    private final Matrix<N3, N1> kVisionMeasurementStdDevs = new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.01);
+    private final Matrix<N3, N1> kVisionMeasurementStdDevs = new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.25, 0.25, 0.01);
     
     private final SwerveDrivePoseEstimator odometer = new SwerveDrivePoseEstimator(
-        new Rotation2d(0),
-        new Pose2d(new Translation2d(0, 0), new Rotation2d(0)), 
+        new Rotation2d(),
+        new Pose2d(), 
         m_kinematics, 
         kStateStdDevs,
         kLocalMeasurementStdDevs,

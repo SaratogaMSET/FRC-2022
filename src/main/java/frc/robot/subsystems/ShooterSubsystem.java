@@ -12,6 +12,8 @@ import frc.robot.util.drivers.LazyTalonFX;
 
 
 public class ShooterSubsystem extends SubsystemBase {
+  private static ShooterSubsystem m_instance = null;
+
   public static final boolean SHOOTER_UP = true;
   public static final boolean SHOOTER_DOWN = false;
   // public static final PIDController pid = new PIDController(0.2, 0.03, 0);
@@ -34,7 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
   // private NetworkTableEntry shooterHoodEntry = tab.add("Shooter Hood Position", 0).getEntry();
 
   /** Creates a new ShooterSubsystem. */
-  public ShooterSubsystem() {
+  private ShooterSubsystem() {
     shooterMotor1 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR1);
     shooterMotor2 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR2);
 
@@ -169,6 +171,14 @@ public class ShooterSubsystem extends SubsystemBase {
       default:
         return Constants.ShooterConstants.DistanceConstants.ZONE_1.getHoodAngle();
     }
+  }
+
+  public static ShooterSubsystem getInstance() {
+    if (m_instance == null) {
+      m_instance = new ShooterSubsystem();
+    }
+
+    return m_instance;
   }
 
   @Override

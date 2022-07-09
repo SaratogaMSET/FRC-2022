@@ -14,12 +14,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
+  private static VisionSubsystem m_instance = null;
+
   private NetworkTable table;
   private NetworkTableEntry tx, ty, tv;
   private static double x, y, v;
   private Pose2d m_pose;
 
-  public VisionSubsystem() {
+  private VisionSubsystem() {
     table = NetworkTableInstance.getDefault().getTable("limelight");
     m_pose = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
   }
@@ -74,6 +76,14 @@ public class VisionSubsystem extends SubsystemBase {
 
   public Pose2d getCamPose() {
     return m_pose;
+  }
+
+  public static VisionSubsystem getInstance() {
+    if (m_instance == null) {
+      m_instance = new VisionSubsystem();
+    }
+
+    return m_instance;
   }
 
   // private void updateSmartDashboard() {

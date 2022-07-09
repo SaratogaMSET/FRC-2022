@@ -32,6 +32,8 @@ import frc.robot.Constants.Drivetrain;
 import frc.robot.subsystems.VisionSubsystem.VisionState;
 
 public class DrivetrainSubsystem extends SubsystemBase {
+    private static DrivetrainSubsystem m_instance = null;
+
     /**
      * The maximum voltage that will be delivered to the drive motors.
      * <p>
@@ -77,7 +79,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         kVisionMeasurementStdDevs
     );
 
-    private final VisionSubsystem m_vision;
+    private final VisionSubsystem m_vision = VisionSubsystem.getInstance();
 
     // By default we use a Pigeon for our gyroscope. But if you use another gyroscope, like a NavX, you can change this.
     // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
@@ -101,8 +103,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
-    public DrivetrainSubsystem() {
-
+    private DrivetrainSubsystem() {
         m_frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                 Mk4SwerveModuleHelper.GearRatio.L2,
                 Drivetrain.FRONT_LEFT_MODULE_DRIVE_MOTOR,
@@ -134,45 +135,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 Drivetrain.BACK_RIGHT_MODULE_STEER_ENCODER,
                 Drivetrain.BACK_RIGHT_MODULE_STEER_OFFSET
         );
-
-        m_vision = null;
-    }
-
-    public DrivetrainSubsystem(VisionSubsystem vision) {
-
-        m_frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-                Mk4SwerveModuleHelper.GearRatio.L2,
-                Drivetrain.FRONT_LEFT_MODULE_DRIVE_MOTOR,
-                Drivetrain.FRONT_LEFT_MODULE_STEER_MOTOR,
-                Drivetrain.FRONT_LEFT_MODULE_STEER_ENCODER,
-                Drivetrain.FRONT_LEFT_MODULE_STEER_OFFSET
-        );
-
-        m_frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
-                Mk4SwerveModuleHelper.GearRatio.L2,
-                Drivetrain.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-                Drivetrain.FRONT_RIGHT_MODULE_STEER_MOTOR,
-                Drivetrain.FRONT_RIGHT_MODULE_STEER_ENCODER,
-                Drivetrain.FRONT_RIGHT_MODULE_STEER_OFFSET
-        );
-
-        m_backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-                Mk4SwerveModuleHelper.GearRatio.L2,
-                Drivetrain.BACK_LEFT_MODULE_DRIVE_MOTOR,
-                Drivetrain.BACK_LEFT_MODULE_STEER_MOTOR,
-                Drivetrain.BACK_LEFT_MODULE_STEER_ENCODER,
-                Drivetrain.BACK_LEFT_MODULE_STEER_OFFSET
-        );
-
-        m_backRightModule = Mk4SwerveModuleHelper.createFalcon500(
-                Mk4SwerveModuleHelper.GearRatio.L2,
-                Drivetrain.BACK_RIGHT_MODULE_DRIVE_MOTOR,
-                Drivetrain.BACK_RIGHT_MODULE_STEER_MOTOR,
-                Drivetrain.BACK_RIGHT_MODULE_STEER_ENCODER,
-                Drivetrain.BACK_RIGHT_MODULE_STEER_OFFSET
-        );
-
-        m_vision = vision;
     }
 
     /**
@@ -222,6 +184,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
             new SwerveModuleState(m_backLeftModule.getDriveVelocity(), new Rotation2d(m_backLeftModule.getSteerAngle())),
             new SwerveModuleState(m_backRightModule.getDriveVelocity(), new Rotation2d(m_backRightModule.getSteerAngle()))
         );
+    }
+
+    public static DrivetrainSubsystem getInstance() {
+        if (m_instance == null) {
+            m_instance = new DrivetrainSubsystem();
+        }
+
+        return m_instance;
     }
 
     @Override

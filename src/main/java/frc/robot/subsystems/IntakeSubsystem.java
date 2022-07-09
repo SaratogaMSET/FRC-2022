@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
+    private static IntakeSubsystem m_instance = null;
+
     // TODO: Verify that these are correct constants. We might need to switch 
     // them when we test this.
     private static final boolean INTAKE_UP = false;
@@ -23,7 +25,7 @@ public class IntakeSubsystem extends SubsystemBase {
         UP
     }
 
-    public IntakeSubsystem() {
+    private IntakeSubsystem() {
         intakeSolenoid = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.IntakeConstants.INTAKE_SOLENOID);
     }
 
@@ -51,5 +53,13 @@ public class IntakeSubsystem extends SubsystemBase {
             // Intake is up and we are being asked to move it down.
             intakeSolenoid.set(INTAKE_DOWN);
         }
+    }
+
+    public static IntakeSubsystem getInstance() {
+        if (m_instance == null) {
+            m_instance = new IntakeSubsystem();
+        }
+
+        return m_instance;
     }
 }

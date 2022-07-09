@@ -4,12 +4,12 @@
 
 package frc.robot.subsystems;
 
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class PhotoelectricSystem extends SubsystemBase {
+  private static PhotoelectricSystem m_instance = null;
 
   //private static AnalogInput analog = new AnalogInput(Constants.Photoelectric.SENSOR);
   private static DigitalInput digLeft;
@@ -18,7 +18,7 @@ public class PhotoelectricSystem extends SubsystemBase {
   // private static int lineval = 500; 
   // private static int thresh = 100;
 
-  public PhotoelectricSystem() { //init
+  private PhotoelectricSystem() { //init
     digLeft = new DigitalInput(Constants.Photoelectric.SENSOR_LEFT);
     digRight = new DigitalInput(Constants.Photoelectric.SENSOR_RIGHT);
   }
@@ -51,6 +51,14 @@ public class PhotoelectricSystem extends SubsystemBase {
     }
     // SmartDashboard.putBoolean("Over shadow line: ", false);
     return PhotoelectricState.NOT_LINE;
+  }
+
+  public static PhotoelectricSystem getInstance() {
+    if (m_instance == null) {
+      m_instance = new PhotoelectricSystem();
+    }
+
+    return m_instance;
   }
 
   @Override

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.VisionSubsystem.VisionState;
 
 public class LEDSubsystem extends SubsystemBase {
+  private static LEDSubsystem m_instance = null;
 
   private static Spark m_blinkin1;
   private static Spark m_blinkin2;
@@ -17,7 +18,7 @@ public class LEDSubsystem extends SubsystemBase {
   private static double sparkValue = 0;
   // private static boolean blink = false;
 
-  public LEDSubsystem() {
+  private LEDSubsystem() {
 
     m_blinkin1 = new Spark(0);
     m_blinkin2 = new Spark(1);
@@ -41,6 +42,14 @@ public class LEDSubsystem extends SubsystemBase {
     // if(visionState == VisionState.TARGET_VISIBLE){
     //   sparkValue = -0.83; // -0.55, -0.97
     // }
+  }
+
+  public static LEDSubsystem getInstance() {
+    if (m_instance == null) {
+      m_instance = new LEDSubsystem();
+    }
+
+    return m_instance;
   }
 
   @Override

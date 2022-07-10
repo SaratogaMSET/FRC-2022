@@ -265,9 +265,6 @@ public class RobotContainer {
         ) */
         // TODO resolve button bindings for MoveAim vs ConstantAim
         new DynamicAimlock(
-          m_drivetrainSubsystem, 
-          m_shooterSubsystem,
-          m_visionSubsystem, 
           m_compressor,
           () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
           () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND

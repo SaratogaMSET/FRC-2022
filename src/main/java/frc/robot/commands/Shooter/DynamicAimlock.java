@@ -15,11 +15,12 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 
 // Lazy on-the-move shooting solution
+// FIXME with physics
 public class DynamicAimlock extends CommandBase {
-    private final DrivetrainSubsystem m_dt;
-    private final ShooterSubsystem m_shooter;
+    private final DrivetrainSubsystem m_dt = DrivetrainSubsystem.getInstance();
+    private final ShooterSubsystem m_shooter = ShooterSubsystem.getInstance();
+    private final VisionSubsystem m_vision = VisionSubsystem.getInstance();
     private final Compressor m_compressor;
-    private final VisionSubsystem m_vision;
     private final PIDController m_pid;
     private final SimpleMotorFeedforward m_dtFf;
     private final SimpleMotorFeedforward m_shooterFf;
@@ -55,16 +56,10 @@ public class DynamicAimlock extends CommandBase {
     private double resultY = 0;
 
     public DynamicAimlock(
-        DrivetrainSubsystem drivetrain,
-        ShooterSubsystem shooter,
-        VisionSubsystem vision,
         Compressor compressor,
         DoubleSupplier xTrans,
         DoubleSupplier yTrans
     ) {
-        m_dt = drivetrain;
-        m_shooter = shooter;
-        m_vision = vision;
         m_compressor = compressor;
         m_translationXSupplier = xTrans;
         m_translationYSupplier = yTrans;

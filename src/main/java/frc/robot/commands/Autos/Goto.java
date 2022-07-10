@@ -134,7 +134,8 @@ public class Goto extends CommandBase {
                 m_drivetrain.getX(),
                 m_drivetrain.getY()
             ), 
-            allPoints.get(0).m_followDistance // FIXME possibly
+            allPoints.get(0).m_followDistance
+            // TODO change followDistance based on the next point's followDistance, rather than the first point's
         );
 
         new Goto(followMe.m_x, followMe.m_y, followAngle, followMe.m_velocity, followMe.m_turnVelocity);

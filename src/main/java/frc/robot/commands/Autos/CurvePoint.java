@@ -5,6 +5,7 @@ import org.opencv.core.Point;
 public class CurvePoint {
     public double m_x;
     public double m_y;
+    public double m_theta;
     public double m_velocity;
     public double m_turnVelocity;
     public double m_followDistance;
@@ -15,6 +16,7 @@ public class CurvePoint {
     public CurvePoint(
         double x, 
         double y, 
+        double theta,
         double velocity, 
         double turnVelocity,
         double followDistance,
@@ -24,6 +26,7 @@ public class CurvePoint {
     ) {
         m_x = x;
         m_y = y;
+        m_theta = theta;
         m_velocity = velocity;
         m_turnVelocity = turnVelocity;
         m_followDistance = followDistance;
@@ -35,6 +38,7 @@ public class CurvePoint {
     public CurvePoint(CurvePoint p) {
         m_x = p.m_x;
         m_y = p.m_y;
+        m_theta = p.m_theta;
         m_velocity = p.m_velocity;
         m_turnVelocity = p.m_turnVelocity;
         m_followDistance = p.m_followDistance;

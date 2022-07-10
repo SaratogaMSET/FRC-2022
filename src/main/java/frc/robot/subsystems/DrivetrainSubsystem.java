@@ -162,6 +162,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return odometer.getEstimatedPosition();
     }
 
+    public double getX() {
+        return odometer.getEstimatedPosition().getX();
+    }
+
+    public double getY() {
+        return odometer.getEstimatedPosition().getY();
+    }
+
+    public double getRadians() {
+        return odometer.getEstimatedPosition().getRotation().getRadians();
+    }
+
+    public double getDegrees() {
+        return odometer.getEstimatedPosition().getRotation().getDegrees();
+    }
+
     public void resetOdometry(Pose2d pose) {
         // FIXME "You NEED to reset your encoders (to zero) when calling this method" - resetPosition
         odometer.resetPosition(pose, getRotation2d());
@@ -223,7 +239,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             if (m_vision.updateVisionState() == VisionState.TARGET_VISIBLE) {
                 odometer.addVisionMeasurement(
                     m_vision.getCamPose(), 
-                    Timer.getFPGATimestamp() // FIXME we need to account for camera latency
+                    Timer.getFPGATimestamp() // FIXME account for camera latency
                 );
             }
         }

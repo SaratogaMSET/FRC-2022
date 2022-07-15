@@ -15,13 +15,14 @@ public class MoveCommand extends CommandBase {
 
     private ArrayList<CurvePoint> m_points = null;
     private CurvePoint m_setpoint = null; // MSET point
+    private ChassisSpeeds m_speeds = null;
 
     private double m_tolerance = 0.2;
     private double m_angleTolerance = Math.toRadians(7.5);
 
     // TODO implement these
-    // private boolean withinMoveTolerance = false;
-    // private boolean withinTurnTolerance = false;
+    private boolean withinMoveTolerance = false;
+    private boolean withinTurnTolerance = false;
 
     public MoveCommand(ArrayList<CurvePoint> allPoints, double tolerance, double angleTolerance) {
         m_points = allPoints;
@@ -150,16 +151,24 @@ public class MoveCommand extends CommandBase {
             m_points.get(0).m_followDistance
             // TODO change followDistance based on the next point's followDistance rather than just first point's
         );
-        
-        m_dt.drive(
-            goToPoint(
-                m_setpoint.m_x, 
-                m_setpoint.m_y, 
-                m_setpoint.m_theta, 
-                m_setpoint.m_velocity, 
-                m_setpoint.m_turnVelocity
-            )
-        );
+
+        m_speeds = goToPoint(m_setpoint.m_x, m_setpoint.m_y, m_setpoint.m_theta, m_setpoint.m_velocity, m_setpoint.m_turnVelocity);
+
+        // TODO optimize/clean up logic
+
+        if (distance2D(new Point(m_dt.getX(), m_dt.getY()), m_points.get(m_points.size() - 1).toPoint()) <= m_tolerance) {
+            withinMoveTolerance = true;
+            m_dt.drive(new ChassisSpeeds(0, 0, m_speeds.omegaRadiansPerSecond));
+        }
+
+        if (m_points.get(m_points.size() - 1).m_theta - m_dt.getRadians() <= m_angleTolerance) {
+            withinTurnTolerance = true;
+            m_dt.drive(new ChassisSpeeds(m_speeds.vxMetersPerSecond, m_speeds.vyMetersPerSecond, 0));
+        }
+
+        if (!withinMoveTolerance && !withinTurnTolerance) {
+            m_dt.drive(m_speeds);
+        }
     }
 
     @Override

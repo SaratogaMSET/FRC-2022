@@ -20,7 +20,6 @@ public class MoveCommand extends CommandBase {
     private double m_tolerance = 0.2;
     private double m_angleTolerance = Math.toRadians(7.5);
 
-    // TODO implement these
     private boolean withinMoveTolerance = false;
     private boolean withinTurnTolerance = false;
 
@@ -149,7 +148,7 @@ public class MoveCommand extends CommandBase {
                 m_dt.getY()
             ), 
             m_points.get(0).m_followDistance
-            // TODO change followDistance based on the next point's followDistance rather than just first point's
+            // TODO change followDistance based on the next point's followDistance instead of just the first point's
         );
 
         m_speeds = goToPoint(m_setpoint.m_x, m_setpoint.m_y, m_setpoint.m_theta, m_setpoint.m_velocity, m_setpoint.m_turnVelocity);

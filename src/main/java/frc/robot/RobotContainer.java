@@ -263,7 +263,7 @@ public class RobotContainer {
           m_drivetrainSubsystem,
           () -> m_visionSubsystem.getRawAngle()
         ) */
-        // TODO resolve button bindings for MoveAim vs ConstantAim
+        // TODO resolve button bindings for DynamicAimlock vs ConstantAim
         new DynamicAimlock(
           m_compressor,
           () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,

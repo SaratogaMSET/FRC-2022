@@ -4,15 +4,16 @@ import org.opencv.core.Point;
 
 public class PurePursuitMath {
     public static double angleWrap(double angle) {
-        /* while (angle < -Math.PI) {
+        while (angle < -Math.PI) {
             angle += 2 * Math.PI;
         }
         while (angle > Math.PI) {
             angle -= 2 * Math.PI;
         }
 
-        return angle; */
+        return angle;
 
+        /* 
         angle = angle % (2 * Math.PI);
         angle = (angle + (2 * Math.PI)) % (2 * Math.PI);
         if (angle >= Math.PI) {
@@ -20,6 +21,7 @@ public class PurePursuitMath {
         }
 
         return angle;
+        */
     }
 
     public static double clip(double n, double min, double max) {

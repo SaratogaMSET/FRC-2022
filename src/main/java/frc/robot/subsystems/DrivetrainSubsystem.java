@@ -179,7 +179,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) {
-        // FIXME "You NEED to reset your encoders (to zero) when calling this method" - resetPosition
         odometer.resetPosition(pose, getRotation2d());
     }
 
@@ -240,7 +239,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
             if (m_vision.updateVisionState() == VisionState.TARGET_VISIBLE) {
                 odometer.addVisionMeasurement(
                     m_vision.getCamPose(), 
-                    Timer.getFPGATimestamp() // FIXME account for camera latency
+                    Timer.getFPGATimestamp() 
+                    // FIXME account for camera latency - current robot time is not equal to the time the vision measurement was taken
                 );
             }
         }

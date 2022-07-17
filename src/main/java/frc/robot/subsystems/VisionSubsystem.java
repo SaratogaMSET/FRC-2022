@@ -79,6 +79,10 @@ public class VisionSubsystem extends SubsystemBase {
     return m_pose;
   }
 
+  public double getLatency() {
+    return table.getEntry("tl").getDouble(0) + 11;
+  }
+
   public static VisionSubsystem getInstance() {
     if (m_instance == null) {
       m_instance = new VisionSubsystem();

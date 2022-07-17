@@ -239,7 +239,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             if (m_vision.updateVisionState() == VisionState.TARGET_VISIBLE) {
                 odometer.addVisionMeasurement(
                     m_vision.getCamPose(), 
-                    Timer.getFPGATimestamp() 
+                    Timer.getFPGATimestamp() - m_vision.getLatency()
                     // FIXME account for camera latency - current robot time is not equal to the time the vision measurement was taken
                 );
             }

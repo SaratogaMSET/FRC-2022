@@ -49,7 +49,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Pose estimation
     double[] camtran = table.getEntry("camtran").getDoubleArray(new double[]{});
-    Translation2d tranToGoal = new Translation2d(camtran[2], camtran[0] * -1); // potential FIXME
+    // Translation2d tranToGoal = new Translation2d(camtran[2], camtran[0] * -1); // potential FIXME
+    Translation2d tranToGoal = new Translation2d(camtran[0], camtran[1]); // potential FIXME
     Rotation2d rotToGoal = new Rotation2d(camtran[4] * 1); // potential FIXME
     m_pose = new Pose2d(tranToGoal, rotToGoal);
   }

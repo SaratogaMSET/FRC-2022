@@ -23,6 +23,12 @@ public class MoveCommand extends CommandBase {
     private boolean withinMoveTolerance = false;
     private boolean withinTurnTolerance = false;
 
+    public MoveCommand(ArrayList<CurvePoint> allPoints, double angleTolerance) {
+        m_points = allPoints;
+        m_tolerance = allPoints.get(allPoints.size() - 1).m_followDistance;
+        m_angleTolerance = angleTolerance;
+    }
+
     public MoveCommand(ArrayList<CurvePoint> allPoints, double tolerance, double angleTolerance) {
         m_points = allPoints;
         m_tolerance = tolerance;

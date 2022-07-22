@@ -23,7 +23,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   private VisionSubsystem() {
     table = NetworkTableInstance.getDefault().getTable("limelight");
-    m_pose = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+    m_pose = new Pose2d(new Translation2d(), new Rotation2d());
   }
 
   public static enum VisionState {

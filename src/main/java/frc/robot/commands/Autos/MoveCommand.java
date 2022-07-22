@@ -140,10 +140,10 @@ public class MoveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (
-            distance2D(new Point(m_dt.getX(), m_dt.getY()), m_points.get(m_points.size() - 1).toPoint()) <= m_tolerance &&
-            m_points.get(m_points.size() - 1).m_theta - m_dt.getRadians() <= m_angleTolerance
-        ) {
+        withinMoveTolerance = distance2D(new Point(m_dt.getX(), m_dt.getY()), m_points.get(m_points.size() - 1).toPoint()) <= m_tolerance;
+        withinTurnTolerance = m_points.get(m_points.size() - 1).m_theta - m_dt.getRadians() <= m_angleTolerance;
+
+        if (withinMoveTolerance && withinTurnTolerance) {
             this.end(true);
         }
 
@@ -161,14 +161,14 @@ public class MoveCommand extends CommandBase {
 
         // TODO optimize/clean up logic
 
-        if (distance2D(new Point(m_dt.getX(), m_dt.getY()), m_points.get(m_points.size() - 1).toPoint()) <= m_tolerance) {
-            withinMoveTolerance = true;
+        if (withinMoveTolerance) {
             m_dt.drive(new ChassisSpeeds(0, 0, m_speeds.omegaRadiansPerSecond));
+            return;
         }
 
-        if (m_points.get(m_points.size() - 1).m_theta - m_dt.getRadians() <= m_angleTolerance) {
-            withinTurnTolerance = true;
+        if (withinTurnTolerance) {
             m_dt.drive(new ChassisSpeeds(m_speeds.vxMetersPerSecond, m_speeds.vyMetersPerSecond, 0));
+            return;
         }
 
         if (!withinMoveTolerance && !withinTurnTolerance) {

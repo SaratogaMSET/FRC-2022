@@ -171,9 +171,7 @@ public class MoveCommand extends CommandBase {
             return;
         }
 
-        if (!withinMoveTolerance && !withinTurnTolerance) {
-            m_dt.drive(m_speeds);
-        }
+        m_dt.drive(m_speeds);
     }
 
     @Override

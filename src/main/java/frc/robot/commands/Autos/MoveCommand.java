@@ -1,6 +1,6 @@
 package frc.robot.commands.Autos;
 
-import static frc.robot.util.math.PurePursuitMath.*;
+import static frc.robot.util.math.MathFunctions.*;
 
 import java.util.ArrayList;
 

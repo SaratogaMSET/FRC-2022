@@ -29,36 +29,57 @@ public class RobotCodeTest {
             m_subsystems.add(DrivetrainSubsystem.getInstance());
         } catch (Exception e) {
             fail("Failed to initialize " + m_subsystems.get(0).getName());
+            System.out.println();
+            System.out.println("Stacktrace: ");
+            System.out.println(e);
         }
         try {
             m_subsystems.add(FeederSubsystem.getInstance());
         } catch (Exception e) {
             fail("Failed to initialize " + m_subsystems.get(1).getName());
+            System.out.println();
+            System.out.println("Stacktrace: ");
+            System.out.println(e);
         }
         try {
             m_subsystems.add(HangSubsystem.getInstance());
         } catch (Exception e) {
             fail("Failed to initialize " + m_subsystems.get(2).getName());
+            System.out.println();
+            System.out.println("Stacktrace: ");
+            System.out.println(e);
         }
         try {
             m_subsystems.add(IntakeSubsystem.getInstance());
         } catch (Exception e) {
             fail("Failed to initialize " + m_subsystems.get(3).getName());
+            System.out.println();
+            System.out.println("Stacktrace: ");
+            System.out.println(e);
         }
         try {
             m_subsystems.add(LEDSubsystem.getInstance());
         } catch (Exception e) {
             fail("Failed to initialize " + m_subsystems.get(4).getName());
+            System.out.println();
+            System.out.println("Stacktrace: ");
+            System.out.println(e);
         }
         try {
             m_subsystems.add(ShooterSubsystem.getInstance());
         } catch (Exception e) {
             fail("Failed to initialize " + m_subsystems.get(5).getName());
+            System.out.println();
+            System.out.println("Stacktrace: ");
+            System.out.println(e);
         }
         try {
             m_subsystems.add(VisionSubsystem.getInstance());
         } catch (Exception e) {
             fail("Failed to initialize " + m_subsystems.get(6).getName());
+            System.out.println();
+            System.out.println("Stacktrace: ");
+            System.out.println(e);
         }
         
         for (int i = 0; i < m_subsystems.size(); ++i) {

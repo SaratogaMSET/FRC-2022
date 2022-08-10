@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class FeederSubsystem extends SubsystemBase {
-  private static FeederSubsystem m_instance = null;
-
   public TalonFX shooterFeederMotor;
   public TalonFX intakeFeederMotor;
 
@@ -27,7 +25,7 @@ public class FeederSubsystem extends SubsystemBase {
     MANUAL_INTAKE
   }
 
-  private FeederSubsystem() {
+  public FeederSubsystem() {
     shooterFeederMotor = new TalonFX(Constants.FeederConstants.SHOOTER_FEEDER_MOTOR);
     intakeFeederMotor = new TalonFX(Constants.FeederConstants.INTAKE_FEEDER_MOTOR);
     intakeFeederMotor.setInverted(true);
@@ -84,14 +82,6 @@ public class FeederSubsystem extends SubsystemBase {
       return FeederState.OUTTAKE;
     else
       return FeederState.IDLE;
-  }
-
-  public static FeederSubsystem getInstance() {
-    if (m_instance == null) {
-      m_instance = new FeederSubsystem();
-    }
-
-    return m_instance;
   }
 
   @Override

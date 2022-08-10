@@ -92,13 +92,13 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    m_visionSubsystem = VisionSubsystem.getInstance();
-    m_drivetrainSubsystem = DrivetrainSubsystem.getInstance();
-    m_LedSubsystem = LEDSubsystem.getInstance();
-    m_shooterSubsystem = ShooterSubsystem.getInstance();
-    m_feeder = FeederSubsystem.getInstance();
-    m_intake = IntakeSubsystem.getInstance();
-    m_hangSubsystem = HangSubsystem.getInstance();
+    m_visionSubsystem = new VisionSubsystem();
+    m_drivetrainSubsystem = new DrivetrainSubsystem(m_visionSubsystem);
+    m_LedSubsystem = new LEDSubsystem();
+    m_shooterSubsystem = new ShooterSubsystem();
+    m_feeder = new FeederSubsystem();
+    m_intake = new IntakeSubsystem();
+    m_hangSubsystem = new HangSubsystem();
 
     new Thread(() -> {
       try {
@@ -267,7 +267,10 @@ public class RobotContainer {
         new DynamicAimlock(
           m_compressor,
           () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-          () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND
+          () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+          m_drivetrainSubsystem, 
+          m_shooterSubsystem, 
+          m_visionSubsystem
         )
       // )
     );

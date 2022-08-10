@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class MoveCommand extends CommandBase {
-    private final DrivetrainSubsystem m_dt = DrivetrainSubsystem.getInstance();
+    private final DrivetrainSubsystem m_dt;
 
     private ArrayList<CurvePoint> m_points = null;
     private CurvePoint m_setpoint = null; // MSET point
@@ -23,16 +23,22 @@ public class MoveCommand extends CommandBase {
     private boolean withinMoveTolerance = false;
     private boolean withinTurnTolerance = false;
 
-    public MoveCommand(ArrayList<CurvePoint> allPoints, double angleTolerance) {
+    public MoveCommand(ArrayList<CurvePoint> allPoints, double angleTolerance, DrivetrainSubsystem dt) {
         m_points = allPoints;
         m_tolerance = allPoints.get(allPoints.size() - 1).m_followDistance;
         m_angleTolerance = angleTolerance;
+        m_dt = dt;
+        
+        addRequirements(m_dt);
     }
 
-    public MoveCommand(ArrayList<CurvePoint> allPoints, double tolerance, double angleTolerance) {
+    public MoveCommand(ArrayList<CurvePoint> allPoints, double tolerance, double angleTolerance, DrivetrainSubsystem dt) {
         m_points = allPoints;
         m_tolerance = tolerance;
         m_angleTolerance = angleTolerance;
+        m_dt = dt;
+        
+        addRequirements(dt);
     }
 
     private ChassisSpeeds goToPoint(double x, double y, double theta, double velocity, double turnVelocity) {
@@ -143,10 +149,6 @@ public class MoveCommand extends CommandBase {
         withinMoveTolerance = distance2D(new Point(m_dt.getX(), m_dt.getY()), m_points.get(m_points.size() - 1).toPoint()) <= m_tolerance;
         withinTurnTolerance = m_points.get(m_points.size() - 1).m_theta - m_dt.getRadians() <= m_angleTolerance;
 
-        if (withinMoveTolerance && withinTurnTolerance) {
-            this.end(true);
-        }
-
         m_setpoint = getFollowPointPath(
             m_points, 
             new Point(
@@ -177,5 +179,10 @@ public class MoveCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         m_dt.drive(new ChassisSpeeds());
+    }
+
+    @Override
+    public boolean isFinished() {
+        return (withinMoveTolerance && withinTurnTolerance);
     }
 }

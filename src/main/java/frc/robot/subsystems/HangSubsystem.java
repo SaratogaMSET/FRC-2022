@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class HangSubsystem extends SubsystemBase {
-    private static HangSubsystem m_instance = null;
-
     public TalonFX rightHangMotor;
     public TalonFX leftHangMotor;
     public WPI_TalonFX encoderRight;
@@ -40,7 +38,7 @@ public class HangSubsystem extends SubsystemBase {
 
     // private final PIDController pid;
 
-    private HangSubsystem() {
+    public HangSubsystem() {
         rightHangMotor = new TalonFX(Constants.HangConstants.HANG_RIGHT_MOTOR);
         leftHangMotor = new TalonFX(Constants.HangConstants.HANG_LEFT_MOTOR);
         rightHangMotor.setNeutralMode(NeutralMode.Brake);
@@ -103,14 +101,6 @@ public class HangSubsystem extends SubsystemBase {
         double wheelRotations = motorRotations / (54/8 * 1.5);
         double positionMeters = wheelRotations * (2 * Math.PI * 0.5);
         return positionMeters;
-    }
-
-    public static HangSubsystem getInstance() {
-        if (m_instance == null) {
-            m_instance = new HangSubsystem();
-        }
-
-        return m_instance;
     }
     
     @Override

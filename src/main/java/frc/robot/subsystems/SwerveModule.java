@@ -24,7 +24,7 @@ public class SwerveModule {
     private CANCoder angleEncoder;
     private double lastAngle;
 
-    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Drivetrain.driveKS, Constants.Drivetrain.driveKV, Constants.Drivetrain.driveKA);
+    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.0, Constants.Drivetrain.driveKV, 0.0);
 
     public SwerveModule(int moduleNumber){
         this.moduleNumber = moduleNumber;

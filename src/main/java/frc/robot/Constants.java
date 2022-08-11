@@ -58,13 +58,13 @@ public final class Constants {
 
         public static final double driveGearRatio = (6.85 / 1.0); //6.85:1
 
-        public static final double angleGearRatio = (6.85 / 1.0); 
+        public static final double angleGearRatio = (12.8/1.0); 
         
         public static final boolean driveMotorInvert = false;
         public static final boolean angleMotorInvert = false;
 
         /* Angle Encoder Invert */
-        public static final boolean canCoderInvert = false;
+        public static final boolean canCoderInvert = true;
         public static final boolean invertGyro = false;
         public static final double stickDeadband = 0.05; //this may need to change later
 

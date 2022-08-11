@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.BasePigeon;
 import com.ctre.phoenix.sensors.PigeonIMU; //replace with navx code
 
 import frc.robot.subsystems.SwerveModule;
@@ -20,10 +21,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
-    public PigeonIMU gyro;
-
+    public final AHRS gyro;
+    public double offset = 0;
     public Swerve() {
-       final AHRS gyro = new AHRS(SPI.Port.kMXP, (byte) 200); 
+        gyro = new AHRS(SPI.Port.kMXP, (byte) 200); 
         zeroGyro();
         
         swerveOdometry = new SwerveDriveOdometry(Constants.Drivetrain.m_kinematics, getYaw());
@@ -83,13 +84,12 @@ public class Swerve extends SubsystemBase {
     }
 
     public void zeroGyro(){
-        gyro.setYaw(0);
+        offset = gyro.getYaw() + 180; 
     }
 
     public Rotation2d getYaw() {
-        double[] ypr = new double[3];
-        gyro.getYawPitchRoll(ypr);
-        return (Constants.Drivetrain.invertGyro) ? Rotation2d.fromDegrees(360 - ypr[0]) : Rotation2d.fromDegrees(ypr[0]);
+        double yaw = gyro.getYaw(); 
+        return (Constants.Drivetrain.invertGyro) ? Rotation2d.fromDegrees(360 - yaw) : Rotation2d.fromDegrees(yaw);
     }
 
     @Override

@@ -67,7 +67,6 @@ public class FeederSubsystem extends SubsystemBase {
     setShooterFeeder(shooterFeederSpeed);
     setIntakeFeeder(intakeFeederSpeed);
   }
-
   public void runOuttake(double shooterFeederSpeed, double intakeFeederSpeed) {
     shooterFeederMotor.set(ControlMode.PercentOutput, -shooterFeederSpeed);
     intakeFeederMotor.set(ControlMode.PercentOutput, -intakeFeederSpeed);

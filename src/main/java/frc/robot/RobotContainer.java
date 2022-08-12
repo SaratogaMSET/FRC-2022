@@ -43,6 +43,7 @@ import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.commands.Shooter.AimForShootCommand;
 import frc.robot.commands.Shooter.ConstantAim;
 import frc.robot.commands.Shooter.ShootCommand;
+import frc.robot.commands.Shooter.ShootWhileMovingTest;
 import frc.robot.commands.Test.TestDrivetrainCommandGroup;
 import frc.robot.commands.Test.TestFeederCommandGroup;
 import frc.robot.commands.Test.TestHangCommandGroup;
@@ -94,7 +95,7 @@ public class RobotContainer {
   private final Compressor m_compressor;
   private boolean AIMLOCK;
   // private final Joystick driverVertical, driverHorizontal;
-
+  public static double distance;
   public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0 *
           SdsModuleConfigurations.MK4_L2.getDriveReduction() *
           SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI);
@@ -205,6 +206,25 @@ public class RobotContainer {
     );
     new Button(m_driver::getLeftBumper).whenPressed( 
       new InstantCommand(()-> m_Swerve.zeroGyro())
+    );
+
+
+    new JoystickButton(m_gunner,7).whenPressed(
+      new ParallelCommandGroup(
+        new ConstantAim(
+          () -> m_driver.getRawAxis(translationAxis),
+          () -> -m_driver.getRawAxis(strafeAxis),
+          () -> -m_driver.getRawAxis(rotationAxis),
+          m_Swerve,
+          ()-> m_visionSubsystem.getRawAngle()
+        ),
+        new SequentialCommandGroup(
+          new WaitCommand(0.1),
+          new ShootWhileMovingTest(m_shooterSubsystem, distance, m_compressor),
+          new WaitCommand(0.5),
+          new RunFeederCommand(m_feeder,FeederState.MANUAL_INTAKE,0.4,0.6)
+        )
+      )
     );
 
 

@@ -7,15 +7,17 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.VisionSubsystem;
 
 public class ConstantAim extends CommandBase {
     private final DrivetrainSubsystem m_drivetrainSubsystem;
     private final Swerve swerve;
     private final DoubleSupplier m_rawAngle;
     private final PIDController pid;
-
+    private final VisionSubsystem vision;
     public double pidValue = 0;
 
     private DoubleSupplier m_translationXSupplier;
@@ -38,10 +40,24 @@ public class ConstantAim extends CommandBase {
         this.m_translationXSupplier = x;
         this.m_translationYSupplier = y;
         this.m_rot = rot;
-
+        this.vision = null;
         pid = new PIDController(Constants.Drivetrain.kPThetaAimLock, Constants.Drivetrain.kIThetaAimLock, 0);
         this.swerve = null;
         addRequirements(m_drivetrainSubsystem);
+        // addRequirements(m_visionSubsystem);
+    }
+    public ConstantAim(DoubleSupplier x, DoubleSupplier y, DoubleSupplier rot, Swerve drivetrainSubsystem, VisionSubsystem vision,DoubleSupplier rawAngle) {
+        this.swerve = drivetrainSubsystem;
+        this.m_rawAngle = rawAngle;
+        this.m_translationXSupplier = x;
+        this.m_translationYSupplier = y;
+        this.vision = vision;
+        this.m_rot = rot;
+        this.m_drivetrainSubsystem = null;
+        pid = new PIDController(Constants.Drivetrain.kPThetaAimLock, Constants.Drivetrain.kIThetaAimLock, 0);
+
+        addRequirements(swerve);
+        addRequirements(vision);
         // addRequirements(m_visionSubsystem);
     }
     public ConstantAim(DoubleSupplier x, DoubleSupplier y, DoubleSupplier rot, Swerve drivetrainSubsystem, DoubleSupplier rawAngle) {
@@ -49,15 +65,15 @@ public class ConstantAim extends CommandBase {
         this.m_rawAngle = rawAngle;
         this.m_translationXSupplier = x;
         this.m_translationYSupplier = y;
-
+        this.vision = null;
         this.m_rot = rot;
         this.m_drivetrainSubsystem = null;
         pid = new PIDController(Constants.Drivetrain.kPThetaAimLock, Constants.Drivetrain.kIThetaAimLock, 0);
 
         addRequirements(swerve);
+        addRequirements(vision);
         // addRequirements(m_visionSubsystem);
     }
-
 
 
     @Override
@@ -116,6 +132,10 @@ public class ConstantAim extends CommandBase {
                 true, //check this
                 true
             );
+            
+            if(vision != null){
+            RobotContainer.distance = vision.getDistanceFromTarget();
+            }
         }
 
 

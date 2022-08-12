@@ -72,8 +72,8 @@ dependencies {
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
 
-    testImplementation 'junit:junit:4.12'
-    implementation 'junit:junit:4.12'
+    testImplementation('junit:junit:4.12')
+    implementation('junit:junit:4.12')
     testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
     implementation('org.junit.jupiter:junit-jupiter:5.8.2')
 }

@@ -80,6 +80,7 @@ public class RobotContainer {
   private final HangSubsystem m_hangSubsystem;
   private final Swerve m_Swerve;
 
+  private final RobotState m_robotState;
   public static final double pi = Math.PI;
 
   private final XboxController m_driver = new XboxController(0);

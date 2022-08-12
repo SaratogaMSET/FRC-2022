@@ -3,13 +3,16 @@ package frc.robot.commands.Shooter;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Swerve;
 
 public class ConstantAim extends CommandBase {
     private final DrivetrainSubsystem m_drivetrainSubsystem;
+    private final Swerve swerve;
     private final DoubleSupplier m_rawAngle;
     private final PIDController pid;
 
@@ -34,15 +37,26 @@ public class ConstantAim extends CommandBase {
         this.m_rawAngle = rawAngle;
         this.m_translationXSupplier = x;
         this.m_translationYSupplier = y;
-
         this.m_rot = rot;
 
         pid = new PIDController(Constants.Drivetrain.kPThetaAimLock, Constants.Drivetrain.kIThetaAimLock, 0);
-
+        this.swerve = null;
         addRequirements(m_drivetrainSubsystem);
         // addRequirements(m_visionSubsystem);
     }
+    public ConstantAim(DoubleSupplier x, DoubleSupplier y, DoubleSupplier rot, Swerve drivetrainSubsystem, DoubleSupplier rawAngle) {
+        this.swerve = drivetrainSubsystem;
+        this.m_rawAngle = rawAngle;
+        this.m_translationXSupplier = x;
+        this.m_translationYSupplier = y;
 
+        this.m_rot = rot;
+        this.m_drivetrainSubsystem = null;
+        pid = new PIDController(Constants.Drivetrain.kPThetaAimLock, Constants.Drivetrain.kIThetaAimLock, 0);
+
+        addRequirements(swerve);
+        // addRequirements(m_visionSubsystem);
+    }
 
 
 
@@ -71,18 +85,39 @@ public class ConstantAim extends CommandBase {
         double magnitude = Math.hypot(m_translationXTrapezoidal, m_translationYTrapezoidal);
 
         double joyAngle = Math.atan2(m_translationYTrapezoidal, m_translationXTrapezoidal);
-        double roboAngle = (m_drivetrainSubsystem.getNavHeading() + joyAngle);
 
-        double resultX = Math.cos(roboAngle) * magnitude;
-        double resultY = Math.sin(roboAngle) * magnitude;        
+        if(this.swerve == null){
 
-        m_drivetrainSubsystem.drive(
-            new ChassisSpeeds(
-                resultX,
-                resultY,
-                m_rot.getAsDouble() + pidValue
-            )
-        );
+            double roboAngle = (m_drivetrainSubsystem.getNavHeading() + joyAngle);
+
+            double resultX = Math.cos(roboAngle) * magnitude;
+            double resultY = Math.sin(roboAngle) * magnitude;        
+
+            m_drivetrainSubsystem.drive(
+                new ChassisSpeeds(
+                    resultX,
+                    resultY,
+                    m_rot.getAsDouble() + pidValue
+                )
+            );
+
+        }
+        else{
+            double roboAngle = (swerve.getNavHeading() + joyAngle);
+
+            double resultX = Math.cos(roboAngle) * magnitude;
+            double resultY = Math.sin(roboAngle) * magnitude;        
+            /* Deadbands */
+            resultY = (Math.abs(resultY) < Constants.Drivetrain.stickDeadband) ? 0 : resultY;
+            resultX = (Math.abs(resultX) < Constants.Drivetrain.stickDeadband) ? 0 : resultX;
+            swerve.drive(
+                new Translation2d(resultX,resultY),
+                roboAngle,
+                true, //check this
+                true
+            );
+        }
+
 
         // SmartDashboard.putNumber("PID value", pidValue);
     }

@@ -86,7 +86,15 @@ public class Swerve extends SubsystemBase {
     public void zeroGyro(){
         offset = gyro.getYaw() + 180; 
     }
-
+    public double getNavHeading(){
+        // double angle = m_navx.getFusedHeading() - offset;
+        double angle = gyro.getYaw() + 180 - offset;
+        angle = angle + 90 + 360;
+        angle = angle % 360;
+        // SmartDashboard.putNumber("navX Angle", angle);
+        SmartDashboard.putNumber("navX Offset", offset);
+        return Math.toRadians(angle);
+      }
     public Rotation2d getYaw() {
         double yaw = gyro.getYaw(); 
         return (Constants.Drivetrain.invertGyro) ? Rotation2d.fromDegrees(360 - yaw) : Rotation2d.fromDegrees(yaw);

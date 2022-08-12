@@ -280,13 +280,23 @@ public class RobotContainer {
       )
     );
 
-    new JoystickButton(m_gunner, 1).whileActiveOnce(
+    // new JoystickButton(m_gunner, 1).whileActiveOnce(
+    //   new ConstantAim(
+    //     () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+    //     () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+    //     () -> modifyAxis(m_driver.getRightX()/2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+    //     m_drivetrainSubsystem,
+    //     () -> m_visionSubsystem.getRawAngle()
+    //   )
+    // );
+    //x axis is strafe, y axis is strafe, and rotation axis is x input on right joystick
+    new JoystickButton(m_gunner,1).whileActiveOnce(
       new ConstantAim(
-        () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> modifyAxis(m_driver.getRightX()/2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-        m_drivetrainSubsystem,
-        () -> m_visionSubsystem.getRawAngle()
+        () -> m_driver.getRawAxis(translationAxis),
+        () -> -m_driver.getRawAxis(strafeAxis),
+        () -> -m_driver.getRawAxis(rotationAxis),
+        m_Swerve,
+        ()-> m_visionSubsystem.getRawAngle()
       )
     );
 

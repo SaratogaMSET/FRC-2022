@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -25,10 +24,8 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.Autos.AutoRunCommand;
-import frc.robot.commands.Autos.DriveStraight;
 import frc.robot.commands.Autos.TestAuton;
 import frc.robot.commands.Autos.TurnAngle;
-import frc.robot.commands.Drivetrain.DefaultDriveCommand;
 import frc.robot.commands.Drivetrain.SetXConfigCommand;
 import frc.robot.commands.Drivetrain.TeleopSwerve;
 import frc.robot.commands.Drivetrain.ZeroGyroCommand;
@@ -54,8 +51,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
+import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.VisionSubsystem;
 
 /**

@@ -85,6 +85,7 @@ public class Swerve extends SubsystemBase {
 
     public void zeroGyro(){
         offset = gyro.getYaw() + 180; 
+        //should the pos of the robot be set to 0 here?
     }
     public double getNavHeading(){
         // double angle = m_navx.getFusedHeading() - offset;

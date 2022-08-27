@@ -18,14 +18,13 @@ public class DeployIntakeCommand extends CommandBase {
 
     @Override
     public void execute() {
-        // Since this code needs to execute just once, the isFinished() should return true so that
-        // execute doesn't get called more than once.
+       
         m_intake.updateIntakeState(m_newIntakeState);
         
     }
 
     public boolean isFinished() {
-        // Since we just want the command to execute just one.
+        
         return false;
     }
 

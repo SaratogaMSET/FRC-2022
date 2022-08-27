@@ -36,11 +36,12 @@ public class TeleopSwerve extends CommandBase {
         this.openLoop = openLoop;
     }
 
+    //also remember to change the input value direction(the + and the -)if cancoder input doesnt work for drive motor
     @Override
     public void execute() {
-        double yAxis = controller.getRawAxis(translationAxis); //-
-        double xAxis = -controller.getRawAxis(strafeAxis); //+
-        double rAxis = -controller.getRawAxis(rotationAxis); //+
+        double yAxis = controller.getRawAxis(translationAxis); // og:-
+        double xAxis = -controller.getRawAxis(strafeAxis); // og:+
+        double rAxis = -controller.getRawAxis(rotationAxis); // og:+      
         
         /* Deadbands */
         yAxis = (Math.abs(yAxis) < Constants.Drivetrain.stickDeadband) ? 0 : yAxis;

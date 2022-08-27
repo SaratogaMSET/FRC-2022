@@ -73,6 +73,7 @@ public class RobotContainer {
   public static final String twoBall = "2 Ball";
   public static final String fiveBall = "5 Ball";
   public static final String Test = "Test";
+  public static final String threeball = "Test Three Ball";
 
   private final DrivetrainSubsystem m_drivetrainSubsystem;
   private final VisionSubsystem m_visionSubsystem;
@@ -139,10 +140,19 @@ public class RobotContainer {
       } catch (Exception e) {
       }
     }).start();
+    new Thread(() -> {
+      try {
+          Thread.sleep(500);
+          m_Swerve.zeroGyro();
+          // m_drivetrainSubsystem.resetOdometry(new Pose2d());
+      } catch (Exception e) {
+      }
+    }).start();
 
     m_autoSwitcher.setDefaultOption(twoBall, twoBall);
     m_autoSwitcher.addOption(fiveBall, fiveBall);
     m_autoSwitcher.addOption(Test,Test);
+    m_autoSwitcher.addOption(threeball, threeball);
     SmartDashboard.putData(m_autoSwitcher);
 
     // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL);
@@ -550,7 +560,46 @@ public class RobotContainer {
       )
     );
   }
-
+  public Command getThreeBallAuto(){
+    return new SequentialCommandGroup(
+      new WaitCommand(0.2),
+      new ZeroGyroCommand(m_drivetrainSubsystem),
+      new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+      //  new WaitCommand(0.5),
+      // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+      new SequentialCommandGroup(
+        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+        new ParallelRaceGroup(
+          new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+          new SequentialCommandGroup(
+            new WaitCommand(0.5),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)
+          )
+        )
+      ),
+      new ParallelRaceGroup(
+        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+        new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
+        new SequentialCommandGroup(
+          new WaitCommand(0.2),
+          new ZeroGyroCommand(m_drivetrainSubsystem),
+          new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.5),
+          new WaitCommand(0.5)
+        )
+      ),
+      new SequentialCommandGroup(
+        new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+        new ParallelRaceGroup(
+          new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+          new SequentialCommandGroup(
+            new WaitCommand(0.5),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)
+          )
+        )
+      )
+    );
+  }
+  
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -567,6 +616,8 @@ public class RobotContainer {
         return getTwoBallAuto();
       case fiveBall:
         return getFiveBallAuto();
+      case threeball:
+        return getThreeBallAuto();
       case Test:
         return new TestAuton(m_Swerve);
       default:

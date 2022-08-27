@@ -35,7 +35,9 @@ public final class Constants {
 // Fix this portion to be correct when robot
 
         // public static final double driveKS = (0.667 / 12); 
-        public static final double driveKV = (2.44 / 12); 
+
+        public static final double driveKV = 0; //obv fix 
+        
         // public static final double driveKA = (0.27 / 12); 
 
 // Double check the rest but the above is def wrong
@@ -46,15 +48,15 @@ public final class Constants {
         public static final int angleContinuousCurrentLimit = 25; //tune
         public static final int anglePeakCurrentLimit = 40; //tune
         public static final double anglePeakCurrentDuration = 0.1; //tune
-        public static final boolean angleEnableCurrentLimit = true;
+        public static final boolean angleEnableCurrentLimit = false;
 
         public static final int driveContinuousCurrentLimit = 35; //tune
         public static final int drivePeakCurrentLimit = 60; //tune
         public static final double drivePeakCurrentDuration = 0.1; //tune
-        public static final boolean driveEnableCurrentLimit = true;
+        public static final boolean driveEnableCurrentLimit = false;
         //End of Current Limiting
-        public static final double openLoopRamp = 0.25;
-        public static final double closedLoopRamp = 0.0;
+        public static final double openLoopRamp = 0.25;  //check/tune
+        public static final double closedLoopRamp = 0.0; //check/tune
 
         public static final double driveGearRatio = (6.85 / 1.0); //6.85:1
 
@@ -64,7 +66,7 @@ public final class Constants {
         public static final boolean angleMotorInvert = false;
 
         /* Angle Encoder Invert */
-        public static final boolean canCoderInvert = true;
+        public static final boolean canCoderInvert = true; //CHECK
         public static final boolean invertGyro = false;
         public static final double stickDeadband = 0.05; //this may need to change later
 
@@ -262,4 +264,5 @@ public final class Constants {
     public static class IntakeConstants {
         public static final int INTAKE_SOLENOID = 2; 
     }
+    
 }

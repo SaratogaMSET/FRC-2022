@@ -41,6 +41,7 @@ public class AStarPerfT {
                 for (int j = 0; j < RobotField.FIELD_AREA; ++j) {
                     if (i != j) {
                         Node.aStar(RobotField.getNode(i), RobotField.getNode(j));
+                        System.out.println("Path generated between node " + i + " and node " + j + ".");
                         if (ENUMERATE_VERBOSE) Node.printPath(RobotField.getNode(j));
                     }
                 }

@@ -2,8 +2,8 @@ package frc.robot.util.pathing;
 
 public class RobotField {
     // Field dimensions in feet
-    public static final int FIELD_LENGTH = 10; // 54 - 10 for testing
-    public static final int FIELD_WIDTH = 5; // 27 - 5 for testing
+    public static final int FIELD_LENGTH = 54; // 54 - 10 for testing
+    public static final int FIELD_WIDTH = 27; // 27 - 5 for testing
     public static final int FIELD_AREA = FIELD_LENGTH * FIELD_WIDTH;
 
     // Weight values

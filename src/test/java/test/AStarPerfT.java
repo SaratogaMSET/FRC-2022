@@ -5,14 +5,13 @@ import static org.junit.Assert.*;
 import org.junit.jupiter.api.Test;
 
 import frc.robot.util.pathing.Node;
-import frc.robot.util.pathing.Nodes;
 import frc.robot.util.pathing.RobotField;
 
 public class AStarPerfT {
-    private static final boolean RUN_PERFT = false;
-    // private static final boolean ENUMERATE_VERBOSE = false;
+    private static final boolean RUN_PERFT = true;
+    private static final boolean ENUMERATE_VERBOSE = false;
 
-    @Test
+    // @Test
     public void checkField() {
         Node node = null;
         try {
@@ -23,16 +22,6 @@ public class AStarPerfT {
         assertNotNull("Failed to initialize Node.", node);
         assertEquals("Node x is not equal to expected value of 0.5.", 0.5, node.getX(), 0);
         assertEquals("Node y is not equal to expected value of 0.5.", 0.5, node.getY(), 0);
-
-        Nodes nodes = null;
-        try {
-            nodes = Nodes.getInstance();
-        } catch (Exception e) {
-            System.out.println("Stacktrace: ");
-            System.out.println(e);
-            fail("Failed to initialize field.");
-        }
-        assertNotNull("Error initializing field representation.", nodes);
     }
 
     /**
@@ -48,6 +37,14 @@ public class AStarPerfT {
             // path, so we use assertNotNull to check for pathfinding failures.
             // TODO that ^
 
+            for (int i = 0; i < RobotField.FIELD_AREA; ++i) {
+                for (int j = 0; j < RobotField.FIELD_AREA; ++j) {
+                    if (i != j) {
+                        Node.aStar(RobotField.getNode(i), RobotField.getNode(j));
+                        if (ENUMERATE_VERBOSE) Node.printPath(RobotField.getNode(j));
+                    }
+                }
+            }
         }
     }
 }

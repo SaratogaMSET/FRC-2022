@@ -2,7 +2,6 @@ package frc.robot.util.pathing;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.PriorityQueue;
 
 public class Node implements Comparable<Node> {
@@ -125,7 +124,7 @@ public class Node implements Comparable<Node> {
 
         if (n == null) return;
 
-        List<Integer> ids= new ArrayList<>();
+        ArrayList<Integer> ids = new ArrayList<>();
 
         while (n.m_parent != null) {
             ids.add(n.m_id);
@@ -138,5 +137,7 @@ public class Node implements Comparable<Node> {
             System.out.print(id + " ");
         }
         System.out.println();
+
+        System.gc();
     }
 }

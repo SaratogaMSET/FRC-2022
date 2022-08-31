@@ -8,7 +8,7 @@ import frc.robot.util.pathing.Node;
 import frc.robot.util.pathing.RobotField;
 
 public class AStarPerfT {
-    private static final boolean RUN_PERFT = true;
+    private static final boolean RUN_PERFT = false;
     private static final boolean ENUMERATE_VERBOSE = false;
 
     // @Test

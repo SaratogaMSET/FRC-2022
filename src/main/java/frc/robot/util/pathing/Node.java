@@ -1,5 +1,7 @@
 package frc.robot.util.pathing;
 
+import static frc.robot.util.pathing.RobotField.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.PriorityQueue;
@@ -57,7 +59,7 @@ public class Node implements Comparable<Node> {
     public double calculateHeuristic(Node n) {
         double dx = Math.abs(x - n.getX());
         double dy = Math.abs(y - n.getY());
-        return 1 * (dx + dy) + (1.4 - 2 * 1) * Math.min(dx, dy);
+        return CARDINAL_WEIGHT * (dx + dy) + (DIAGONAL_WEIGHT - 2 * CARDINAL_WEIGHT) * Math.min(dx, dy);
     }
 
     public void setParent(Node n) {

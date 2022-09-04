@@ -11,7 +11,7 @@ public class AStarPerfT {
     private static final boolean RUN_PERFT = false;
     private static final boolean ENUMERATE_VERBOSE = false;
 
-    // @Test
+    @Test
     public void checkField() {
         Node node = null;
         try {

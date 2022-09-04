@@ -7,8 +7,8 @@ public class RobotField {
     public static final int FIELD_AREA = FIELD_LENGTH * FIELD_WIDTH;
 
     // Weight values
-    private static final double CARDINAL_WEIGHT = 1d; // value assigned to N/S/E/W connections
-    private static final double DIAGONAL_WEIGHT = 1.4d; // value assigned to diagonal connections
+    public static final double CARDINAL_WEIGHT = 1d; // value assigned to N/S/E/W connections
+    public static final double DIAGONAL_WEIGHT = 1.4d; // value assigned to diagonal connections
 
     private static final Node[] m_nodes = initNodes();
 

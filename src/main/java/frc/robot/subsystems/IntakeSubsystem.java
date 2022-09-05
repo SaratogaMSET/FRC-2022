@@ -44,12 +44,13 @@ public class IntakeSubsystem extends SubsystemBase {
     public void updateIntakeState(IntakeState newIntakeState) {
         if (getIntakeState() == IntakeState.DOWN && newIntakeState == IntakeState.UP) {
             // Intake is down and we are being asked to move it up.
-            intakeSolenoid.set(INTAKE_UP);
+            intakeSolenoid.set(!INTAKE_UP);
         }
 
         if (getIntakeState() == IntakeState.UP && newIntakeState == IntakeState.DOWN) {
             // Intake is up and we are being asked to move it down.
-            intakeSolenoid.set(INTAKE_DOWN);
+            intakeSolenoid.set(!INTAKE_DOWN);
         }
     }
+    
 }

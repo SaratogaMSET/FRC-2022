@@ -41,12 +41,12 @@ public final class Constants {
         public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 34;
         public static final int BACK_LEFT_MODULE_STEER_MOTOR = 35;
         public static final int BACK_LEFT_MODULE_STEER_ENCODER = 45;
-        public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(25.0+90); //+180
+        public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(25.0+98); //25.0 + 90
 
         public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 30;
         public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 31;
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 41;
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(125.0);
+        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(120.0); //125.0
 
         public static final double kPXController = 0.00; //0.033 1/30
         public static final double kIXController = 0.000;
@@ -55,8 +55,8 @@ public final class Constants {
         public static final double kIYController = 0.000;
         public static final double kPThetaControllerTrajectory = 0;
 
-        public static final double kPThetaController = 0.06; //.07655
-        public static final double kIThetaController = 0.052;
+        public static final double kPThetaController = 0.06; //.06
+        public static final double kIThetaController = 0.052; //0.052
 
         public static final double kPThetaAimLock = 0.1; //.08
         public static final double kIThetaAimLock = 0.002; //.052
@@ -114,9 +114,9 @@ public final class Constants {
             EMERGENCY (0.25, false),
             TEST (0.49, true),
             
-            LIRP_1 (0.45, true),
-            LIRP_2 (0.49, true),
-            LIRP_3 (0.68, true);
+            LIRP_1 (0.49, true), //0.45
+            LIRP_2 (0.52, true), //0.49
+            LIRP_3 (0.73, true); //0.68
 
             private double percentRPM;
             private boolean hoodAngle; //final?
@@ -157,7 +157,7 @@ public final class Constants {
         public static final int RIGHT_HANG_LIMIT_SWITCH = 4;
         public static final int LEFT_HANG_LIMIT_SWITCH = 5;
 
-        public static final int HANG_SOLENOID = 0;
+        public static final int HANG_SOLENOID = 2;
 
         public static final int HANG_MAX_ENCODER_COUNTS = 270000; //290000
         public static final int HANG_HALF_ENCODER_COUNTS = HANG_MAX_ENCODER_COUNTS/2;
@@ -181,6 +181,6 @@ public final class Constants {
     }
 
     public static class IntakeConstants {
-        public static final int INTAKE_SOLENOID = 2; 
+        public static final int INTAKE_SOLENOID = 0; 
     }
 }

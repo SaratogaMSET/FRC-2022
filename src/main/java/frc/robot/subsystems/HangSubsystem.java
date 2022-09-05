@@ -82,7 +82,7 @@ public class HangSubsystem extends SubsystemBase {
 
     public void deployHang() {
         hangPosition = !hangPosition;
-        hangSolenoid.set(hangPosition);
+        hangSolenoid.set(!hangPosition);
     }
 
     public boolean isHangDeployed() {

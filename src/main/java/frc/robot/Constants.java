@@ -4,12 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -32,115 +26,42 @@ public final class Constants {
          *
          * Should be measured from center to center.
          */
-// Fix this portion to be correct when robot
-
-        // public static final double driveKS = (0.667 / 12); 
-        public static final double driveKV = (2.44 / 12); 
-        // public static final double driveKA = (0.27 / 12); 
-
-// Double check the rest but the above is def wrong
-        public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
-        public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
-
-        // Current Limiting 
-        public static final int angleContinuousCurrentLimit = 25; //tune
-        public static final int anglePeakCurrentLimit = 40; //tune
-        public static final double anglePeakCurrentDuration = 0.1; //tune
-        public static final boolean angleEnableCurrentLimit = true;
-
-        public static final int driveContinuousCurrentLimit = 35; //tune
-        public static final int drivePeakCurrentLimit = 60; //tune
-        public static final double drivePeakCurrentDuration = 0.1; //tune
-        public static final boolean driveEnableCurrentLimit = true;
-        //End of Current Limiting
-        public static final double openLoopRamp = 0.25;
-        public static final double closedLoopRamp = 0.0;
-
-        public static final double driveGearRatio = (6.85 / 1.0); //6.85:1
-
-        public static final double angleGearRatio = (12.8/1.0); 
-        
-        public static final boolean driveMotorInvert = false;
-        public static final boolean angleMotorInvert = false;
-
-        /* Angle Encoder Invert */
-        public static final boolean canCoderInvert = true;
-        public static final boolean invertGyro = false;
-        public static final double stickDeadband = 0.05; //this may need to change later
-
-        //-------End of the new constants----------------------------
-
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.635;
-        //referred to as number 0 in the swerve module.java
+
         public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 36;
         public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 37;
         public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 47;
         public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(-170.0);
 
-        //will be referred to as number 1
-
         public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 32;
         public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 33;
         public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 43;
         public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(65.0);
-        //will be referred to as number 2
+
         public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 34;
         public static final int BACK_LEFT_MODULE_STEER_MOTOR = 35;
         public static final int BACK_LEFT_MODULE_STEER_ENCODER = 45;
-        public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(25.0+90); //+180
+        public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(25.0+98); //25.0 + 90
 
         public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 30;
         public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 31;
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 41;
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(125.0);
+        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(120.0); //125.0
 
-        public final static SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
-            // Front left
-            new Translation2d(Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-            // Front right
-            new Translation2d(Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-            // Back left
-            new Translation2d(-Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-            // Back right
-            new Translation2d(-Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0)
-    );
+        public static final double kPXController = 0.00; //0.033 1/30
+        public static final double kIXController = 0.000;
 
-        public static final double maxSpeed =  (6380.0 / 60.0 *
-        SdsModuleConfigurations.MK4_L2.getDriveReduction() *
-        SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI);
-
-        public static final double maxAngularVelocity = maxSpeed /
-          Math.hypot(Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0); //we may need to check units
-        //for the Drive Motors, we will only be using the kX controllers since we only need one
-        public static final double kPXController = 0.00; //tune
-        public static final double kIXController = 0.000; //tune
-
-
-        public static final double kPYController = 0.00; //tune
-        public static final double kIYController = 0.000; //tune
+        public static final double kPYController = 0.00; //0.033
+        public static final double kIYController = 0.000;
         public static final double kPThetaControllerTrajectory = 0;
 
-        public static final double kPThetaController = 0.06; //.07655
-        public static final double kIThetaController = 0.052; //tune
+        public static final double kPThetaController = 0.06; //.06
+        public static final double kIThetaController = 0.052; //0.052
 
         public static final double kPThetaAimLock = 0.1; //.08
         public static final double kIThetaAimLock = 0.002; //.052
     }
-    public static class AutonConstants{
-        public static final double kMaxSpeedMetersPerSecond = Drivetrain.maxSpeed;
-        public static final double kMaxAccelerationMetersPerSecondSquared = Drivetrain.maxAngularVelocity;
-        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
-    
-        public static final double kPXController = 1;
-        public static final double kPYController = 1;
-        public static final double kPThetaController = 1;
-    
-        // Constraint for the motion profilied robot angle controller
-        public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
-            new TrapezoidProfile.Constraints(
-                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
-      }
+
     public static class Vision{
         public static final int LED = 3;
         public static final double H1 = 19; // distance between limelight and ground (height of limelight mount)
@@ -193,9 +114,9 @@ public final class Constants {
             EMERGENCY (0.25, false),
             TEST (0.49, true),
             
-            LIRP_1 (0.45, true),
-            LIRP_2 (0.49, true),
-            LIRP_3 (0.68, true);
+            LIRP_1 (0.49, true), //0.45
+            LIRP_2 (0.52, true), //0.49
+            LIRP_3 (0.73, true); //0.68
 
             private double percentRPM;
             private boolean hoodAngle; //final?
@@ -236,7 +157,7 @@ public final class Constants {
         public static final int RIGHT_HANG_LIMIT_SWITCH = 4;
         public static final int LEFT_HANG_LIMIT_SWITCH = 5;
 
-        public static final int HANG_SOLENOID = 0;
+        public static final int HANG_SOLENOID = 2;
 
         public static final int HANG_MAX_ENCODER_COUNTS = 270000; //290000
         public static final int HANG_HALF_ENCODER_COUNTS = HANG_MAX_ENCODER_COUNTS/2;
@@ -260,6 +181,6 @@ public final class Constants {
     }
 
     public static class IntakeConstants {
-        public static final int INTAKE_SOLENOID = 2; 
+        public static final int INTAKE_SOLENOID = 0; 
     }
 }

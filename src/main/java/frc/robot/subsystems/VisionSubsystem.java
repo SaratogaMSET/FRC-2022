@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
+  private static final boolean ESTIMATE_POSE = false;
+
   private NetworkTable table;
   private NetworkTableEntry tx, ty, tv;
   private static double x, y, v;
@@ -45,12 +47,14 @@ public class VisionSubsystem extends SubsystemBase {
     y = ty.getDouble(0.0);
     v = tv.getDouble(0.0);
 
-    // Pose estimation
-    double[] camtran = table.getEntry("camtran").getDoubleArray(new double[]{});
-    // Translation2d tranToGoal = new Translation2d(camtran[2], camtran[0] * -1); // potential FIXME
-    Translation2d tranToGoal = new Translation2d(camtran[0], camtran[1]); // potential FIXME
-    Rotation2d rotToGoal = new Rotation2d(camtran[4] * 1); // potential FIXME
-    m_pose = new Pose2d(tranToGoal, rotToGoal);
+    if (ESTIMATE_POSE) {
+      // Pose estimation
+      double[] camtran = table.getEntry("camtran").getDoubleArray(new double[]{});
+      // Translation2d tranToGoal = new Translation2d(camtran[2], camtran[0] * -1); // potential FIXME
+      Translation2d tranToGoal = new Translation2d(camtran[0], camtran[1]); // potential FIXME
+      Rotation2d rotToGoal = new Rotation2d(camtran[4] * 1); // potential FIXME
+      m_pose = new Pose2d(tranToGoal, rotToGoal);
+    }
   }
 
   public VisionState updateVisionState(){

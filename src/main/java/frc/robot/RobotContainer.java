@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -24,10 +25,9 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.Autos.AutoRunCommand;
-import frc.robot.commands.Autos.TestAuton;
 import frc.robot.commands.Autos.TurnAngle;
+import frc.robot.commands.Drivetrain.DefaultDriveCommand;
 import frc.robot.commands.Drivetrain.SetXConfigCommand;
-import frc.robot.commands.Drivetrain.TeleopSwerve;
 import frc.robot.commands.Drivetrain.ZeroGyroCommand;
 import frc.robot.commands.Hang.DeployHangCommand;
 import frc.robot.commands.Hang.HalfHangUpCommand;
@@ -36,13 +36,13 @@ import frc.robot.commands.Hang.HangUpCommand;
 import frc.robot.commands.IntakeFeeder.DeployIntakeCommand;
 import frc.robot.commands.IntakeFeeder.RunFeederCommand;
 import frc.robot.commands.Shooter.AimForShootCommand;
-import frc.robot.commands.Shooter.DynamicAimlock;
+import frc.robot.commands.Shooter.ConstantAim;
 import frc.robot.commands.Shooter.ShootCommand;
 import frc.robot.commands.Test.TestDrivetrainCommandGroup;
 import frc.robot.commands.Test.TestFeederCommandGroup;
 import frc.robot.commands.Test.TestHangCommandGroup;
 import frc.robot.commands.Test.TestIntakeCommandGroup;
-//import frc.robot.commands.Test.TestShooterCommandGroup;
+import frc.robot.commands.Test.TestShooterCommandGroup;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.FeederSubsystem.FeederState;
@@ -52,7 +52,6 @@ import frc.robot.subsystems.IntakeSubsystem.IntakeState;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
-import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.VisionSubsystem;
 
 /**
@@ -66,7 +65,7 @@ public class RobotContainer {
   public final SendableChooser<String> m_autoSwitcher = new SendableChooser<String>();
   public static final String twoBall = "2 Ball";
   public static final String fiveBall = "5 Ball";
-  public static final String Test = "Test";
+
 
   private final DrivetrainSubsystem m_drivetrainSubsystem;
   private final VisionSubsystem m_visionSubsystem;
@@ -75,19 +74,11 @@ public class RobotContainer {
   private final FeederSubsystem m_feeder;
   private final IntakeSubsystem m_intake;
   private final HangSubsystem m_hangSubsystem;
-  private final Swerve m_Swerve;
 
-  private final RobotState m_robotState;
   public static final double pi = Math.PI;
-
   private final XboxController m_driver = new XboxController(0);
-  private final int translationAxis = XboxController.Axis.kLeftY.value;
-  private final int strafeAxis = XboxController.Axis.kLeftX.value;
-  private final int rotationAxis = XboxController.Axis.kRightX.value;
-
   private final Joystick m_gunner = new Joystick(1);
   private final Compressor m_compressor;
-  private boolean AIMLOCK;
   // private final Joystick driverVertical, driverHorizontal;
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0 *
@@ -101,6 +92,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
     m_visionSubsystem = new VisionSubsystem();
     m_drivetrainSubsystem = new DrivetrainSubsystem(m_visionSubsystem);
     m_LedSubsystem = new LEDSubsystem();
@@ -108,10 +100,7 @@ public class RobotContainer {
     m_feeder = new FeederSubsystem();
     m_intake = new IntakeSubsystem();
     m_hangSubsystem = new HangSubsystem();
-    m_robotState = new RobotState();
-    m_Swerve = new Swerve();
-    boolean fieldRelative = true;
-    boolean openLoop = true;
+
     new Thread(() -> {
       try {
           Thread.sleep(500);
@@ -123,26 +112,25 @@ public class RobotContainer {
 
     m_autoSwitcher.setDefaultOption(twoBall, twoBall);
     m_autoSwitcher.addOption(fiveBall, fiveBall);
-    m_autoSwitcher.addOption(Test,Test);
+
     SmartDashboard.putData(m_autoSwitcher);
 
     // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL);
     // driverHorizontal = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
 
-    m_Swerve.setDefaultCommand(new TeleopSwerve(m_Swerve, m_driver, translationAxis, strafeAxis, rotationAxis, fieldRelative, openLoop)); //note: might need to be  Joystick instead of XboxController
-    // m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-    //         m_drivetrainSubsystem,
-    //         () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    //         () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    //         () -> modifyAxis(m_driver.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    // ));
+    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+            m_drivetrainSubsystem,
+            () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(m_driver.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    ));
 
-    // new SequentialCommandGroup(
-    //     new WaitCommand(1),
-    //     new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
-    //     new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
-    //     new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(new Pose2d()))
-    // ).schedule();
+    new SequentialCommandGroup(
+        new WaitCommand(1),
+        new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscope()),
+        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+        new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(new Pose2d()))
+    ).schedule();
     
     m_compressor = new Compressor(2, PneumaticsModuleType.REVPH);
     // m_compressor.disable();
@@ -173,7 +161,7 @@ public class RobotContainer {
     new Button(m_driver::getYButton).whileActiveOnce(
       new ParallelCommandGroup(
         // new SetXConfigCommand(m_drivetrainSubsystem),
-        // new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+        new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
         new SequentialCommandGroup(
           new WaitCommand(0.5),
           new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.6)
@@ -183,10 +171,10 @@ public class RobotContainer {
 
     // Back button zeros the gyroscope
     new Button(m_driver::getAButton).whenPressed(
-      new InstantCommand(()-> m_Swerve.zeroGyro())
+      new ZeroGyroCommand(m_drivetrainSubsystem)
     );
-    new Button(m_driver::getLeftBumper).whenPressed( 
-      new InstantCommand(()-> m_Swerve.zeroGyro())
+    new Button(m_driver::getLeftBumper).whenPressed(
+      new ZeroGyroCommand(m_drivetrainSubsystem)
     );
 
 
@@ -269,21 +257,12 @@ public class RobotContainer {
       //       m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()), m_visionSubsystem.getDistanceFromTarget()
       //     )
       //   )),
-        /* new ConstantAim(
+        new ConstantAim(
           () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
           () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
           () -> modifyAxis(m_driver.getRightX()/2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
           m_drivetrainSubsystem,
           () -> m_visionSubsystem.getRawAngle()
-        ) */
-        // TODO resolve button bindings for DynamicAimlock vs ConstantAim
-        new DynamicAimlock(
-          m_compressor,
-          () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-          () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-          m_drivetrainSubsystem, 
-          m_shooterSubsystem, 
-          m_visionSubsystem
         )
       // )
     );
@@ -376,7 +355,7 @@ public class RobotContainer {
       // Will make the feeder intake, followed by outtake
       new TestFeederCommandGroup(m_feeder, 0.2, 0.8),
 
-      //new TestShooterCommandGroup(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
+      new TestShooterCommandGroup(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
 
       new TestHangCommandGroup(m_hangSubsystem, 0.1),
       // Will move all the drivetrain 
@@ -529,7 +508,6 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-
   public Command getAutonomousCommand() {
 
     String auto = m_autoSwitcher.getSelected();
@@ -539,10 +517,8 @@ public class RobotContainer {
         return getTwoBallAuto();
       case fiveBall:
         return getFiveBallAuto();
-      case Test:
-        return new TestAuton(m_Swerve);
       default:
-        return new TestAuton(m_Swerve);
+        return getTwoBallAuto();
     }
 
   }

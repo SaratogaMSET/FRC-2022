@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Drivetrain;
+import frc.robot.Constants.Vision;
 import frc.robot.commands.Autos.AutoRunCommand;
 import frc.robot.commands.Autos.DriveStraight;
 import frc.robot.commands.Autos.TurnAngle;
@@ -68,8 +69,9 @@ public class RobotContainer {
   public final SendableChooser<String> m_autoSwitcher = new SendableChooser<String>();
   public static final String twoBall = "2 Ball";
   public static final String fiveBall = "5 Ball";
-
-
+  public static final String threeBall = "3 Field";
+  public static final String testBall = "Test Auto";
+  public static final String threeBallShort = "3 Wall";
   private final DrivetrainSubsystem m_drivetrainSubsystem;
   private final VisionSubsystem m_visionSubsystem;
   private final LEDSubsystem m_LedSubsystem;
@@ -77,7 +79,6 @@ public class RobotContainer {
   private final FeederSubsystem m_feeder;
   private final IntakeSubsystem m_intake;
   private final HangSubsystem m_hangSubsystem;
-
   private final RobotState m_robotState;
   public static final double pi = Math.PI;
   private final XboxController m_driver = new XboxController(0);
@@ -129,7 +130,9 @@ public class RobotContainer {
 
     m_autoSwitcher.setDefaultOption(twoBall, twoBall);
     m_autoSwitcher.addOption(fiveBall, fiveBall);
-
+    m_autoSwitcher.addOption(threeBall, threeBall);
+    m_autoSwitcher.addOption(testBall, testBall);
+    m_autoSwitcher.addOption(threeBallShort, threeBallShort);
     SmartDashboard.putData(m_autoSwitcher);
 
     // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL);
@@ -168,7 +171,7 @@ public class RobotContainer {
     new Button(m_driver::getRightBumper).whileActiveOnce(
       new ParallelCommandGroup(
         new DeployIntakeCommand(m_intake, IntakeState.DOWN),
-        new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.15, 0.8)
+        new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.15, 0.8) 
       )
     );
     new Button(m_driver::getBButton).whileActiveOnce(
@@ -187,12 +190,25 @@ public class RobotContainer {
     );
 
     // Back button zeros the gyroscope
-    new Button(m_driver::getAButton).whenPressed(
-      new ZeroGyroCommand(m_drivetrainSubsystem)
-    );
+    // new Button(m_driver::getAButton).whenPressed(
+    //   new ZeroGyroCommand(m_drivetrainSubsystem)
+    // );
     new Button(m_driver::getLeftBumper).whenPressed(
       new ZeroGyroCommand(m_drivetrainSubsystem)
     );
+    new Button(m_driver::getAButton).whileActiveOnce(
+      new SequentialCommandGroup(
+      new AimForShootCommand(m_drivetrainSubsystem,m_visionSubsystem),
+      new ParallelCommandGroup(
+        new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+        new SequentialCommandGroup(
+          new WaitCommand(0.7),
+          new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.7)
+        )
+      )
+      )
+    );
+
 
 
     // new Button(m_driver::getYButton).whenPressed(
@@ -487,7 +503,70 @@ public class RobotContainer {
 
     //  */
   }
+  public Command getThreeBallAuto(){
+    return new SequentialCommandGroup(
+      new ZeroGyroCommand(m_drivetrainSubsystem),
+      new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+      new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(0.75),
+      new SequentialCommandGroup(
+        new ParallelRaceGroup(
+          new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+          new SequentialCommandGroup(
+            new WaitCommand(0.5),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)
+          )
+        )
+      ),
+      new WaitCommand(0.2),
 
+      
+
+          new ParallelRaceGroup(
+            new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+            new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
+            new SequentialCommandGroup(
+              new WaitCommand(0.2),
+              new ZeroGyroCommand(m_drivetrainSubsystem),
+              new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(0.75),
+              new WaitCommand(0.5)
+            )
+          ),
+          new SequentialCommandGroup(
+            new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+            new ParallelRaceGroup(
+              new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+              new SequentialCommandGroup(
+                new WaitCommand(0.5),
+                new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0),
+                new ZeroGyroCommand(m_drivetrainSubsystem),
+                new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0)))
+            )
+          )
+         )
+    );
+  }
+
+  public Command getTestAuto(){
+    return new SequentialCommandGroup(
+      // new SequentialCommandGroup(
+      //   new ParallelRaceGroup(
+      //     new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+      //     new SequentialCommandGroup(
+      //       new WaitCommand(0.5),
+      //       new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)
+      //     )
+      //   ),
+        new WaitCommand(0.2), //0.2
+        new ZeroGyroCommand(m_drivetrainSubsystem),
+        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0)),m_drivetrainSubsystem),      //  new WaitCommand(0.5),
+        // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+          new SequentialCommandGroup(
+            new ZeroGyroCommand(m_drivetrainSubsystem),
+            new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.7)
+          )
+        );
+        // );
+  }
   public Command getTwoBallAuto(){
     // /*
     return new SequentialCommandGroup(
@@ -518,7 +597,51 @@ public class RobotContainer {
       )
     );
   }
+public Command getThreeClosedAuto(){
+  return new SequentialCommandGroup(
+      new ZeroGyroCommand(m_drivetrainSubsystem),
+      new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+      new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(0.65),
+      new SequentialCommandGroup(
+        new ParallelRaceGroup(
+          new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+          new SequentialCommandGroup(
+            new WaitCommand(0.5),
+            new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)
+          )
+        )
+      ),
+      new WaitCommand(0.2),
 
+      
+      new ParallelCommandGroup(
+        new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+        new SequentialCommandGroup(
+          new ParallelRaceGroup(
+            new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
+            new SequentialCommandGroup(
+              new WaitCommand(0.2),
+              new ZeroGyroCommand(m_drivetrainSubsystem),
+              new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(0.65),
+              new WaitCommand(0.5)
+            )
+          ),
+          new SequentialCommandGroup(
+            new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+            new ParallelRaceGroup(
+              new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+              new SequentialCommandGroup(
+                new WaitCommand(0.5),
+                new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0),
+                new ZeroGyroCommand(m_drivetrainSubsystem),
+                new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0)))
+            )
+          )
+         )
+        )
+      )
+    );
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -534,6 +657,10 @@ public class RobotContainer {
         return getTwoBallAuto();
       case fiveBall:
         return getFiveBallAuto();
+      case threeBall:
+        return getThreeBallAuto();
+      case threeBallShort:
+        return getThreeClosedAuto();
       default:
         return getTwoBallAuto();
     }

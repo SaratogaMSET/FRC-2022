@@ -11,7 +11,7 @@ public class AimForShootCommand extends CommandBase {
     private final DrivetrainSubsystem m_drivetrainSubsystem;
     private final VisionSubsystem m_visionSubsystem;
     private final PIDController pid;
-    public double pidValue = 0;
+    private double pidValue = 0;
 
 
     // public CANCoder backRightCanCoder = new CANCoder(Constants.Drivetrain.BACK_RIGHT_MODULE_STEER_ENCODER);

@@ -114,8 +114,8 @@ public final class Constants {
             EMERGENCY (0.25, false),
             TEST (0.49, true),
             
-            LIRP_1 (0.49, true), //0.45
-            LIRP_2 (0.52, true), //0.49
+            LIRP_1 (0.455, true), //0.45
+            LIRP_2 (0.49, true), //0.49
             LIRP_3 (0.73, true); //0.68
 
             private double percentRPM;
@@ -157,7 +157,7 @@ public final class Constants {
         public static final int RIGHT_HANG_LIMIT_SWITCH = 4;
         public static final int LEFT_HANG_LIMIT_SWITCH = 5;
 
-        public static final int HANG_SOLENOID = 2;
+        public static final int HANG_SOLENOID = 0;
 
         public static final int HANG_MAX_ENCODER_COUNTS = 270000; //290000
         public static final int HANG_HALF_ENCODER_COUNTS = HANG_MAX_ENCODER_COUNTS/2;
@@ -181,6 +181,6 @@ public final class Constants {
     }
 
     public static class IntakeConstants {
-        public static final int INTAKE_SOLENOID = 0; 
+        public static final int INTAKE_SOLENOID = 2; 
     }
 }

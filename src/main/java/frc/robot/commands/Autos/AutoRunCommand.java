@@ -14,7 +14,7 @@ public class AutoRunCommand extends CommandBase {
     private double m_DeltaTheta;
     private double m_initialAngle;
     private final PIDController pid;
-    public double pidValue = 0;
+    private double pidValue = 0;
 
     public AutoRunCommand(DrivetrainSubsystem drivetrainSubsystem, double velocityX, double velocityY, double deltaTheta) {
         this.m_drivetrainSubsystem = drivetrainSubsystem;

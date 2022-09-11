@@ -386,11 +386,11 @@ public class RobotContainer {
       new TestIntakeCommandGroup(m_intake),
 
       // Will make the feeder intake, followed by outtake
-      new TestFeederCommandGroup(m_feeder, 0.2, 0.8),
+      new TestFeederCommandGroup(m_feeder, 0.2, 0.2),
 
       new TestShooterCommandGroup(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
 
-      new TestHangCommandGroup(m_hangSubsystem, 0.1),
+      new TestHangCommandGroup(m_hangSubsystem, 0.4),
       // Will move all the drivetrain 
       new TestDrivetrainCommandGroup(m_drivetrainSubsystem, 1, 1, 0.3)
     );

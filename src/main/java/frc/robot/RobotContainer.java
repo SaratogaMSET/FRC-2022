@@ -87,9 +87,10 @@ public class RobotContainer {
   private final HangSubsystem m_hangSubsystem;
   private final RobotState m_robotState;
   public static final double pi = Math.PI;
-  private final XboxController m_driver = new XboxController(0);
-  private final Joystick m_gunner = new Joystick(1);
+  protected final XboxController m_driver = new XboxController(0);
+  protected final Joystick m_gunner = new Joystick(1);
   private final Compressor m_compressor;
+  private final RightTrigger trigger = new RightTrigger(m_driver);
   private final Supplier<Integer> slowMode; // SLOWMODE
   private final Supplier<Double> leftX, leftY, rightX;
   private final Supplier<Double> driveXScale, driveYScale, turnXScale;
@@ -152,23 +153,13 @@ public class RobotContainer {
     // driverHorizontal = new
     // Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
 
-    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(//If this one is buggy remove slowmode divisionand the drive sclae multiplication
-        m_drivetrainSubsystem,
-        () -> modifyAxisTranslate(leftX.get() / slowMode.get())
-            * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND * driveXScale.get(),
-        () -> -modifyAxisTranslate(leftY.get() / slowMode.get())
-            * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND * driveYScale.get(),
-        () -> modifyAxis(rightX.get() / slowMode.get())
-            * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * turnXScale.get()));
 
-    // m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-    //     m_drivetrainSubsystem,
-    //     () -> leftX.get()
-    //         * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    //     () -> -leftY.get()
-    //         * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    //     () -> rightX.get()
-    //         * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
+    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+            m_drivetrainSubsystem,
+            () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(m_driver.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    ));
 
     new SequentialCommandGroup(
         new WaitCommand(1),
@@ -233,6 +224,13 @@ public class RobotContainer {
     // );
 
     // Gunner Controls
+    trigger.whileActiveOnce(
+      new DefaultDriveCommand(
+            m_drivetrainSubsystem,
+            () -> modifyAxisTranslate(m_driver.getLeftX()/2) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxisTranslate(m_driver.getLeftY()/2) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(m_driver.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    ));
     new JoystickButton(m_gunner, 5).whenPressed(
         new HangUpCommand(m_hangSubsystem, 1));
 
@@ -495,6 +493,7 @@ public class RobotContainer {
     return new SequentialCommandGroup(
         new ZeroGyroCommand(m_drivetrainSubsystem),
         new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+        new WaitCommand(0.5),
         new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(0.75),
         new SequentialCommandGroup(
             new ParallelRaceGroup(
@@ -574,6 +573,7 @@ public class RobotContainer {
     return new SequentialCommandGroup(
         new ZeroGyroCommand(m_drivetrainSubsystem),
         new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+        new WaitCommand(0.5),
         new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(0.65),
         new SequentialCommandGroup(
             new ParallelRaceGroup(
@@ -623,6 +623,8 @@ public class RobotContainer {
         return getThreeBallAuto();
       case threeBallShort:
         return getThreeClosedAuto();
+      case testBall:
+        return getTestAuto();
       default:
         return getTwoBallAuto();
     }

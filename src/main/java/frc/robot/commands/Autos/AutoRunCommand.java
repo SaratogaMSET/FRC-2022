@@ -23,7 +23,7 @@ public class AutoRunCommand extends CommandBase {
         this.m_DeltaTheta = deltaTheta;
         
 
-        pid = new PIDController(0.0,0.0,0.0);
+        pid = new PIDController(0.1,0.0,0.0);
         //+0.02
         addRequirements(drivetrainSubsystem);
     }

@@ -90,10 +90,10 @@ public class RobotContainer {
   protected final XboxController m_driver = new XboxController(0);
   protected final Joystick m_gunner = new Joystick(1);
   private final Compressor m_compressor;
-  private final RightTrigger trigger = new RightTrigger(m_driver);
-  private final Supplier<Integer> slowMode; // SLOWMODE
-  private final Supplier<Double> leftX, leftY, rightX;
-  private final Supplier<Double> driveXScale, driveYScale, turnXScale;
+  private final LeftTrigger trigger = new LeftTrigger(m_driver);
+  // private final Supplier<Integer> slowMode; // SLOWMODE
+  // private final Supplier<Double> leftX, leftY, rightX;
+  // private final Supplier<Double> driveXScale, driveYScale, turnXScale;
   // private final Joystick driverVertical, driverHorizontal;
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0 *
@@ -117,13 +117,13 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    slowMode = () -> m_driver.getRightTriggerAxis() < 0.1 ? 1: 2; // SLOWMODE + 10% deadzone (IN USE)
-    leftX = () -> Math.pow(m_driver.getLeftX(), 3); // Cubic incline
-    leftY = () -> Math.pow(m_driver.getLeftY(), 3); // Cubic incline
-    rightX = () -> Math.pow(m_driver.getRightX(), 3); // Cubic incline
-    driveXScale = () -> m_driver.getLeftX() < 0.4 ? 1.3 : 1;
-    driveYScale = () -> m_driver.getLeftY() < 0.4 ? 1.3 : 1;
-    turnXScale = () -> m_driver.getRightX() < 0.4 ? 1.2 : 1;
+    // slowMode = () -> m_driver.getRightTriggerAxis() < 0.1 ? 1: 2; // SLOWMODE + 10% deadzone (IN USE)
+    // leftX = () -> Math.pow(m_driver.getLeftX(), 3); // Cubic incline
+    // leftY = () -> Math.pow(m_driver.getLeftY(), 3); // Cubic incline
+    // rightX = () -> Math.pow(m_driver.getRightX(), 3); // Cubic incline
+    // driveXScale = () -> m_driver.getLeftX() < 0.4 ? 1.3 : 1;
+    // driveYScale = () -> m_driver.getLeftY() < 0.4 ? 1.3 : 1;
+    // turnXScale = () -> m_driver.getRightX() < 0.4 ? 1.2 : 1;
     m_drivetrainSubsystem = new DrivetrainSubsystem();
     m_visionSubsystem = new VisionSubsystem();
     m_LedSubsystem = new LEDSubsystem();
@@ -229,7 +229,7 @@ public class RobotContainer {
             m_drivetrainSubsystem,
             () -> modifyAxisTranslate(m_driver.getLeftX()/2) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> -modifyAxisTranslate(m_driver.getLeftY()/2) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(m_driver.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> modifyAxis(m_driver.getRightX()/2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
     new JoystickButton(m_gunner, 5).whenPressed(
         new HangUpCommand(m_hangSubsystem, 1));

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.HangConstants;
 
 public class HangSubsystem extends SubsystemBase {
     public TalonFX rightHangMotor;
@@ -102,11 +103,19 @@ public class HangSubsystem extends SubsystemBase {
         double positionMeters = wheelRotations * (2 * Math.PI * 0.5);
         return positionMeters;
     }
+
+    
     
     @Override
     public void periodic() {
+        // double[] leftArray = new double[]{getLeftEncoderValue(), (double)HangConstants.HANG_LEFT_MOTOR}; 
+        // double[] rightArray = new double[]{getRightEncoderValue(), (double)HangConstants.HANG_RIGHT_MOTOR}; 
         SmartDashboard.putNumber("Left Hang Current", leftHangMotor.getStatorCurrent());
         SmartDashboard.putNumber("Right Hang Current", rightHangMotor.getStatorCurrent());
+        SmartDashboard.putNumber("Hang: encoder left", getLeftEncoderValue());
+        SmartDashboard.putNumber("Hang: encoder right",getRightEncoderValue());
+        SmartDashboard.putBoolean("Hang Left Limit Switch", hangLeftLimitSwitch.get());
+        SmartDashboard.putBoolean("Hang Left Limit Switch", hangRightLimitSwitch.get());
         // if(hangRightLimitSwitch.get()){
         //     rightResetEncoders();
         // }

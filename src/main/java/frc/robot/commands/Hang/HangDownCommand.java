@@ -33,7 +33,7 @@ public class HangDownCommand extends CommandBase {
             m_hangSubsystem.triggeredRightSoftStop = true;
         }
         if (m_hangSubsystem.getRightEncoderValue() < Constants.HangConstants.HANG_HALF_ENCODER_COUNTS) {
-            hangSpeed = originalSpeed * 2/3;
+            hangSpeed = originalSpeed * 4.5/6;
         } else {
             hangSpeed = originalSpeed;
         }
@@ -50,7 +50,7 @@ public class HangDownCommand extends CommandBase {
             m_hangSubsystem.triggeredLeftSoftStop = true;
         }
         if (m_hangSubsystem.getLeftEncoderValue() < Constants.HangConstants.HANG_HALF_ENCODER_COUNTS) {
-            hangSpeed = originalSpeed * 2/3;
+            hangSpeed = originalSpeed * 4.15/6;
         } else {
             hangSpeed = originalSpeed;
         }

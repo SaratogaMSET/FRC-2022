@@ -1,6 +1,7 @@
 package frc.robot.commands.Hang;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.HangSubsystem;
 
@@ -16,12 +17,17 @@ public class HangUpCommand extends CommandBase {
         m_hangSubsystem = hang;
         addRequirements(m_hangSubsystem);
     }
+    @Override
+    public void initialize(){
+        m_hangSubsystem.leftResetEncoders();
+        m_hangSubsystem.rightResetEncoders();
+    }
     // Called when the command is initially scheduled.
     @Override
     public void execute() {
 
         //right
-        if (m_hangSubsystem.getRightEncoderValue() > Constants.HangConstants.HANG_MAX_ENCODER_COUNTS+12000) {
+        if (m_hangSubsystem.getRightEncoderValue() > Constants.HangConstants.HANG_MAX_ENCODER_COUNTS + 16800) { //12000
             m_hangSubsystem.maxHeightRight = true;
             m_hangSubsystem.setHangRightSpeed(0); //not necessary
         } else {
@@ -29,7 +35,7 @@ public class HangUpCommand extends CommandBase {
         }
 
         // left
-        if (m_hangSubsystem.getLeftEncoderValue() > Constants.HangConstants.HANG_MAX_ENCODER_COUNTS) {
+        if (m_hangSubsystem.getLeftEncoderValue() > Constants.HangConstants.HANG_MAX_ENCODER_COUNTS ) {
             m_hangSubsystem.maxHeightLeft = true;
             m_hangSubsystem.setHangLeftSpeed(0); //not necessary
         } else {

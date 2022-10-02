@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.swervedrivespecialties.swervelib.Mk4ModuleConfiguration;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
@@ -77,6 +78,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private SwerveModuleState[] currentState = new SwerveModuleState[4];
   private SwerveModuleState[] previousState = new SwerveModuleState[4];
 
+  private double trackingAngle = 0;
+  private boolean trackingState = false;
+
   BooleanLogEntry myBooleanLog;
   DoubleLogEntry myDoubleLog;
   StringLogEntry myStringLog;
@@ -104,7 +108,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // m_backLeftDrive = new LazyTalonFX(Drivetrain.BACK_LEFT_MODULE_DRIVE_MOTOR);
     // m_backRightDrive = new LazyTalonFX(Drivetrain.BACK_RIGHT_MODULE_DRIVE_MOTOR);
 
+    Mk4ModuleConfiguration swerveConfig = new Mk4ModuleConfiguration();
+    swerveConfig.setDriveCurrentLimit(20);
+    swerveConfig.setSteerCurrentLimit(20);
+    // swerveConfig
     m_frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
+            swerveConfig,
             Mk4SwerveModuleHelper.GearRatio.L2,
             Drivetrain.FRONT_LEFT_MODULE_DRIVE_MOTOR,
             Drivetrain.FRONT_LEFT_MODULE_STEER_MOTOR,
@@ -114,6 +123,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     // We will do the same for the other modules
     m_frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
+            swerveConfig,
             Mk4SwerveModuleHelper.GearRatio.L2,
             Drivetrain.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
             Drivetrain.FRONT_RIGHT_MODULE_STEER_MOTOR,
@@ -122,6 +132,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     );
 
     m_backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
+            swerveConfig,
             Mk4SwerveModuleHelper.GearRatio.L2,
             Drivetrain.BACK_LEFT_MODULE_DRIVE_MOTOR,
             Drivetrain.BACK_LEFT_MODULE_STEER_MOTOR,
@@ -130,6 +141,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     );
 
     m_backRightModule = Mk4SwerveModuleHelper.createFalcon500(
+            swerveConfig,
             Mk4SwerveModuleHelper.GearRatio.L2,
             Drivetrain.BACK_RIGHT_MODULE_DRIVE_MOTOR,
             Drivetrain.BACK_RIGHT_MODULE_STEER_MOTOR,
@@ -172,8 +184,27 @@ public class DrivetrainSubsystem extends SubsystemBase {
     odometer.resetPosition(pose, getRotation2d());
   }
 
-  public void drive(ChassisSpeeds chassisSpeeds) {
+  
+
+public void drive(ChassisSpeeds chassisSpeeds) {
+    //Check for angle tracking conditions
+    if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) < 0.01 && trackingState == false){
+      trackingAngle = getNavHeading();
+      trackingState = true;
+    }else if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) >= 0.01 || Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond) == 0 ){
+      trackingState = false;
+    }
+    //If we have 0 input angular velocity, add a pid gain to get to the last angle detected
     m_chassisSpeeds = chassisSpeeds;
+    double maxTrackingError = Math.toRadians(10); //If we get pushed too far off we don't want to keep engaging the turning pid
+    double trackingError = trackingAngle - getNavHeading();
+    
+    if(trackingError > maxTrackingError){
+      trackingState = false;
+    }else if(trackingState){//Add Angular pid to correct for drive drift
+      double kP = 0.01;
+      m_chassisSpeeds.omegaRadiansPerSecond = kP * (trackingError);
+    }
   }
 
   public void setModuleStates(SwerveModuleState[] setState){
@@ -224,8 +255,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     setModuleStates(currentState);
 
+    SmartDashboard.putNumber("Tracking Error", 180 /Math.PI * trackingAngle - getNavHeading());
+    SmartDashboard.putNumber("Tracking Angle", 180 /Math.PI * trackingAngle);
+    SmartDashboard.putNumber("Robot Angle", 180 /Math.PI * getNavHeading());
+    SmartDashboard.putBoolean("Is Tracking", trackingState);
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-    SmartDashboard.putString("Robot Rotation", getPose().getRotation().toString());
+    SmartDashboard.putString("Robot Rotation", getPose().getRotation().toString()); //271.33
+    double csx = m_kinematics.toChassisSpeeds(currentState).vxMetersPerSecond;
+    SmartDashboard.putNumber("X Velocity", csx);
+    double csy = m_kinematics.toChassisSpeeds(currentState).vyMetersPerSecond;
+    SmartDashboard.putNumber("Y Velocity", csy);
+    double cst = m_kinematics.toChassisSpeeds(currentState).omegaRadiansPerSecond;
+    SmartDashboard.putNumber("Theta Velocity", cst);
     // SmartDashboard.putString("Wheel Velocity Real fL", ""+m_frontLeftSteer.getSelectedSensorVelocity());
   }
 }

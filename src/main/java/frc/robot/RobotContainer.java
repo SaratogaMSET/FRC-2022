@@ -12,6 +12,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.constraint.MaxVelocityConstraint;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -24,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -61,6 +64,12 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterZone;
 import frc.robot.subsystems.VisionSubsystem;
 
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+import com.ctre.phoenix.motion.MotionProfileStatus;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -73,11 +82,17 @@ import frc.robot.subsystems.VisionSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final SendableChooser<String> m_autoSwitcher = new SendableChooser<String>();
+  public final SendableChooser<String> trajectorySwitcher = new SendableChooser<String>();
   public static final String twoBall = "2 Ball";
   public static final String fiveBall = "5 Ball";
   public static final String threeBall = "3 Field";
   public static final String testBall = "Test Auto";
   public static final String threeBallShort = "3 Wall";
+  public static final String pathTestBall = "Path Test Auto";
+  public static final String forward = "Forward";
+  public static final String strafe = "Strafe";
+  public static final String regularRotate = "Regular Rotate";
+  public static final String forwardRotate = "Forward Rotate";
   private final DrivetrainSubsystem m_drivetrainSubsystem;
   private final VisionSubsystem m_visionSubsystem;
   private final LEDSubsystem m_LedSubsystem;
@@ -143,11 +158,19 @@ public class RobotContainer {
     }).start();
 
     m_autoSwitcher.setDefaultOption(twoBall, twoBall);
+    // m_autoSwitcher.addOption(threeBall, threeBall);
+    // m_autoSwitcher.addOption(threeBallShort, threeBallShort);
     m_autoSwitcher.addOption(fiveBall, fiveBall);
-    m_autoSwitcher.addOption(threeBall, threeBall);
     m_autoSwitcher.addOption(testBall, testBall);
-    m_autoSwitcher.addOption(threeBallShort, threeBallShort);
+
+    m_autoSwitcher.addOption(pathTestBall, pathTestBall);
+    trajectorySwitcher.setDefaultOption(forward, forward);
+    trajectorySwitcher.addOption(strafe, strafe);
+    trajectorySwitcher.addOption(regularRotate, regularRotate);
+    trajectorySwitcher.addOption(forwardRotate, forwardRotate);
+
     SmartDashboard.putData(m_autoSwitcher);
+    SmartDashboard.putData(trajectorySwitcher);
 
     // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL);
     // driverHorizontal = new
@@ -156,9 +179,9 @@ public class RobotContainer {
 
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(m_driver.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, //+
+            () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, //-
+            () -> modifyAxis(m_driver.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND //+
     ));
 
     new SequentialCommandGroup(
@@ -201,19 +224,25 @@ public class RobotContainer {
                 new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.6))));
 
     // Back button zeros the gyroscope
-    // new Button(m_driver::getAButton).whenPressed(
-    // new ZeroGyroCommand(m_drivetrainSubsystem)
-    // );
-    new Button(m_driver::getLeftBumper).whenPressed(
-        new ZeroGyroCommand(m_drivetrainSubsystem));
-    new Button(m_driver::getAButton).whileActiveOnce(
-        new SequentialCommandGroup(
-            new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
-            new ParallelCommandGroup(
-                new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
-                new SequentialCommandGroup(
-                    new WaitCommand(0.7),
-                    new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.7)))));
+    new Button(m_driver::getAButton).whenPressed(
+    new ZeroGyroCommand(m_drivetrainSubsystem)
+    );
+    new Button(m_driver::getLeftBumper).whileActiveOnce(
+      new DefaultDriveCommand(
+      m_drivetrainSubsystem,
+      () -> modifyAxisTranslate(m_driver.getLeftX()/2) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, //+
+      () -> -modifyAxisTranslate(m_driver.getLeftY()/2) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, //-
+      () -> modifyAxis(m_driver.getRightX()/2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+      ) //+
+    );
+    // new Button(m_driver::getAButton).whileActiveOnce(
+    //     new SequentialCommandGroup(
+    //         new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+    //         new ParallelCommandGroup(
+    //             new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+    //             new SequentialCommandGroup(
+    //                 new WaitCommand(0.7),
+    //                 new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.7)))));
 
     // new Button(m_driver::getYButton).whenPressed(
     // new HangUpCommand(m_hangSubsystem, 0.5)
@@ -224,13 +253,13 @@ public class RobotContainer {
     // );
 
     // Gunner Controls
-    trigger.whileActiveOnce(
-      new DefaultDriveCommand(
-            m_drivetrainSubsystem,
-            () -> modifyAxisTranslate(m_driver.getLeftX()/2) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxisTranslate(m_driver.getLeftY()/2) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(m_driver.getRightX()/2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    ));
+    // trigger.whileActiveOnce(
+    //   new DefaultDriveCommand(
+    //         m_drivetrainSubsystem,
+    //         () -> modifyAxisTranslate(m_driver.getLeftX()/2) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+    //         () -> -modifyAxisTranslate(m_driver.getLeftY()/2) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+    //         () -> modifyAxis(m_driver.getRightX()/2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    // ));
     new JoystickButton(m_gunner, 5).whenPressed(
         new HangUpCommand(m_hangSubsystem, 1));
 
@@ -604,27 +633,63 @@ public class RobotContainer {
                             new InstantCommand(
                                 () -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0)))))))));
   }
+  // public Command getPathTestAuto(String trajectory, double MaxVelocityConstraint, double maxAccelerationConstraint){
 
+  //   PathPlannerTrajectory path = PathPlanner.loadPath(trajectory, MaxVelocityConstraint, maxAccelerationConstraint);
+  //   PIDController xController = new PIDController(Constants.Drivetrain.kPXController, Constants.Drivetrain.kIXController, 0); //FIXME currently 0.0,0.0,0.0
+  //   PIDController yController = new PIDController(Constants.Drivetrain.kPYController, Constants.Drivetrain.kIYController, 0);//FIXME currently 0,0,0
+  //   ProfiledPIDController thetaController = new ProfiledPIDController(
+  //         Constants.Drivetrain.kPThetaControllerTrajectory, 0, 0, new TrapezoidProfile.Constraints(  //FIXME currently 0.06,0,0
+  //             MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+  //             MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND/3));
+    
+  //   thetaController.enableContinuousInput(-Math.PI, Math.PI);
+  //   PPSwerveControllerCommand pathFollower = new PPSwerveControllerCommand(
+  //     path, 
+  //     m_drivetrainSubsystem::getPose, 
+  //     m_kinematics, 
+  //     xController, 
+  //     yController, 
+  //     thetaController, 
+  //     m_drivetrainSubsystem::setModuleStates, 
+  //     m_drivetrainSubsystem);
+
+  //   return new SequentialCommandGroup(
+  //     new ZeroGyroCommand(m_drivetrainSubsystem),
+  //     new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+  //     new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry(path.getInitialPose())),
+  //     new WaitCommand(0.5),
+  //     pathFollower
+  //   );
+  // }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-
+    // double velocity = 0;
+    // double acceleration;
     String auto = m_autoSwitcher.getSelected();
-
+    // String trajectory = trajectorySwitcher.getSelected();
+    // if(trajectory.equals("Forward")) {velocity = 5; acceleration = 0.7;}
+    // else if(trajectory.equals("Strafe")) {velocity = 2; acceleration = 0.7;}
+    // else if(trajectory.equals("Regular Rotate")) {velocity = 0.5; acceleration = 0.2;}
+    // else if(trajectory.equals("Forward Rotate")) {velocity = 2; acceleration = 0.7;}
+    // else {velocity = 2; acceleration = 0.7;}
     switch (auto) {
       case twoBall:
         return getTwoBallAuto();
       case fiveBall:
         return getFiveBallAuto();
-      case threeBall:
-        return getThreeBallAuto();
-      case threeBallShort:
-        return getThreeClosedAuto();
+      // case threeBall:
+      //   return getThreeBallAuto();
+      // case threeBallShort:
+      //   return getThreeClosedAuto();
       case testBall:
         return getTestAuto();
+      case pathTestBall:
+        // return getPathTestAuto(trajectory, velocity, acceleration);
       default:
         return getTwoBallAuto();
     }

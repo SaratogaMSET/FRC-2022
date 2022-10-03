@@ -99,6 +99,7 @@ public final class Constants {
   
         public static final double kFalconSensorUnitsToRPM = (600.0 / 2048.0);
         public static final double kFalcon500FreeSpeed = 6380;
+        public static final double REV_UP_BUFFER = 0.95;
 
         public static final int SHOOTER_SOLENOID = 1;
 

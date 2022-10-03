@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
@@ -28,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -220,6 +222,7 @@ public class RobotContainer {
             new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
             new SequentialCommandGroup(
                 new WaitCommand(0.5),
+                // new WaitUntilCommand(m_shooterSubsystem.shooterReady),
                 new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.6))));
 
     // Back button zeros the gyroscope
@@ -308,20 +311,20 @@ public class RobotContainer {
                 new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.7))));
 
     new JoystickButton(m_gunner, 1).whileActiveOnce(
-        // new ParallelCommandGroup(
-        // new InstantCommand(() -> m_shooterSubsystem.setRPM(
-        // m_shooterSubsystem.getShooterStateRPM(
-        // m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()),
-        // m_visionSubsystem.getDistanceFromTarget()
-        // )
-        // )),
+        new ParallelCommandGroup(
+        new InstantCommand(() -> m_shooterSubsystem.setRPM(
+        m_shooterSubsystem.getShooterStateRPM(
+        m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()),
+        m_visionSubsystem.getDistanceFromTarget()
+        )
+        )),
         new ConstantAim(
             () -> modifyAxisTranslate(m_driver.getLeftX() / 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> -modifyAxisTranslate(m_driver.getLeftY() / 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> modifyAxis(m_driver.getRightX() / 2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
             m_drivetrainSubsystem,
             () -> m_visionSubsystem.getRawAngle())
-    // )
+    )
     );
 
     new JoystickButton(m_gunner, 1).whenReleased(

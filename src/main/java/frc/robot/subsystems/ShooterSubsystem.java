@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
  
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -15,6 +17,8 @@ import frc.robot.util.drivers.LazyTalonFX;
 public class ShooterSubsystem extends SubsystemBase {
   public static final boolean SHOOTER_UP = true;
   public static final boolean SHOOTER_DOWN = false;
+  // public BooleanSupplier shooterReady;
+
   // public static final PIDController pid = new PIDController(0.2, 0.03, 0);
 
   public static enum ShooterZone {
@@ -25,8 +29,10 @@ public class ShooterSubsystem extends SubsystemBase {
     TWOFIVE, FOURZERO
   };
 
-  public WPI_TalonFX shooterMotor1;
-  public WPI_TalonFX shooterMotor2;
+  // public WPI_TalonFX shooterMotor1;
+  // public WPI_TalonFX shooterMotor2;
+  public LazyTalonFX shooterMotor1;
+  public LazyTalonFX shooterMotor2;
   private Solenoid shooterSolenoid;
 
   // private ShuffleboardTab tab = Shuffleboard.getTab("Teleop");
@@ -36,8 +42,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
-    shooterMotor1 = new WPI_TalonFX(Constants.ShooterConstants.SHOOTER_MOTOR1);
-    shooterMotor2 = new WPI_TalonFX(Constants.ShooterConstants.SHOOTER_MOTOR2);
+    shooterMotor1 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR1);
+    shooterMotor2 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR2);
 
     shooterSolenoid = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.ShooterConstants.SHOOTER_SOLENOID); //CHANGE VALUES
     shooterSolenoid.set(false);
@@ -46,17 +52,25 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setRPM(double rpm) {
-    rpm *= 6380;
-    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.637, 0.14245, 0.0093589);
-    double feedforwardVoltage = feedforward.calculate(rpm);
+    // // rpm *= 6380;
+    // SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.637, 0.14245, 0.0093589);
+    // double feedforwardVoltage = feedforward.calculate(rpm);
 
-    SmartDashboard.putNumber("Velocity Setpoint", feedforwardVoltage);
+    // SmartDashboard.putNumber("Velocity Setpoint", feedforwardVoltage);
     
     // shooterMotor1.set(ControlMode.PercentOutput, rpm);
     // shooterMotor2.set(ControlMode.PercentOutput, -rpm);
+    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(rpm, 0.14002, 0.0092594);
+    double actual_rpm = feedforward.calculate(rpm);
 
-    shooterMotor1.setVoltage(feedforwardVoltage);
-    shooterMotor2.setVoltage(-feedforwardVoltage);
+    SmartDashboard.putNumber("Velocity Setpoint", actual_rpm);
+
+    shooterMotor1.set(ControlMode.PercentOutput, actual_rpm);
+    shooterMotor2.set(ControlMode.PercentOutput, -actual_rpm);
+    // shooterReady = () -> rpm <= shooterMotor1.getMotorOutputVoltage()
+    // * Constants.ShooterConstants.REV_UP_BUFFER / 6380
+    // && rpm >= -shooterMotor2.getMotorOutputVoltage() * Constants.ShooterConstants.REV_UP_BUFFER
+    //         / 6380 ? true : false;
   }
 
   public void resetSensors() {

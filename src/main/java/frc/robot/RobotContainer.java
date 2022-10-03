@@ -132,7 +132,8 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // slowMode = () -> m_driver.getRightTriggerAxis() < 0.1 ? 1: 2; // SLOWMODE + 10% deadzone (IN USE)
+    // slowMode = () -> m_driver.getRightTriggerAxis() < 0.1 ? 1: 2; // SLOWMODE +
+    // 10% deadzone (IN USE)
     // leftX = () -> Math.pow(m_driver.getLeftX(), 3); // Cubic incline
     // leftY = () -> Math.pow(m_driver.getLeftY(), 3); // Cubic incline
     // rightX = () -> Math.pow(m_driver.getRightX(), 3); // Cubic incline
@@ -176,13 +177,11 @@ public class RobotContainer {
     // driverHorizontal = new
     // Joystick(Constants.OIConstants.JOYSTICK_DRIVE_HORIZONTAL);
 
-
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-            m_drivetrainSubsystem,
-            () -> modifyAxisTranslate(m_driver.getLeftX()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, //+
-            () -> -modifyAxisTranslate(m_driver.getLeftY()/1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, //-
-            () -> modifyAxis(m_driver.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND //+
-    ));
+        m_drivetrainSubsystem,
+        () -> modifyAxisTranslate(m_driver.getLeftX() / 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxisTranslate(m_driver.getLeftY() / 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> modifyAxis(m_driver.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
 
     new SequentialCommandGroup(
         new WaitCommand(1),
@@ -253,22 +252,22 @@ public class RobotContainer {
     // );
 
     // Gunner Controls
-    // trigger.whileActiveOnce(
-    //   new DefaultDriveCommand(
-    //         m_drivetrainSubsystem,
-    //         () -> modifyAxisTranslate(m_driver.getLeftX()/2) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    //         () -> -modifyAxisTranslate(m_driver.getLeftY()/2) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    //         () -> modifyAxis(m_driver.getRightX()/2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    // ));
+    trigger.whileActiveOnce(
+        new DefaultDriveCommand(
+            m_drivetrainSubsystem,
+            () -> modifyAxisTranslate(m_driver.getLeftX() * 0.6) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxisTranslate(m_driver.getLeftY() * 0.6) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(m_driver.getRightX() * 0.6)
+                * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
     new JoystickButton(m_gunner, 5).whenPressed(
         new HangUpCommand(m_hangSubsystem, 1));
 
     new JoystickButton(m_gunner, 6).whenPressed(
         new ParallelCommandGroup(
             new HalfHangUpCommand(m_hangSubsystem, 1),
-            new SequentialCommandGroup(
-                new WaitCommand(0.3),
-                new InstantCommand(() -> m_hangSubsystem.deployHang()))));
+            // new SequentialCommandGroup(
+            // new WaitCommand(0.3),
+            new InstantCommand(() -> m_hangSubsystem.deployHang())));
 
     new JoystickButton(m_gunner, 3).whenPressed(
         new SequentialCommandGroup(

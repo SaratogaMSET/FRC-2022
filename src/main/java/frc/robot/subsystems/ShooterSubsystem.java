@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
  
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -24,8 +25,8 @@ public class ShooterSubsystem extends SubsystemBase {
     TWOFIVE, FOURZERO
   };
 
-  public LazyTalonFX shooterMotor1;
-  public LazyTalonFX shooterMotor2;
+  public WPI_TalonFX shooterMotor1;
+  public WPI_TalonFX shooterMotor2;
   private Solenoid shooterSolenoid;
 
   // private ShuffleboardTab tab = Shuffleboard.getTab("Teleop");
@@ -35,8 +36,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
-    shooterMotor1 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR1);
-    shooterMotor2 = new LazyTalonFX(Constants.ShooterConstants.SHOOTER_MOTOR2);
+    shooterMotor1 = new WPI_TalonFX(Constants.ShooterConstants.SHOOTER_MOTOR1);
+    shooterMotor2 = new WPI_TalonFX(Constants.ShooterConstants.SHOOTER_MOTOR2);
 
     shooterSolenoid = new Solenoid(2, PneumaticsModuleType.REVPH, Constants.ShooterConstants.SHOOTER_SOLENOID); //CHANGE VALUES
     shooterSolenoid.set(false);
@@ -45,17 +46,17 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setRPM(double rpm) {
+    rpm *= 6380;
+    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.637, 0.14245, 0.0093589);
+    double feedforwardVoltage = feedforward.calculate(rpm);
 
-    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(rpm, 0.14002, 0.0092594);
-    double actual_rpm = feedforward.calculate(rpm);
-
-    // SmartDashboard.putNumber("Velocity Setpoint", actual_rpm);
+    SmartDashboard.putNumber("Velocity Setpoint", feedforwardVoltage);
     
     // shooterMotor1.set(ControlMode.PercentOutput, rpm);
     // shooterMotor2.set(ControlMode.PercentOutput, -rpm);
 
-    shooterMotor1.set(ControlMode.PercentOutput, actual_rpm);
-    shooterMotor2.set(ControlMode.PercentOutput, -actual_rpm);
+    shooterMotor1.setVoltage(feedforwardVoltage);
+    shooterMotor2.setVoltage(-feedforwardVoltage);
   }
 
   public void resetSensors() {

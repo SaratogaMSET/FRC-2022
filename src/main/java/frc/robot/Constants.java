@@ -46,7 +46,7 @@ public final class Constants {
         public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 30;
         public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 31;
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 41;
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians((120.0+48.56)); //-math
+        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(- 360 + 349.27); //125.0
 
         public static final double kPXController = 0.00; //0.033 1/30
         public static final double kIXController = 0.000;

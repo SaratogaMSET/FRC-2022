@@ -84,19 +84,19 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final SendableChooser<String> m_autoSwitcher = new SendableChooser<String>();
-  public final SendableChooser<String> trajectorySwitcher = new SendableChooser<String>();
+  // public final SendableChooser<String> trajectorySwitcher = new SendableChooser<String>();
   public static final String twoBall = "2 Ball";
   public static final String fiveBall = "5 Ball";
   public static final String threeBall = "3 Field";
   public static final String testBall = "Test Auto";
   public static final String threeBallShort = "3 Wall";
-  public static final String pathTestBall = "Path Test Auto";
-  public static final String forward = "Forward";
-  public static final String strafe = "Strafe";
-  public static final String regularRotate = "Regular Rotate";
-  public static final String forwardRotate = "Forward Rotate";
+  // public static final String pathTestBall = "Path Test Auto";
+  // public static final String forward = "Forward";
+  // public static final String strafe = "Strafe";
+  // public static final String regularRotate = "Regular Rotate";
+  // public static final String forwardRotate = "Forward Rotate";
   private final DrivetrainSubsystem m_drivetrainSubsystem;
-  private final VisionSubsystem m_visionSubsystem;
+  public static VisionSubsystem m_visionSubsystem;
   private final LEDSubsystem m_LedSubsystem;
   private final ShooterSubsystem m_shooterSubsystem;
   private final FeederSubsystem m_feeder;
@@ -150,7 +150,6 @@ public class RobotContainer {
     m_intake = new IntakeSubsystem();
     m_hangSubsystem = new HangSubsystem();
     m_robotState = new RobotState();
-
     new Thread(() -> {
       try {
         Thread.sleep(500);
@@ -166,14 +165,13 @@ public class RobotContainer {
     m_autoSwitcher.addOption(fiveBall, fiveBall);
     m_autoSwitcher.addOption(testBall, testBall);
 
-    m_autoSwitcher.addOption(pathTestBall, pathTestBall);
-    trajectorySwitcher.setDefaultOption(forward, forward);
-    trajectorySwitcher.addOption(strafe, strafe);
-    trajectorySwitcher.addOption(regularRotate, regularRotate);
-    trajectorySwitcher.addOption(forwardRotate, forwardRotate);
-
+    // m_autoSwitcher.addOption(pathTestBall, pathTestBall);
+    // trajectorySwitcher.setDefaultOption(forward, forward);
+    // trajectorySwitcher.addOption(strafe, strafe);
+    // trajectorySwitcher.addOption(regularRotate, regularRotate);
+    // trajectorySwitcher.addOption(forwardRotate, forwardRotate);
     SmartDashboard.putData(m_autoSwitcher);
-    SmartDashboard.putData(trajectorySwitcher);
+    // SmartDashboard.putData(trajectorySwitcher);
 
     // driverVertical = new Joystick(Constants.OIConstants.JOYSTICK_DRIVE_VERTICAL);
     // driverHorizontal = new
@@ -222,9 +220,12 @@ public class RobotContainer {
             new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
             new SequentialCommandGroup(
                 new WaitCommand(0.5),
-                // new WaitUntilCommand(m_shooterSubsystem.shooterReady),
-                new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.6))));
+                new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.3, 0.5))));
 
+    new Button(m_driver::getYButton).whenReleased(
+        new InstantCommand(() -> m_shooterSubsystem.setRPM(0))
+            
+      );
     // Back button zeros the gyroscope
     new Button(m_driver::getAButton).whenPressed(
     new ZeroGyroCommand(m_drivetrainSubsystem)
@@ -232,11 +233,12 @@ public class RobotContainer {
     new Button(m_driver::getLeftBumper).whileActiveOnce(
       new DefaultDriveCommand(
       m_drivetrainSubsystem,
-      () -> modifyAxisTranslate(m_driver.getLeftX()/2) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, //+
-      () -> -modifyAxisTranslate(m_driver.getLeftY()/2) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, //-
-      () -> modifyAxis(m_driver.getRightX()/2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+      () -> modifyAxisTranslate(m_driver.getLeftX()*0.6) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, //+
+      () -> -modifyAxisTranslate(m_driver.getLeftY()*0.6) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, //-
+      () -> modifyAxis(m_driver.getRightX()*0.6) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
       ) //+
     );
+
     // new Button(m_driver::getAButton).whileActiveOnce(
     //     new SequentialCommandGroup(
     //         new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
@@ -255,13 +257,6 @@ public class RobotContainer {
     // );
 
     // Gunner Controls
-    trigger.whileActiveOnce(
-        new DefaultDriveCommand(
-            m_drivetrainSubsystem,
-            () -> modifyAxisTranslate(m_driver.getLeftX() * 0.6) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxisTranslate(m_driver.getLeftY() * 0.6) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(m_driver.getRightX() * 0.6)
-                * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
     new JoystickButton(m_gunner, 5).whenPressed(
         new HangUpCommand(m_hangSubsystem, 1));
 
@@ -282,6 +277,12 @@ public class RobotContainer {
     new JoystickButton(m_gunner, 12).whileActiveOnce(
         new HangDownCommand(m_hangSubsystem, 0.75, true));
 
+        new JoystickButton(m_gunner, 9).whileActiveOnce(
+        new SequentialCommandGroup(
+        new InstantCommand(()-> m_hangSubsystem.undeployHang()),
+        new WaitCommand(0.5),
+        new HangDownCommand(m_hangSubsystem, 0.75, true)));
+        
     new JoystickButton(m_gunner, 10).whileActiveOnce(
         new HangUpCommand(m_hangSubsystem, .75));
 
@@ -310,23 +311,23 @@ public class RobotContainer {
                 new WaitCommand(0.7),
                 new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.7))));
 
-    new JoystickButton(m_gunner, 1).whileActiveOnce(
-        new ParallelCommandGroup(
-        new InstantCommand(() -> m_shooterSubsystem.setRPM(
-        m_shooterSubsystem.getShooterStateRPM(
-        m_shooterSubsystem.getShooterZone(m_visionSubsystem.getDistanceFromTarget()),
-        m_visionSubsystem.getDistanceFromTarget()
-        )
-        )),
-        new ConstantAim(
-            () -> modifyAxisTranslate(m_driver.getLeftX() / 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxisTranslate(m_driver.getLeftY() / 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(m_driver.getRightX() / 2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-            m_drivetrainSubsystem,
-            () -> m_visionSubsystem.getRawAngle())
-    )
-    );
-
+                new JoystickButton(m_gunner, 1).whileActiveOnce(
+                  new ParallelCommandGroup(
+                  new InstantCommand(() -> m_shooterSubsystem.setRPM(
+                  m_shooterSubsystem.getShooterStateRPM(
+                  ShooterZone.QUADRATIC,
+                  m_visionSubsystem.getDistanceFromTarget()
+                  )
+                  ) ),
+                  new ConstantAim(
+                      () -> modifyAxisTranslate(m_driver.getLeftX() / 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+                      () -> -modifyAxisTranslate(m_driver.getLeftY() / 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+                      () -> modifyAxis(m_driver.getRightX() / 2) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+                      m_drivetrainSubsystem,
+                      () -> m_visionSubsystem.getRawAngle())
+              )
+              );
+    
     new JoystickButton(m_gunner, 1).whenReleased(
         new InstantCommand(() -> m_shooterSubsystem.setRPM(0)));
 
@@ -365,6 +366,7 @@ public class RobotContainer {
     SmartDashboard.putString("COMPRESSOR:", m_compressor.getPressure() + "");
     SmartDashboard.putNumber("CONTROLLER: Rotation", modifyAxis(m_driver.getRightX()));
     SmartDashboard.putNumber("CONTROLLER: Fwd Translate", modifyAxisTranslate(m_driver.getLeftY()));
+
   }
 
   private static double deadband(double value, double deadband) {
@@ -690,7 +692,7 @@ public class RobotContainer {
       //   return getThreeClosedAuto();
       case testBall:
         return getTestAuto();
-      case pathTestBall:
+      // case pathTestBall:
         // return getPathTestAuto(trajectory, velocity, acceleration);
       default:
         return getTwoBallAuto();

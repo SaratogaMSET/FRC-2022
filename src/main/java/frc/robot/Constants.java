@@ -118,7 +118,7 @@ public final class Constants {
             LIRP_1 (0.455, true), //0.45
             LIRP_2 (0.49, true), //0.49
             LIRP_3 (0.73, true); //0.68
-
+            
             private double percentRPM;
             private boolean hoodAngle; //final?
 

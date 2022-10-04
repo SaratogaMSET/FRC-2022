@@ -89,7 +89,10 @@ public class HangSubsystem extends SubsystemBase {
     public boolean isHangDeployed() {
         return hangSolenoid.get();
     }
-
+    public void undeployHang(){
+        if(hangPosition = true)
+            deployHang();
+    }
     public double metersToNativeUnits(double positionMeters){
         double wheelRotations = positionMeters/(2 * Math.PI * 0.5);
         double motorRotations = wheelRotations * (54/8 * 1.5); 

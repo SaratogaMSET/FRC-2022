@@ -25,6 +25,13 @@ public class ShootCommand extends CommandBase {
         m_zone = zone;
         addRequirements(m_shooter);
     }
+    public ShootCommand(ShooterSubsystem shooter, double rpm, Compressor compressor){
+        m_shooter = shooter;
+        m_compressor = compressor;
+        this.m_rpm = rpm;
+        m_vision = null;
+        addRequirements(m_shooter);
+    }
 
     public ShootCommand(ShooterSubsystem shooter, VisionSubsystem vision, Compressor compressor) {
         m_shooter = shooter;

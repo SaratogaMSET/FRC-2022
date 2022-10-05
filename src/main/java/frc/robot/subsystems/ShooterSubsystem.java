@@ -70,7 +70,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.637, 0.14002, 0.0092594);
     double feedVoltage = feedforward.calculate(rps);
     double readVelocity = 600*4/3*(shooterMotor1.getSelectedSensorVelocity() - shooterMotor2.getSelectedSensorVelocity())/2/2048;
-    double feedbackGain = (rpm - readVelocity)/(6380*4.0/3.0) * 5;
+    double feedbackGain = ((rpm - readVelocity)/(6380*4.0/3.0)) * 5;
     //if(rpm != 0) feedVoltage += feedbackGain;
     SmartDashboard.putNumber("KP  Shooter Voltage", feedbackGain);
     SmartDashboard.putNumber("Voltage Setpoint", feedVoltage);

@@ -265,23 +265,28 @@ public class RobotContainer {
             new HalfHangUpCommand(m_hangSubsystem, 1),
             // new SequentialCommandGroup(
             // new WaitCommand(0.3),
-            new InstantCommand(() -> m_hangSubsystem.deployHang())));
+            new InstantCommand(() -> m_hangSubsystem.checkDeployment())));
 
     new JoystickButton(m_gunner, 3).whenPressed(
-        new SequentialCommandGroup(
-            new HangDownCommand(m_hangSubsystem, 0.85),
-            new WaitCommand(0.7),
-            new InstantCommand(() -> m_hangSubsystem.rightResetEncoders()),
-            new InstantCommand(() -> m_hangSubsystem.leftResetEncoders())));
+      new SequentialCommandGroup(
+        new InstantCommand(()-> m_hangSubsystem.undeployHang()),
+        new WaitCommand(0.4),
+        new HangDownCommand(m_hangSubsystem, 0.85),
+        new InstantCommand(() -> m_hangSubsystem.rightResetEncoders()),
+        new InstantCommand(() -> m_hangSubsystem.leftResetEncoders())
+        )
+        
+        );
 
     new JoystickButton(m_gunner, 12).whileActiveOnce(
         new HangDownCommand(m_hangSubsystem, 0.75, true));
 
-        new JoystickButton(m_gunner, 9).whileActiveOnce(
+        new JoystickButton(m_gunner, 9).whenPressed(
         new SequentialCommandGroup(
-        new InstantCommand(()-> m_hangSubsystem.undeployHang()),
-        new WaitCommand(0.5),
-        new HangDownCommand(m_hangSubsystem, 0.75, true)));
+          new HangDownCommand(m_hangSubsystem, 0.85),
+          new WaitCommand(0.7),
+          new InstantCommand(() -> m_hangSubsystem.rightResetEncoders()),
+          new InstantCommand(() -> m_hangSubsystem.leftResetEncoders())));
         
     new JoystickButton(m_gunner, 10).whileActiveOnce(
         new HangUpCommand(m_hangSubsystem, .75));
@@ -573,7 +578,10 @@ public class RobotContainer {
         // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
         new SequentialCommandGroup(
             new ZeroGyroCommand(m_drivetrainSubsystem),
-            new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.7)));
+            new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.7),
+            new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscopeTest(), m_drivetrainSubsystem)
+            )
+            );
     // );
   }
 
@@ -599,7 +607,9 @@ public class RobotContainer {
                 new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
                 new SequentialCommandGroup(
                     new WaitCommand(0.5),
-                    new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)))));
+                    new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)))),
+          new InstantCommand(()->m_hangSubsystem.deployHang()),
+          new InstantCommand(()->m_hangSubsystem.undeployHang()));
   }
 
   public Command getThreeClosedAuto() {

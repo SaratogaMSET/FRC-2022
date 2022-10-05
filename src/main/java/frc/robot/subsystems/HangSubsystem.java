@@ -85,13 +85,24 @@ public class HangSubsystem extends SubsystemBase {
         hangPosition = !hangPosition;
         hangSolenoid.set(!hangPosition);
     }
-
+    public void checkDeployment(){
+        if(hangPosition == false){
+            return;
+        }
+        else{
+            deployHang();
+        }
+    }
     public boolean isHangDeployed() {
         return hangSolenoid.get();
     }
     public void undeployHang(){
-        if(hangPosition = true)
+        if(hangPosition == true){
+            return;
+        }
+        else{
             deployHang();
+        }
     }
     public double metersToNativeUnits(double positionMeters){
         double wheelRotations = positionMeters/(2 * Math.PI * 0.5);

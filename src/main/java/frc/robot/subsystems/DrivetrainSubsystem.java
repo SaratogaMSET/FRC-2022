@@ -161,6 +161,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
         resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
         
   }
+//   public void zeroGyroscopeTest() {
+//     // offset = m_navx.getFusedHeading();
+//     offset = m_navx.getYaw() + 45;
+//     resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
+    
+// }
 
   public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(Math.toDegrees(getNavHeading()));
@@ -191,7 +197,7 @@ public void drive(ChassisSpeeds chassisSpeeds) {
     if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) < 0.01 && trackingState == false){
       trackingAngle = getNavHeading();
       trackingState = true;
-    }else if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) >= 0.01 || Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond) == 0 ){
+    }else if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) >= 0.01 || Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond) <= 0.05 ){
       trackingState = false;
     }
     //If we have 0 input angular velocity, add a pid gain to get to the last angle detected

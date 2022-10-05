@@ -557,7 +557,10 @@ public class RobotContainer {
                     new WaitCommand(0.5),
                     new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0),
                     new ZeroGyroCommand(m_drivetrainSubsystem),
-                    new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0)))))));
+                    new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0)))))
+                    ),
+          new InstantCommand(()->m_hangSubsystem.deployHang()),
+          new InstantCommand(()->m_hangSubsystem.undeployHang()));
   }
 
   public Command getTestAuto() {
@@ -578,8 +581,8 @@ public class RobotContainer {
         // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
         new SequentialCommandGroup(
             new ZeroGyroCommand(m_drivetrainSubsystem),
-            new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.7),
-            new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscopeTest(), m_drivetrainSubsystem)
+            new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.7)
+            // new InstantCommand(() -> m_drivetrainSubsystem.zeroGyroscopeTest(), m_drivetrainSubsystem)
             )
             );
     // );

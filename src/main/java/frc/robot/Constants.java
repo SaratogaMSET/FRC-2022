@@ -28,15 +28,15 @@ public final class Constants {
          */
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.635;
 
-        public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 36;
+        public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 36; //36
         public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 37;
         public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 47;
-        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians((-170.0)); //-math
+        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians((-170.0+258.63)); //-math
 
         public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 32;
         public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 33;
         public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 43;
-        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians((65.0)); //- math
+        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians((65.0+66.096635)); //- math
 
         public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 34;
         public static final int BACK_LEFT_MODULE_STEER_MOTOR = 35;

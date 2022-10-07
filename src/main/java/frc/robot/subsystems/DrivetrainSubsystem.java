@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.Drivetrain;
 // import frc.robot.util.drivers.LazyTalonFX;
 
@@ -161,12 +162,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
         resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
         
   }
-//   public void zeroGyroscopeTest() {
-//     // offset = m_navx.getFusedHeading();
-//     offset = m_navx.getYaw() + 45;
-//     resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
+  public void zeroGyroscopeAutonLeft() {
+    // offset = m_navx.getFusedHeading();
+    offset = m_navx.getYaw() - 32.3;
+    resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
     
-// }
+}
+public void zeroGyroscopeAutonMiddle() {
+  // offset = m_navx.getFusedHeading();
+  offset = m_navx.getYaw() + 35.3 - Math.abs(RobotContainer.AutonMiddleOffsetAT- RobotContainer.AutonMiddleOffsetBT); //get new Theta(currently 35.3)
+  resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
+  
+}
+public void zeroGyroscopeAutonRight() {
+  // offset = m_navx.getFusedHeading();
+  offset = m_navx.getYaw() + 80.3;
+  resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
+  
+}
 
   public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(Math.toDegrees(getNavHeading()));
@@ -208,7 +221,7 @@ public void drive(ChassisSpeeds chassisSpeeds) {
     if(trackingError > maxTrackingError){
       trackingState = false;
     }else if(trackingState){//Add Angular pid to correct for drive drift
-      double kP = 0.01;
+      double kP = 0.025;
       m_chassisSpeeds.omegaRadiansPerSecond = kP * (trackingError);
     }
   }
@@ -267,12 +280,14 @@ public void drive(ChassisSpeeds chassisSpeeds) {
     SmartDashboard.putBoolean("Is Tracking", trackingState);
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     SmartDashboard.putString("Robot Rotation", getPose().getRotation().toString()); //271.33
-    double csx = m_kinematics.toChassisSpeeds(currentState).vxMetersPerSecond;
-    SmartDashboard.putNumber("X Velocity", csx);
-    double csy = m_kinematics.toChassisSpeeds(currentState).vyMetersPerSecond;
-    SmartDashboard.putNumber("Y Velocity", csy);
-    double cst = m_kinematics.toChassisSpeeds(currentState).omegaRadiansPerSecond;
-    SmartDashboard.putNumber("Theta Velocity", cst);
+    SmartDashboard.putNumber("Front Right Steer", m_frontRightModule.getSteerAngle()*180/Math.PI);
+    SmartDashboard.putNumber("Front Left Steer", m_frontLeftModule.getSteerAngle()*180/Math.PI);
+    // double csx = m_kinematics.toChassisSpeeds(currentState).vxMetersPerSecond;
+    // SmartDashboard.putNumber("X Velocity", csx);
+    // double csy = m_kinematics.toChassisSpeeds(currentState).vyMetersPerSecond;
+    // SmartDashboard.putNumber("Y Velocity", csy);
+    // double cst = m_kinematics.toChassisSpeeds(currentState).omegaRadiansPerSecond;
+    // SmartDashboard.putNumber("Theta Velocity", cst);
     // SmartDashboard.putString("Wheel Velocity Real fL", ""+m_frontLeftSteer.getSelectedSensorVelocity());
   }
 }

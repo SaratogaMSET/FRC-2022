@@ -40,7 +40,7 @@ import frc.robot.commands.Autos.AutoRunCommand;
 import frc.robot.commands.Autos.DriveStraight;
 import frc.robot.commands.Autos.TurnAngle;
 import frc.robot.commands.Drivetrain.DefaultDriveCommand;
-import frc.robot.commands.Drivetrain.ReadGyroscope;
+// import frc.robot.commands.Drivetrain.ReadGyroscope;
 import frc.robot.commands.Drivetrain.SetXConfigCommand;
 import frc.robot.commands.Drivetrain.ZeroGyroCommand;
 import frc.robot.commands.Hang.DeployHangCommand;
@@ -87,12 +87,13 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final SendableChooser<String> m_autoSwitcher = new SendableChooser<String>();
   // public final SendableChooser<String> trajectorySwitcher = new SendableChooser<String>();
-  public static final String twoBallLeft = "2 Ball Left";
-  public static final String twoBallMiddle = "2 Ball Middle";
-  public static final String twoBallRight = "2 Ball Right";
+  public static final String twoBall = "2 Ball";
+  // public static final String twoBallLeft = "2 Ball Left";
+  // public static final String twoBallMiddle = "2 Ball Middle";
+  // public static final String twoBallRight = "2 Ball Right";
   public static final String fiveBall = "5 Ball";
-  public static double AutonMiddleOffsetBT = 0;
-  public static double AutonMiddleOffsetAT = 0;
+  // public static double AutonMiddleOffsetBT = 0;
+  // public static double AutonMiddleOffsetAT = 0;
   // public static final String threeBall = "3 Field";
   public static final String testBall = "Test Auto";
   // public static final String threeBallShort = "3 Wall";
@@ -165,10 +166,10 @@ public class RobotContainer {
       }
     }).start();
 
-    m_autoSwitcher.setDefaultOption(twoBallMiddle, twoBallMiddle);
-    m_autoSwitcher.addOption(twoBallLeft, twoBallLeft);
-    m_autoSwitcher.addOption(twoBallMiddle, twoBallMiddle);
-    m_autoSwitcher.addOption(twoBallRight, twoBallRight);
+    m_autoSwitcher.setDefaultOption(twoBall, twoBall);
+    // m_autoSwitcher.addOption(twoBallLeft, twoBallLeft);
+    // m_autoSwitcher.addOption(twoBallMiddle, twoBallMiddle);
+    // m_autoSwitcher.addOption(twoBallRight, twoBallRight);
     // m_autoSwitcher.addOption(threeBall, threeBall);
     // m_autoSwitcher.addOption(threeBallShort, threeBallShort);
     m_autoSwitcher.addOption(fiveBall, fiveBall);
@@ -228,7 +229,7 @@ public class RobotContainer {
             // new SetXConfigCommand(m_drivetrainSubsystem),
             new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
             new SequentialCommandGroup(
-                new WaitCommand(0.6),
+                new WaitCommand(0.7),
                 new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.3, 0.5))));
 
     new Button(m_driver::getYButton).whenReleased(
@@ -602,64 +603,89 @@ public class RobotContainer {
     // );
   }
 
-  public Command getTwoBallAutoMiddle() {
+  // public Command getTwoBallAutoMiddle() {
+  //   // /*
+  //   return new SequentialCommandGroup(
+  //       new WaitCommand(0.2), // 0.2
+  //       new ZeroGyroCommand(m_drivetrainSubsystem),
+  //       new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+  //       // new WaitCommand(0.5),
+  //       // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+  //       new ParallelRaceGroup(
+  //           new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+  //           new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
+  //           new SequentialCommandGroup(
+  //               new WaitCommand(0.2),
+  //               new ZeroGyroCommand(m_drivetrainSubsystem),
+  //               new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.5),
+  //               new WaitCommand(0.5))),
+  //       new SequentialCommandGroup(
+  //         new ReadGyroscope(m_drivetrainSubsystem, true),
+  //           new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+  //           new ReadGyroscope(m_drivetrainSubsystem, false),
+  //           new ParallelRaceGroup(
+  //               new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+  //               new SequentialCommandGroup(
+  //                   new WaitCommand(0.5),
+  //                   new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)))),
+  //         new InstantCommand(()->m_hangSubsystem.deployHang()),
+  //         new InstantCommand(()->m_hangSubsystem.undeployHang()),
+  //         new ZeroGyroCommand(m_drivetrainSubsystem, "Middle")
+  //         );
+  // }
+  //   public Command getTwoBallAuto(String path) {
+  //           // /*
+  //     return new SequentialCommandGroup(
+  //         new WaitCommand(0.2), // 0.2
+  //         new ZeroGyroCommand(m_drivetrainSubsystem),
+  //         new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+  //               // new WaitCommand(0.5),
+  //               // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
+  //         new ParallelRaceGroup(
+  //         new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+  //         new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
+  //         new SequentialCommandGroup(
+  //           new WaitCommand(0.2),
+  //           new ZeroGyroCommand(m_drivetrainSubsystem),
+  //           new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.5),
+  //           new WaitCommand(0.5))),
+  //         new SequentialCommandGroup(
+  //           new ParallelRaceGroup(
+  //             new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+  //             new SequentialCommandGroup(
+  //               new WaitCommand(0.7),
+  //               new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)))),
+  //               new InstantCommand(()->m_hangSubsystem.deployHang()),
+  //               new InstantCommand(()->m_hangSubsystem.undeployHang()),
+  //               new ZeroGyroCommand(m_drivetrainSubsystem, path)
+  //           );
+          
+          
+  // }
+  public Command getTwoBallAuto() {
     // /*
-    return new SequentialCommandGroup(
-        new WaitCommand(0.2), // 0.2
-        new ZeroGyroCommand(m_drivetrainSubsystem),
-        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
+return new SequentialCommandGroup(
+  new WaitCommand(0.2), // 0.2
+  new ZeroGyroCommand(m_drivetrainSubsystem),
+  new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
         // new WaitCommand(0.5),
         // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
-        new ParallelRaceGroup(
-            new DeployIntakeCommand(m_intake, IntakeState.DOWN),
-            new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
-            new SequentialCommandGroup(
-                new WaitCommand(0.2),
-                new ZeroGyroCommand(m_drivetrainSubsystem),
-                new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.5),
-                new WaitCommand(0.5))),
-        new SequentialCommandGroup(
-          new ReadGyroscope(m_drivetrainSubsystem, true),
-            new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
-            new ReadGyroscope(m_drivetrainSubsystem, false),
-            new ParallelRaceGroup(
-                new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
-                new SequentialCommandGroup(
-                    new WaitCommand(0.5),
-                    new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)))),
-          new InstantCommand(()->m_hangSubsystem.deployHang()),
-          new InstantCommand(()->m_hangSubsystem.undeployHang()),
-          new ZeroGyroCommand(m_drivetrainSubsystem, "Middle")
-          );
-  }
-    public Command getTwoBallAuto(String path) {
-            // /*
-      return new SequentialCommandGroup(
-          new WaitCommand(0.2), // 0.2
-          new ZeroGyroCommand(m_drivetrainSubsystem),
-          new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0))),
-                // new WaitCommand(0.5),
-                // new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
-          new ParallelRaceGroup(
-          new DeployIntakeCommand(m_intake, IntakeState.DOWN),
-          new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
-          new SequentialCommandGroup(
-            new WaitCommand(0.2),
-            new ZeroGyroCommand(m_drivetrainSubsystem),
-            new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.5),
-            new WaitCommand(0.5))),
-          new SequentialCommandGroup(
-            new ParallelRaceGroup(
-              new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
-              new SequentialCommandGroup(
-                new WaitCommand(0.5),
-                new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)))),
-                new InstantCommand(()->m_hangSubsystem.deployHang()),
-                new InstantCommand(()->m_hangSubsystem.undeployHang()),
-                new ZeroGyroCommand(m_drivetrainSubsystem, path)
-            );
-          
-          
+  new ParallelRaceGroup(
+  new DeployIntakeCommand(m_intake, IntakeState.DOWN),
+  new RunFeederCommand(m_feeder, FeederState.IR_ASSISTED_INTAKE, 0.2, 0.8),
+  new SequentialCommandGroup(
+    new WaitCommand(0.2),
+    new AutoRunCommand(m_drivetrainSubsystem, -1, 0, 0).withTimeout(1.5),
+    new WaitCommand(0.5))),
+  new SequentialCommandGroup(
+    new ParallelRaceGroup(
+      new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
+      new SequentialCommandGroup(
+        new WaitCommand(0.7),
+        new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)))),
+        new InstantCommand(()->m_hangSubsystem.deployHang()),
+        new InstantCommand(()->m_hangSubsystem.undeployHang())
+    );
   }
 
   public Command getThreeClosedAuto() {
@@ -742,12 +768,8 @@ public class RobotContainer {
     // else if(trajectory.equals("Forward Rotate")) {velocity = 2; acceleration = 0.7;}
     // else {velocity = 2; acceleration = 0.7;}
     switch (auto) {
-      case twoBallLeft:
-        return getTwoBallAuto("Left");
-      case twoBallMiddle:
-        return getTwoBallAutoMiddle();
-      case twoBallRight:
-        return getTwoBallAuto("Right");
+      case twoBall:
+        return getTwoBallAuto();
       case fiveBall:
         return getFiveBallAuto();
       // case threeBall:
@@ -759,7 +781,7 @@ public class RobotContainer {
       // case pathTestBall:
         // return getPathTestAuto(trajectory, velocity, acceleration);
       default:
-        return getTwoBallAutoMiddle();
+        return getTwoBallAuto();
     }
 
   }

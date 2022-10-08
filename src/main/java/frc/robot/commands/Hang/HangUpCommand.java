@@ -27,7 +27,7 @@ public class HangUpCommand extends CommandBase {
     public void execute() {
 
         //right
-        if (m_hangSubsystem.getRightEncoderValue() > Constants.HangConstants.HANG_MAX_ENCODER_COUNTS + 14800) { //12000
+        if (m_hangSubsystem.getRightEncoderValue() > Constants.HangConstants.HANG_MAX_ENCODER_COUNTS + 12800) { //12000
             m_hangSubsystem.maxHeightRight = true;
             m_hangSubsystem.setHangRightSpeed(0); //not necessary
         } else {
@@ -35,7 +35,7 @@ public class HangUpCommand extends CommandBase {
         }
 
         // left
-        if (m_hangSubsystem.getLeftEncoderValue() > Constants.HangConstants.HANG_MAX_ENCODER_COUNTS + 14000) {
+        if (m_hangSubsystem.getLeftEncoderValue() > Constants.HangConstants.HANG_MAX_ENCODER_COUNTS + 13400) {
             m_hangSubsystem.maxHeightLeft = true;
             m_hangSubsystem.setHangLeftSpeed(0); //not necessary
         } else {

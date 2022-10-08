@@ -18,21 +18,22 @@ public class ZeroGyroCommand extends CommandBase {
     }
     @Override
     public void execute() {
-        if(path.equals(null)){
         m_drivetrainSubsystem.zeroGyroscope();
-        }
-        else if(path.equals("Left")){
-            m_drivetrainSubsystem.zeroGyroscopeAutonLeft();
-        }
-        else if(path.equals("Middle")){
-            m_drivetrainSubsystem.zeroGyroscopeAutonMiddle();
-        }
-        else if(path.equals("Right")){
-            m_drivetrainSubsystem.zeroGyroscopeAutonRight();
-        }
-        else{
-            m_drivetrainSubsystem.zeroGyroscope();
-        }
+        // if(path.equals(null)){
+        // m_drivetrainSubsystem.zeroGyroscope();
+        // }
+        // else if(path.equals("Left")){
+        //     m_drivetrainSubsystem.zeroGyroscopeAutonLeft();
+        // }
+        // else if(path.equals("Middle")){
+        //     m_drivetrainSubsystem.zeroGyroscopeAutonMiddle();
+        // }
+        // else if(path.equals("Right")){
+        //     m_drivetrainSubsystem.zeroGyroscopeAutonRight();
+        // }
+        // else{
+        //     m_drivetrainSubsystem.zeroGyroscope();
+        // }
     }
 
     @Override

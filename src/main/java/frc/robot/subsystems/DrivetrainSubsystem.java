@@ -168,12 +168,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
     resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
     
 }
-public void zeroGyroscopeAutonMiddle() {
-  // offset = m_navx.getFusedHeading();
-  offset = m_navx.getYaw() + 35.3 - Math.abs(RobotContainer.AutonMiddleOffsetAT- RobotContainer.AutonMiddleOffsetBT); //get new Theta(currently 35.3)
-  resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
+// public void zeroGyroscopeAutonMiddle() {
+//   // offset = m_navx.getFusedHeading();
+//   offset = m_navx.getYaw() + 35.3 - Math.abs(RobotContainer.AutonMiddleOffsetAT- RobotContainer.AutonMiddleOffsetBT); //get new Theta(currently 35.3)
+//   resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
   
-}
+// }
 public void zeroGyroscopeAutonRight() {
   // offset = m_navx.getFusedHeading();
   offset = m_navx.getYaw() + 80.3;

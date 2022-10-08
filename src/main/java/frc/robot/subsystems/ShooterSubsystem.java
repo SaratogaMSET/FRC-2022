@@ -57,6 +57,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setRPM(double rpm) {
     SmartDashboard.putNumber("DesiredRPM:", rpm);
+    SmartDashboard.putNumber("RPM % Difference",  ((600*4/3*(shooterMotor1.getSelectedSensorVelocity() - shooterMotor2.getSelectedSensorVelocity())/2/2048)-rpm));
     rpm *= 2.85/5.0;
     double rps = rpm/60;
     // SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.637, 0.14245, 0.0093589);
@@ -106,7 +107,7 @@ public class ShooterSubsystem extends SubsystemBase {
     if(state == ShooterZone.QUADRATIC){
     double a = 0.177437;
     double b = -32.7534;
-    double c = 5371.93;
+    double c = 1.02 * 5371.93 ;
     return a * distance * distance + b * distance + c;
     }
     return 0.51;

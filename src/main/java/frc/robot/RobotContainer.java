@@ -240,6 +240,7 @@ public class RobotContainer {
     new Button(m_driver::getAButton).whenPressed(
     new ZeroGyroCommand(m_drivetrainSubsystem)
     );
+
     new Button(m_driver::getLeftBumper).whileActiveOnce(
       new DefaultDriveCommand(
       m_drivetrainSubsystem,
@@ -248,7 +249,16 @@ public class RobotContainer {
       () -> modifyAxis(m_driver.getRightX()*0.6) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
       ) //+
     );
-
+    trigger.whileActiveOnce(
+      new ParallelCommandGroup(
+            // new SetXConfigCommand(m_drivetrainSubsystem),
+            new ShootCommand(m_shooterSubsystem, ShooterZone.EMERGENCY, m_compressor),
+            new SequentialCommandGroup(
+                new WaitCommand(0.7),
+                new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.3, 0.5))));
+  
+    trigger.whenReleased(
+      new InstantCommand(() -> m_shooterSubsystem.setRPM(0)));
     // new Button(m_driver::getAButton).whileActiveOnce(
     //     new SequentialCommandGroup(
     //         new AimForShootCommand(m_drivetrainSubsystem, m_visionSubsystem),
@@ -413,7 +423,7 @@ public class RobotContainer {
     // value = Math.copySign(Math.sqrt(Math.abs(value)), value);
 
     return value;
-  }
+  }   
 
   private static double modifyAxisTranslate(double value) {
 
@@ -682,7 +692,7 @@ return new SequentialCommandGroup(
       new ShootCommand(m_shooterSubsystem, m_visionSubsystem, m_compressor),
       new SequentialCommandGroup(
         new WaitCommand(0.7),
-        new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.4, 0.5).withTimeout(1.0)))),
+        new RunFeederCommand(m_feeder, FeederState.MANUAL_INTAKE, 0.3, 0.5).withTimeout(1.0)))),
         new InstantCommand(()->m_hangSubsystem.deployHang()),
         new InstantCommand(()->m_hangSubsystem.undeployHang())
     );

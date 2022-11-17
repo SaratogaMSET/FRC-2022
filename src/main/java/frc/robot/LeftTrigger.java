@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Shooter.ShootCommand;
 
 import static edu.wpi.first.wpilibj.util.ErrorMessages.requireNonNullParam;
+
+import java.util.function.BooleanSupplier;
 public class LeftTrigger extends Trigger {
     private final XboxController m_driver;
     public LeftTrigger(XboxController m_driver){

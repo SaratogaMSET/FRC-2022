@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.Drivetrain;
+import com.ctre.phoenix.ErrorCode;
 // import frc.robot.util.drivers.LazyTalonFX;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -121,7 +122,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
             Drivetrain.FRONT_LEFT_MODULE_STEER_ENCODER,
             Drivetrain.FRONT_LEFT_MODULE_STEER_OFFSET
     );
-
     // We will do the same for the other modules
     m_frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
             swerveConfig,
@@ -195,7 +195,7 @@ public void zeroGyroscopeAutonRight() {
     return Math.toRadians(angle);
   }
 
-  public Pose2d getPose() {
+  public Pose2d getPose(){
     return odometer.getPoseMeters();
   }
 

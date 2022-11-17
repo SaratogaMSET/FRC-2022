@@ -57,7 +57,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setRPM(double rpm) {
     SmartDashboard.putNumber("DesiredRPM:", rpm);
-    SmartDashboard.putNumber("RPM % Difference",  ((600*4/3*(shooterMotor1.getSelectedSensorVelocity() - shooterMotor2.getSelectedSensorVelocity())/2/2048)-rpm));
+    SmartDashboard.putNumber("RPM Difference",  ((600*4/3*(shooterMotor1.getSelectedSensorVelocity() - shooterMotor2.getSelectedSensorVelocity())/2/2048)-rpm));
     rpm *= 2.85/5.0;
     double rps = rpm/60;
     // SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.637, 0.14245, 0.0093589);
@@ -73,7 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
     double readVelocity = 600*4/3*(shooterMotor1.getSelectedSensorVelocity() - shooterMotor2.getSelectedSensorVelocity())/2/2048;
     double feedbackGain = ((rpm - readVelocity)/(6380*4.0/3.0)) * 5;
     //if(rpm != 0) feedVoltage += feedbackGain;
-    SmartDashboard.putNumber("KP  Shooter Voltage", feedbackGain);
+    SmartDashboard.putNumber("KP Shooter Voltage", feedbackGain);
     SmartDashboard.putNumber("Voltage Setpoint", feedVoltage);
     
     //SmartDashboard.putNumber("ActualRPS:", 4/3*(shooterMotor1.getSelectedSensorVelocity() - shooterMotor2.getSelectedSensorVelocity())/2/2048);
@@ -110,7 +110,7 @@ public class ShooterSubsystem extends SubsystemBase {
     double c = 1.02 * 5371.93 ;
     return a * distance * distance + b * distance + c;
     }
-    return 0.51;
+    return 2000;
   }
 
   public void setAngle(boolean desiredAngle) {
@@ -130,7 +130,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // if (distance < Constants.Vision.Distance.LIRP_3) {
     //   return ShooterZone.LIRP_3;
     // } 
-    if(RobotContainer.m_visionSubsystem!=null|| distance <=0.0){
+    if(RobotContainer.m_visionSubsystem!=null|| distance >0.0){
       return ShooterZone.QUADRATIC;
     }
     
@@ -159,7 +159,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
 
-    return ShooterZone.ZONE_4;
+    return ShooterZone.EMERGENCY;
   }
 
   public boolean getShooterAngle(ShooterZone state) {

@@ -25,7 +25,6 @@ public class DeployIntakeCommand extends CommandBase {
     }
 
     public boolean isFinished() {
-        // Since we just want the command to execute just one.
         return false;
     }
 
